@@ -1,5 +1,5 @@
 ---
-name: Custom issue template
+name: 0ggnag Issue Template
 about: 이슈 제출용 템플릿
 title: ''
 labels: ''

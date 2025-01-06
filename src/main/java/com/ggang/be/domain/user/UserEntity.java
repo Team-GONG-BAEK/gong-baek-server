@@ -1,0 +1,66 @@
+package com.ggang.be.domain.user;
+
+import com.ggang.be.domain.BaseTimeEntity;
+import com.ggang.be.domain.constant.Gender;
+import com.ggang.be.domain.constant.Mbti;
+import com.ggang.be.domain.school.SchoolEntity;
+import com.ggang.be.domain.schoolMajor.SchoolMajorEntity;
+import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;
+import com.ggang.be.domain.userOnceGroup.UserOnceGroupEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import java.util.List;
+
+@Entity(name = "user")
+public class UserEntity extends BaseTimeEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Long id;
+
+    @OneToMany(mappedBy = "userEntity")
+    private List<UserOnceGroupEntity> userOnceGroupEntites;
+
+    @OneToMany(mappedBy = "userEntity")
+    private List<UserEveryGroupEntity> userEveryGroupEntities;
+
+    @OneToOne
+    @JoinColumn(name = "school_id")
+    private SchoolEntity school;
+
+    @OneToOne
+    @JoinColumn(name = "school_major_id")
+    private SchoolMajorEntity schoolMajorEntity;
+
+    private int profileImg;
+
+    @Column(nullable = false)
+    private String nickname;
+
+    private int schoolGrade;
+
+    private int enterYear;
+
+    @Column(nullable = false)
+    private Mbti mbti;
+
+    @Column(nullable = false)
+    private Gender gender;
+
+    @Column(nullable = false)
+    private String introduction;
+
+    @Column(nullable = false)
+    private String lectureTimeTableId;
+
+    @Column(nullable = false)
+    private String gongbaekTimeTableId;
+
+}

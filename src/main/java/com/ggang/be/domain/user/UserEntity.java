@@ -3,6 +3,8 @@ package com.ggang.be.domain.user;
 import com.ggang.be.domain.BaseTimeEntity;
 import com.ggang.be.domain.constant.Gender;
 import com.ggang.be.domain.constant.Mbti;
+import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
+import com.ggang.be.domain.lectureTimeTable.LectureTimeSlotEntity;
 import com.ggang.be.domain.school.SchoolEntity;
 import com.ggang.be.domain.schoolMajor.SchoolMajorEntity;
 import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;
@@ -58,9 +60,11 @@ public class UserEntity extends BaseTimeEntity {
     private String introduction;
 
     @Column(nullable = false)
-    private String lectureTimeTableId;
+    @OneToMany(mappedBy = "userEntity")
+    private List<GongbaekTimeSlotEntity> gongbaekTimeSlotEntities;
 
     @Column(nullable = false)
-    private String gongbaekTimeTableId;
+    @OneToMany(mappedBy = "userEntity")
+    private List<LectureTimeSlotEntity> lectureTimeSlotEntities;
 
 }

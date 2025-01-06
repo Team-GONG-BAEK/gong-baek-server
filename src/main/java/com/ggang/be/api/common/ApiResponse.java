@@ -24,9 +24,3 @@ public class  ApiResponse<T> {
         this.data = data;
     }
 }
-//{
-//        "success": false,
-//        "code": 4000,
-//        "message": "유효하지 않은 요청입니다.",
-//        "data": null
-//        }

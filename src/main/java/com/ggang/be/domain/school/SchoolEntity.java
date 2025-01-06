@@ -19,6 +19,6 @@ public class SchoolEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String schoolDomain;
 
-    @OneToMany
+    @OneToMany(mappedBy = "school")
     private List<SchoolMajorEntity> schoolMajors;
 }

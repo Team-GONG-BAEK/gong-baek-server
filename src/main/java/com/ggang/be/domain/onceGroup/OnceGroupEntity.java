@@ -37,6 +37,7 @@ public class OnceGroupEntity extends BaseTimeEntity {
     private Set<UserOnceGroupEntity> participantUsers = new LinkedHashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "once_group_id")
     private List<CommentEntity> comments;
 
     @Column(nullable = false)

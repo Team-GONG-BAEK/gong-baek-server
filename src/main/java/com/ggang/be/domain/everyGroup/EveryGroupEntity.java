@@ -37,6 +37,7 @@ public class EveryGroupEntity extends BaseTimeEntity {
     private Set<UserEveryGroupEntity> userEveryGroupEntities = new LinkedHashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "every_group_id")
     private List<CommentEntity> comments;
 
     @Column(nullable = false)

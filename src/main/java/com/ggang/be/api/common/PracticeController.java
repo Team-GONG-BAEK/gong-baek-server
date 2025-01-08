@@ -18,7 +18,7 @@ public class PracticeController {
         return ResponseBuilder.created("1");
     }
 
-    @GetMapping("/error")
+    @GetMapping("/custom-error")
     public ResponseEntity<ApiResponse<Void>> error() {
         return ResponseBuilder.error(INVALID_TOKEN);
     }

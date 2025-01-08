@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(GongBaekException.class)
-    public ResponseEntity<?> handleGlobalException(GongBaekException e) {
+    public ResponseEntity<ApiResponse<Void>> handleGlobalException(GongBaekException e) {
         return ResponseBuilder.error(e.getResponseError());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ApiResponse<Void>> handleValidationException(MethodArgumentNotValidException e) {
         return ResponseEntity
                 .status(ResponseError.BAD_REQUEST.getHttpStatus())
                 .body(ApiResponse.error(ResponseError.INVALID_INPUT_VALUE));

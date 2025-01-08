@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface SchoolService {
 
-    List<SchoolSearchVo> searchSchoolContainingNames(String schoolName);
+    List<SchoolSearchVo> searchSchoolContainingKeyword(String searchKeyword);
 }

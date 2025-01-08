@@ -17,8 +17,8 @@ public class SchoolServiceImpl implements SchoolService {
     private final SchoolRepository schoolRepository;
 
     @Override
-    public List<SchoolSearchVo> searchSchoolContainingNames(String schoolName) {
-        return schoolRepository.findContainingSchoolName(schoolName)
+    public List<SchoolSearchVo> searchSchoolContainingKeyword(String searchKeyword) {
+        return schoolRepository.findContainingSearchKeyword(searchKeyword)
             .stream()
             .map(SchoolEntity::getSchoolName)
             .map(SchoolSearchVo::of)

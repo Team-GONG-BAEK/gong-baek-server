@@ -26,7 +26,7 @@ class SchoolServiceImplTest {
 
     @Test
     @DisplayName("학교 이름으로 해당 학교 이름 가지고 있는 학교 검색")
-    void searchSchoolContainingNames() {
+    void searchSchoolContainingKeyword() {
         // given
         SchoolEntity schoolDomain1 = SchoolEntity.builder()
             .schoolDomain("schoolDomain1")
@@ -40,10 +40,10 @@ class SchoolServiceImplTest {
             .schoolMajors(List.of())
             .build();
 
-        when(schoolRepository.findContainingSchoolName("schoolName")).thenReturn(List.of(schoolDomain1, schoolDomain2));
+        when(schoolRepository.findContainingSearchKeyword("schoolName")).thenReturn(List.of(schoolDomain1, schoolDomain2));
 
         // when
-        List<SchoolSearchVo> schoolName = schoolServiceImpl.searchSchoolContainingNames(
+        List<SchoolSearchVo> schoolName = schoolServiceImpl.searchSchoolContainingKeyword(
             "schoolName");
 
         // then

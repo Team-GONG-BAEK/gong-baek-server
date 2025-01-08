@@ -22,10 +22,10 @@ public class SchoolController {
 
 
     @GetMapping("/school/search")
-    public ResponseEntity<ApiResponse<SchoolSearchResponse>> searchSchool(@RequestParam final String schoolName) {
-        log.info("schoolName: {}", schoolName);
+    public ResponseEntity<ApiResponse<SchoolSearchResponse>> searchSchool(@RequestParam("searchKeyword") final String searchKeyword) {
+        log.info("schoolName: {}", searchKeyword);
         return ResponseEntity.ok(ApiResponse.success(ResponseSuccess.OK,
-            searchSchoolFacade.searchSchool(schoolName)));
+            searchSchoolFacade.searchSchool(searchKeyword)));
     }
 
 

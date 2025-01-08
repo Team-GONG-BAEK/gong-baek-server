@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface SchoolRepository extends JpaRepository<SchoolEntity, Long> {
 
-    @Query("select s from school s where s.schoolName like %:schoolName%")
-    List<SchoolEntity> findContainingSchoolName(String schoolName);
+    @Query("select s from school s where s.schoolName like %:searchKeyword%")
+    List<SchoolEntity> findContainingSearchKeyword(String searchKeyword);
 
 }

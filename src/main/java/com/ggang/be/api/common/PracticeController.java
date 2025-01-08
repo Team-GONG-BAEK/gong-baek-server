@@ -9,12 +9,12 @@ import static com.ggang.be.api.common.ResponseError.*;
 public class PracticeController {
 
     @GetMapping("/ok")
-    public ResponseEntity<ApiResponse<String>> ok() {
+    public ResponseEntity<ApiResponse<Object>> ok() {
         return ResponseBuilder.ok(null);
     }
 
     @GetMapping("/created")
-    public ResponseEntity<ApiResponse<String>> created() {
+    public ResponseEntity<ApiResponse<Object>> created() {
         return ResponseBuilder.created("1");
     }
 

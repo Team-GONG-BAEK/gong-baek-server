@@ -1,6 +1,7 @@
 package com.ggang.be.api.common;
 
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ResponseError {
@@ -8,7 +9,7 @@ public enum ResponseError {
     // 400 Bad Request
     BAD_REQUEST(4000, "유효하지 않은 요청입니다."),
     INVALID_INPUT_VALUE(4001, "검증에 실패하였습니다."),
-    INVALID_INPUT_IMAGE_VALUE(4002, "지원하지 않는 이미지 확장자입니다."),
+    INVALID_INPUT_IMAGE_EXTENSION(4002, "지원하지 않는 이미지 확장자입니다."),
     INVALID_INPUT_IMAGE_SIZE(4003, "지원하지 않는 이미지 크기입니다."),
     INVALID_INPUT_IMAGE_URL(4004, "잘못된 이미지 URL 입니다."),
     INVALID_INPUT_LENGTH(4005, "글자수를 초과했습니다."),
@@ -44,5 +45,9 @@ public enum ResponseError {
     ResponseError(int code, String message) {
         this.code = code;
         this.message = message;
+    }
+
+    public HttpStatus getHttpStatus() {
+        return HttpStatus.valueOf(code / 10);
     }
 }

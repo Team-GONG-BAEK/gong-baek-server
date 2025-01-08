@@ -4,7 +4,7 @@ import com.ggang.be.domain.BaseTimeEntity;
 import com.ggang.be.domain.constant.Gender;
 import com.ggang.be.domain.constant.Mbti;
 import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
-import com.ggang.be.domain.lectureTimeTable.LectureTimeSlotEntity;
+import com.ggang.be.domain.lectureTimeSlot.LectureTimeSlotEntity;
 import com.ggang.be.domain.school.SchoolEntity;
 import com.ggang.be.domain.schoolMajor.SchoolMajorEntity;
 import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;

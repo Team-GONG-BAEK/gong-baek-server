@@ -1,4 +1,4 @@
-package com.ggang.be.domain.lectureTimeTable;
+package com.ggang.be.domain.lectureTimeSlot;
 
 import com.ggang.be.domain.BaseTimeEntity;
 import com.ggang.be.domain.constant.WeekDate;

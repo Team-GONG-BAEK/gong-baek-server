@@ -48,6 +48,9 @@ public class EveryGroupEntity extends BaseTimeEntity {
     private Category category;
 
     @Column(nullable = false)
+    private int coverImg;
+
+    @Column(nullable = false)
     private String location;
 
     @Column(nullable = false)
@@ -62,4 +65,12 @@ public class EveryGroupEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String title;
 
+    public boolean isHost(UserEntity currentUser) {
+        return this.userEntity.getId().equals(currentUser.getId());
+    }
+
+    public boolean isApply(UserEntity currentUser) {
+        return this.userEveryGroupEntities.stream()
+                .anyMatch(participant -> participant.getUserEntity().getId().equals(currentUser.getId()));
+    }
 }

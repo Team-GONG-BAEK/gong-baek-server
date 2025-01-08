@@ -13,6 +13,10 @@ public class  ApiResponse<T> {
         return new ApiResponse<>(true, responseSuccess.getCode(), responseSuccess.getMessage(), data);
     }
 
+    public static <T> ApiResponse<T> success(ResponseSuccess responseSuccess) {
+        return new ApiResponse<>(true, responseSuccess.getCode(), responseSuccess.getMessage(), null);
+    }
+
     public static <T> ApiResponse <T> error(ResponseError responseError) {
         return new ApiResponse<>(false, responseError.getCode(), responseError.getMessage(), null);
     }

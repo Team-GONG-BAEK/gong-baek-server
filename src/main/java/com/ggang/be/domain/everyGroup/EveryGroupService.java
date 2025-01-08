@@ -3,6 +3,7 @@ package com.ggang.be.domain.everyGroup;
 import com.ggang.be.api.common.GroupResponse;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
+import com.ggang.be.domain.user.UserEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,20 +14,24 @@ public class EveryGroupService {
         this.everyGroupRepository = everyGroupRepository;
     }
 
-    public GroupResponse getEveryGroupDetail(final long groupId) {
+    public GroupResponse getEveryGroupDetail(final long groupId, UserEntity currentUser) {
         EveryGroupEntity everyGroupEntity = findIdOrThrow(groupId);
+
         return new GroupResponse(
                 everyGroupEntity.getId(),
-                "WEEKLY",
+                "ONCE",
                 everyGroupEntity.getTitle(),
                 everyGroupEntity.getLocation(),
                 everyGroupEntity.getStatus().isActive(),
+                everyGroupEntity.isHost(currentUser),
+                everyGroupEntity.isApply(currentUser),
                 everyGroupEntity.getCurrentPeopleCount(),
                 everyGroupEntity.getMaxPeopleCount(),
                 everyGroupEntity.getIntroduction(),
                 everyGroupEntity.getCategory().toString(),
-                everyGroupEntity.getWeekDate(),
+                everyGroupEntity.getCoverImg(),
                 null,
+                everyGroupEntity.getWeekDate().toString(),
                 everyGroupEntity.getStartTime(),
                 everyGroupEntity.getEndTime()
         );

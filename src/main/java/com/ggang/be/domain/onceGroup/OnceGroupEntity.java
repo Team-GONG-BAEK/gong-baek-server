@@ -8,12 +8,14 @@ import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userOnceGroup.UserOnceGroupEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+@Setter
 @Getter
 @Entity(name = "once_group")
 public class OnceGroupEntity extends BaseTimeEntity {
@@ -44,6 +46,9 @@ public class OnceGroupEntity extends BaseTimeEntity {
     private Category category;
 
     @Column(nullable = false)
+    private int coverImg;
+
+    @Column(nullable = false)
     private String location;
 
     @Column(nullable = false)
@@ -58,4 +63,12 @@ public class OnceGroupEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String title;
 
+    public boolean isHost(UserEntity currentUser) {
+        return this.userEntity.getId().equals(currentUser.getId());
+    }
+
+    public boolean isApply(UserEntity currentUser) {
+        return this.participantUsers.stream()
+                .anyMatch(participant -> participant.getUserEntity().getId().equals(currentUser.getId()));
+    }
 }

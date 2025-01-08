@@ -17,7 +17,7 @@ class LengthValidatorTest {
         int minLength = 3;
         int maxLength = 7;
         //when & then
-        assertTrue(LengthValidator.rangelengthCheck(testCase, minLength, maxLength));
+        Assertions.assertThat(LengthValidator.rangelengthCheck(testCase, minLength, maxLength)).isTrue();
     }
 
     @ParameterizedTest

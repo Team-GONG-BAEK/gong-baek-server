@@ -40,7 +40,7 @@ class SchoolServiceImplTest {
             .schoolMajors(List.of())
             .build();
 
-        when(schoolRepository.findBySchoolNameContaining("schoolName")).thenReturn(List.of(schoolDomain1, schoolDomain2));
+        when(schoolRepository.findContainingSchoolName("schoolName")).thenReturn(List.of(schoolDomain1, schoolDomain2));
 
         // when
         List<SchoolSearchVo> schoolName = schoolServiceImpl.searchSchoolContainingNames(

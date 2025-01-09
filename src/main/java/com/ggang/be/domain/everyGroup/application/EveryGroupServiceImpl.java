@@ -18,7 +18,7 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     private final EveryGroupRepository everyGroupRepository;
 
     @Override
-    public EveryGroupDto getEveryGroupDetail(final long groupId, UserEntity userEntity) {
+    public EveryGroupDto getEveryGroupDetail(final long groupId, final UserEntity userEntity) {
         EveryGroupEntity entity = findIdOrThrow(groupId);
         return EveryGroupDto.toDto(entity, userEntity);
     }

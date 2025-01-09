@@ -18,7 +18,7 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     private final OnceGroupRepository onceGroupRepository;
 
     @Override
-    public OnceGroupDto getOnceGroupDetail(final long groupId, UserEntity userEntity) {
+    public OnceGroupDto getOnceGroupDetail(final long groupId, final UserEntity userEntity) {
         OnceGroupEntity onceGroupEntity = findIdOrThrow(groupId);
         return OnceGroupDto.toDto(onceGroupEntity, userEntity);
     }

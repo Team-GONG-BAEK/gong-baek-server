@@ -1,5 +1,7 @@
 package com.ggang.be.domain.school.application;
 
+import com.ggang.be.api.common.ResponseError;
+import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.school.service.SchoolService;
 import com.ggang.be.domain.school.SchoolEntity;
 import com.ggang.be.domain.school.dto.SchoolSearchVo;
@@ -23,5 +25,12 @@ public class SchoolServiceImpl implements SchoolService {
             .map(SchoolEntity::getSchoolName)
             .map(SchoolSearchVo::of)
             .toList();
+    }
+
+    @Override
+    public School findSchoolByName(String schoolName) {
+        return schoolRepository.findBySchoolName(schoolName)
+            .map(School::fromEntity)
+            .orElseThrow(() -> new GongBaekException(ResponseError.NOT_FOUND));
     }
 }

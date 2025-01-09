@@ -59,7 +59,7 @@ class SchoolMajorServiceImplTest {
 
         // when
         List<SearchSchoolMajorVo> findTestSchoolMajor = schoolMajorServiceImpl.findSchoolMajorBySchoolAndMajorName(
-            1, "test");
+            1L, "test");
 
         // then
         Assertions.assertThat(findTestSchoolMajor).hasSize(2)

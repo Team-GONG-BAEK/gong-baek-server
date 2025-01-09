@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface SchoolMajorService {
 
-    List<SearchSchoolMajorVo> findSchoolMajorBySchoolAndMajorName(Integer id, String schoolMajorKeyword);
+    List<SearchSchoolMajorVo> findSchoolMajorBySchoolAndMajorName(Long id, String schoolMajorKeyword);
 }

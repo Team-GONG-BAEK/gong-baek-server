@@ -54,7 +54,7 @@ class SchoolMajorServiceImplTest {
             .build();
 
 
-        when(schoolMajorRepository.findBySchoolIdAndMajorKeyword(1, "test"))
+        when(schoolMajorRepository.findBySchoolIdAndMajorKeyword(1L, "test"))
             .thenReturn(List.of(major, major2));
 
         // when

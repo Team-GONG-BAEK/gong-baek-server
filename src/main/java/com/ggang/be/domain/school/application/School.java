@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class School {
 
-    private Integer id;
+    private Long id;
     private String schoolName;
     private String schoolDomain;
 
@@ -21,7 +21,7 @@ public class School {
     }
 
     @Builder
-    private School(Integer id, String schoolName, String schoolDomain) {
+    private School(Long id, String schoolName, String schoolDomain) {
         this.id = id;
         this.schoolName = schoolName;
         this.schoolDomain = schoolDomain;

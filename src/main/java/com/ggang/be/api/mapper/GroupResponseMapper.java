@@ -1,53 +1,51 @@
 package com.ggang.be.api.mapper;
 
-import com.ggang.be.api.common.GroupResponse;
+import com.ggang.be.api.group.dto.GroupResponse;
 import com.ggang.be.domain.constant.GroupType;
-import com.ggang.be.domain.constant.WeekDate;
-import com.ggang.be.domain.everyGroup.EveryGroupEntity;
-import com.ggang.be.domain.onceGroup.OnceGroupEntity;
-import com.ggang.be.domain.user.UserEntity;
+import com.ggang.be.domain.everyGroup.dto.EveryGroupDto;
+import com.ggang.be.domain.onceGroup.dto.OnceGroupDto;
 
-public class GroupResponseMapper {
+public record GroupResponseMapper() {
 
-    public static GroupResponse fromOnceGroup(OnceGroupEntity entity, UserEntity currentUser) {
+    public static GroupResponse fromOnceGroup(OnceGroupDto dto) {
         return new GroupResponse(
-                entity.getId(),
+                dto.groupId(),
                 GroupType.ONCE.toString(),
-                entity.getTitle(),
-                entity.getLocation(),
-                entity.getStatus().isActive(),
-                entity.isHost(currentUser),
-                entity.isApply(currentUser),
-                entity.getCurrentPeopleCount(),
-                entity.getMaxPeopleCount(),
-                entity.getIntroduction(),
-                entity.getCategory().toString(),
-                entity.getCoverImg(),
-                WeekDate.fromDayOfWeek(entity.getGroupDate().getDayOfWeek()).toString(),
-                entity.getGroupDate().toString(),
-                entity.getStartTime(),
-                entity.getEndTime()
+                dto.groupTitle(),
+                dto.location(),
+                dto.status(),
+                dto.isHost(),
+                dto.isApply(),
+                dto.currentPeopleCount(),
+                dto.maxPeopleCount(),
+                dto.introduction(),
+                dto.category(),
+                dto.coverImg(),
+                dto.weekDay(),
+                dto.weekDate() != null ? dto.weekDate() : null,
+                dto.startTime(),
+                dto.endTime()
         );
     }
 
-    public static GroupResponse fromEveryGroup(EveryGroupEntity entity, UserEntity currentUser) {
+    public static GroupResponse fromEveryGroup(EveryGroupDto dto) {
         return new GroupResponse(
-                entity.getId(),
+                dto.groupId(),
                 GroupType.WEEKLY.toString(),
-                entity.getTitle(),
-                entity.getLocation(),
-                entity.getStatus().isActive(),
-                entity.isHost(currentUser),
-                entity.isApply(currentUser),
-                entity.getCurrentPeopleCount(),
-                entity.getMaxPeopleCount(),
-                entity.getIntroduction(),
-                entity.getCategory().toString(),
-                entity.getCoverImg(),
-                entity.getWeekDate().toString(),
+                dto.title(),
+                dto.location(),
+                dto.status(),
+                dto.isHost(),
+                dto.isApply(),
+                dto.currentPeopleCount(),
+                dto.maxPeopleCount(),
+                dto.introduction(),
+                dto.category(),
+                dto.coverImg(),
+                dto.weekDay(),
                 null,
-                entity.getStartTime(),
-                entity.getEndTime()
+                dto.startTime(),
+                dto.endTime()
         );
     }
 }

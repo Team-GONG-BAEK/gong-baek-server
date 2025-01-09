@@ -1,4 +1,4 @@
-package com.ggang.be.api.common;
+package com.ggang.be.api.group.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

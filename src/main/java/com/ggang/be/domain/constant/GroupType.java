@@ -1,5 +1,8 @@
 package com.ggang.be.domain.constant;
 
+import com.ggang.be.api.common.ResponseError;
+import com.ggang.be.api.exception.GongBaekException;
+
 public enum GroupType {
     WEEKLY,
     ONCE;
@@ -10,6 +13,11 @@ public enum GroupType {
                 return true;
             }
         }
-        return false;
+        throw new GongBaekException(ResponseError.BAD_REQUEST);
+    }
+
+    public static GroupType fromString(String type) {
+        isValid(type);
+        return GroupType.valueOf(type);
     }
 }

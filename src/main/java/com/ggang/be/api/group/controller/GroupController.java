@@ -1,11 +1,9 @@
-package com.ggang.be.api.group;
+package com.ggang.be.api.group.controller;
 
 import com.ggang.be.api.common.ApiResponse;
-import com.ggang.be.api.common.GroupResponse;
-import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.common.ResponseSuccess;
-import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.facade.GroupFacade;
+import com.ggang.be.api.group.dto.GroupResponse;
 import com.ggang.be.domain.constant.GroupType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -25,11 +23,7 @@ public class GroupController {
             @RequestParam(value = "groupType") @NotBlank String groupType,
             @RequestParam(value = "groupId") @Min(value = 1, message = "groupId는 양수여야 합니다.") long groupId
     ) {
-        if (!GroupType.isValid(groupType)) {
-            throw new GongBaekException(ResponseError.BAD_REQUEST);
-        }
-
-        GroupResponse groupResponse = groupFacade.getGroupInfo(groupType, groupId, accessToken);
+        GroupResponse groupResponse = groupFacade.getGroupInfo(GroupType.fromString(groupType.toUpperCase()), groupId, accessToken);
         return ResponseEntity.ok(ApiResponse.success(ResponseSuccess.OK, groupResponse));
     }
 }

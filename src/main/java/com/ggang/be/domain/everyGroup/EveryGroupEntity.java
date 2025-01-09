@@ -47,7 +47,6 @@ public class EveryGroupEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private Category category;
 
-    @Column(nullable = false)
     private int coverImg;
 
     @Column(nullable = false)

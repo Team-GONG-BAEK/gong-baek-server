@@ -6,7 +6,6 @@ import com.ggang.be.domain.constant.Mbti;
 import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.lectureTimeSlot.LectureTimeSlotEntity;
 import com.ggang.be.domain.school.SchoolEntity;
-import com.ggang.be.domain.schoolMajor.SchoolMajorEntity;
 import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;
 import com.ggang.be.domain.userOnceGroup.UserOnceGroupEntity;
 import jakarta.persistence.Column;
@@ -37,9 +36,7 @@ public class UserEntity extends BaseTimeEntity {
     @JoinColumn(name = "school_id")
     private SchoolEntity school;
 
-    @OneToOne
-    @JoinColumn(name = "school_major_id")
-    private SchoolMajorEntity schoolMajorEntity;
+    private String schoolMajorName;
 
     private int profileImg;
 

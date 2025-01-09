@@ -1,6 +1,6 @@
 package com.ggang.be.api.facade;
 
-import com.ggang.be.api.school.controller.SchoolService;
+import com.ggang.be.api.school.service.SchoolService;
 import com.ggang.be.api.school.dto.SchoolSearchResponse;
 import com.ggang.be.domain.school.dto.SchoolSearchVo;
 import com.ggang.be.global.annotation.Facade;

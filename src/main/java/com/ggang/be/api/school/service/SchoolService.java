@@ -1,4 +1,4 @@
-package com.ggang.be.api.school.controller;
+package com.ggang.be.api.school.service;
 
 import com.ggang.be.domain.school.dto.SchoolSearchVo;
 import java.util.List;

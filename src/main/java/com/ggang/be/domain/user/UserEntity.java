@@ -6,16 +6,17 @@ import com.ggang.be.domain.constant.Mbti;
 import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.lectureTimeSlot.LectureTimeSlotEntity;
 import com.ggang.be.domain.school.SchoolEntity;
-import com.ggang.be.domain.schoolMajor.SchoolMajorEntity;
 import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;
 import com.ggang.be.domain.userOnceGroup.UserOnceGroupEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
-
 import java.util.List;
 
 @Getter
 @Entity(name = "user")
+@Table(indexes = {
+    @Index(name="user_nickname_index", columnList = "nickname")
+})
 public class UserEntity extends BaseTimeEntity {
 
     @Id
@@ -33,9 +34,8 @@ public class UserEntity extends BaseTimeEntity {
     @JoinColumn(name = "school_id")
     private SchoolEntity school;
 
-    @OneToOne
-    @JoinColumn(name = "school_major_id")
-    private SchoolMajorEntity schoolMajorEntity;
+    @Column(nullable = false)
+    private String schoolMajorName;
 
     private int profileImg;
 

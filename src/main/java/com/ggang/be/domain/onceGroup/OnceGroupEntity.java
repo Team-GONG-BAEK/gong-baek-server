@@ -6,21 +6,15 @@ import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userOnceGroup.UserOnceGroupEntity;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+import lombok.Getter;
+
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-
+@Getter
 @Entity(name = "once_group")
 public class OnceGroupEntity extends BaseTimeEntity {
 
@@ -49,6 +43,8 @@ public class OnceGroupEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private Category category;
 
+    private int coverImg;
+
     @Column(nullable = false)
     private String location;
 
@@ -64,4 +60,12 @@ public class OnceGroupEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String title;
 
+    public boolean isHost(UserEntity currentUser) {
+        return this.userEntity.getId().equals(currentUser.getId());
+    }
+
+    public boolean isApply(UserEntity currentUser) {
+        return this.participantUsers.stream()
+                .anyMatch(participant -> participant.getUserEntity().getId().equals(currentUser.getId()));
+    }
 }

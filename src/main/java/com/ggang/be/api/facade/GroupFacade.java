@@ -1,6 +1,6 @@
 package com.ggang.be.api.facade;
 
-import com.ggang.be.api.group.dto.GroupResponse;
+import com.ggang.be.api.group.dto.GroupResponseDto;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.api.mapper.GroupResponseMapper;
@@ -17,7 +17,7 @@ public class GroupFacade {
     private final OnceGroupService onceGroupService;
     private final UserService userService;
 
-    public GroupResponse getGroupInfo(GroupType groupType, Long groupId, String accessToken) {
+    public GroupResponseDto getGroupInfo(GroupType groupType, Long groupId, String accessToken) {
         UserEntity currentUser = userService.getUserById(Long.parseLong(accessToken));
 
         return switch (groupType) {

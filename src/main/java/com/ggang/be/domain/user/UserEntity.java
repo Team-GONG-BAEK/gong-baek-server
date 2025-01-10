@@ -13,12 +13,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import java.util.List;
 
 @Entity(name = "user")
+@Table(indexes = {
+    @Index(name="user_nickname_index", columnList = "nickname")
+})
 public class UserEntity extends BaseTimeEntity {
 
     @Id
@@ -36,6 +41,7 @@ public class UserEntity extends BaseTimeEntity {
     @JoinColumn(name = "school_id")
     private SchoolEntity school;
 
+    @Column(nullable = false)
     private String schoolMajorName;
 
     private int profileImg;

@@ -5,6 +5,9 @@ import com.ggang.be.api.common.ResponseBuilder;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.common.ResponseSuccess;
 import com.ggang.be.api.user.dto.UserSchoolResponseDto;
+import com.ggang.be.api.exception.GongBaekException;
+import com.ggang.be.api.facade.SignupFacade;
+import com.ggang.be.api.user.NicknameValidator;
 import com.ggang.be.api.user.dto.ValidIntroductionRequestDto;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.global.util.LengthValidator;
@@ -12,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/api/v1")
@@ -23,13 +27,21 @@ public class UserController {
 
     private final static int INTRODUCTION_MIN_LENGTH = 20;
     private final static int INTRODUCTION_MAX_LENGTH = 100;
+    private final SignupFacade signupFacade;
 
 
-    @GetMapping("/user/introduction")
+    @GetMapping("/user/validate/introduction")
     public ResponseEntity<ApiResponse<Void>> validateIntroduction(@RequestBody final ValidIntroductionRequestDto dto) {
         if(LengthValidator.rangelengthCheck(dto.introduction(), INTRODUCTION_MIN_LENGTH, INTRODUCTION_MAX_LENGTH))
             return ResponseBuilder.ok(null);
-        return ResponseBuilder.error(ResponseError.INVALID_INPUT_LENGTH);
+        throw new GongBaekException(ResponseError.INVALID_INPUT_LENGTH);
+    }
+
+    @PostMapping("/user/validate/nickname")
+    public ResponseEntity<ApiResponse<Void>> validateNickname(@RequestParam final String nickname) {
+            NicknameValidator.validate(nickname);
+            signupFacade.duplicateCheckNickname(nickname);
+            return ResponseBuilder.ok(null);
     }
 
     @GetMapping("/user/school")

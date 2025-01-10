@@ -30,6 +30,14 @@ public class UserServiceImpl implements UserService {
 
         return new UserSchoolResponseDto(schoolName);
     }
+  
+    @Override
+    public boolean duplicateCheckNickname(String nickname) {
+        log.info("nickname {}", nickname);
+        if(userRepository.existsUserEntitiesByNickname(nickname))
+            throw new GongBaekException(ResponseError.NICKNAME_ALREADY_EXISTS);
+        return true;
+    }
 
     private UserEntity findByIdOrThrow(Long userId) {
         return userRepository.findById(userId)

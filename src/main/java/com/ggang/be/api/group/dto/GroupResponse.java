@@ -7,7 +7,7 @@ public record GroupResponse(
         String groupType,
         String groupTitle,
         String location,
-        boolean status,
+        String status,
         @JsonProperty("isHost") boolean isHost,
         @JsonProperty("isApply") boolean isApply,
         int currentPeopleCount,

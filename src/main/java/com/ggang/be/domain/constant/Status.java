@@ -8,4 +8,8 @@ public enum Status {
     public boolean isActive() {
         return this == RECRUITING;
     }
+
+    public boolean isClosed() {
+        return this == CLOSED;
+    }
 }

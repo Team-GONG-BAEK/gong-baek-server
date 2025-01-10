@@ -1,4 +1,4 @@
-package com.ggang.be.domain.constant;
+package com.ggang.be.api.facade;
 
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;

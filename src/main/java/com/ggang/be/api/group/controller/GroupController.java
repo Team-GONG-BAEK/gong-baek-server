@@ -4,7 +4,7 @@ import com.ggang.be.api.common.ApiResponse;
 import com.ggang.be.api.common.ResponseSuccess;
 import com.ggang.be.api.facade.GroupFacade;
 import com.ggang.be.api.group.dto.GroupResponse;
-import com.ggang.be.domain.constant.GroupType;
+import com.ggang.be.api.facade.GroupType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;

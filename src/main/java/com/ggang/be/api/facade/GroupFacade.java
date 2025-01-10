@@ -4,7 +4,6 @@ import com.ggang.be.api.group.dto.GroupResponse;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.api.mapper.GroupResponseMapper;
-import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.application.UserService;
 import lombok.RequiredArgsConstructor;

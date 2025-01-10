@@ -9,16 +9,12 @@ import com.ggang.be.domain.school.SchoolEntity;
 import com.ggang.be.domain.schoolMajor.SchoolMajorEntity;
 import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;
 import com.ggang.be.domain.userOnceGroup.UserOnceGroupEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+import lombok.Getter;
+
 import java.util.List;
 
+@Getter
 @Entity(name = "user")
 public class UserEntity extends BaseTimeEntity {
 

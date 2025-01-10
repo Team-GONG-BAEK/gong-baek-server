@@ -9,8 +9,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity(name = "school_major")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SchoolMajorEntity extends BaseTimeEntity {
 
     @Id
@@ -25,4 +31,9 @@ public class SchoolMajorEntity extends BaseTimeEntity {
     @Column(name = "school_major_name", nullable = false)
     private String majorName;
 
+    @Builder
+    private SchoolMajorEntity(SchoolEntity school, String majorName) {
+        this.school = school;
+        this.majorName = majorName;
+    }
 }

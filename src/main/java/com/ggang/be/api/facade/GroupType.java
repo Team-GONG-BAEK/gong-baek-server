@@ -1,4 +1,4 @@
-package com.ggang.be.domain.constant;
+package com.ggang.be.api.facade;
 
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
@@ -18,6 +18,6 @@ public enum GroupType {
 
     public static GroupType fromString(String type) {
         isValid(type);
-        return GroupType.valueOf(type);
+        return GroupType.valueOf(type.toUpperCase());
     }
 }

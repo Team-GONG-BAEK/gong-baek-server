@@ -2,12 +2,12 @@ package com.ggang.be.api.group.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record GroupResponse(
+public record GroupResponseDto(
         long groupId,
         String groupType,
         String groupTitle,
         String location,
-        boolean status,
+        String status,
         @JsonProperty("isHost") boolean isHost,
         @JsonProperty("isApply") boolean isApply,
         int currentPeopleCount,

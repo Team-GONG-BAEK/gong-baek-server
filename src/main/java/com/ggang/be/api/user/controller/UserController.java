@@ -33,7 +33,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<Void>> validateIntroduction(@RequestBody final ValidIntroductionRequestDto dto) {
         if(LengthValidator.rangelengthCheck(dto.introduction(), INTRODUCTION_MIN_LENGTH, INTRODUCTION_MAX_LENGTH))
             return ResponseBuilder.ok(null);
-        return ResponseBuilder.error(ResponseError.INVALID_INPUT_LENGTH);
+        throw new GongBaekException(ResponseError.INVALID_INPUT_LENGTH);
     }
 
     @PostMapping("/user/validate/nickname")

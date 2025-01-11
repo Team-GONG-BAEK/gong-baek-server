@@ -1,43 +1,39 @@
 package com.ggang.be.global.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.Jwts.KEY;
-import io.jsonwebtoken.Jwts.SIG;
-import io.jsonwebtoken.security.KeyAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureAlgorithm;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtService {
 
+    private static final String USER_ID = "userId";
     private final JwtProperties jwtProperties;
 
-    public String createAccessToken(Long userId){
+    public String createAccessToken(final Long userId){
         SecretKey secretKey = Keys.hmacShaKeyFor(jwtProperties.getKey().getBytes(StandardCharsets.UTF_8));
         return  Jwts.builder()
             .subject(userId.toString())
             .expiration(new Date(System.currentTimeMillis() + jwtProperties.getAccessExpiration()))
-            .claim("userId", userId)
+            .claim(USER_ID, userId)
             .signWith(secretKey)
             .compact();
     }
 
-    public String createRefreshToken(Long userId){
+    public String createRefreshToken(final Long userId){
         SecretKey secretKey = Keys.hmacShaKeyFor(jwtProperties.getKey().getBytes(StandardCharsets.UTF_8));
         return  Jwts.builder()
             .subject(userId.toString())
             .expiration(new Date(System.currentTimeMillis() + jwtProperties.getRefreshExpiration()))
-            .claim("userId", userId)
+            .claim(USER_ID, userId)
             .signWith(secretKey)
             .compact();
     }
@@ -45,9 +41,9 @@ public class JwtService {
     public String parseTokenAndGetUserId(String token){
         try {
             SecretKey secretKey = Keys.hmacShaKeyFor(jwtProperties.getKey().getBytes(StandardCharsets.UTF_8));
-            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userId").toString();
+            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get(USER_ID).toString();
         }catch (JwtException e){
-            e.printStackTrace();
+            log.error("JWT parsing error : {}", e.getMessage());
             throw e;
         }
     }

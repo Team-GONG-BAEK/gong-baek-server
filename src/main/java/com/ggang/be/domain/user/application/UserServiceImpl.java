@@ -4,8 +4,8 @@ import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.user.UserEntity;
-import com.ggang.be.domain.user.dto.SaveUserSignUp;
 
+import com.ggang.be.domain.user.dto.SaveUserSignUp;
 import com.ggang.be.domain.user.dto.UserSchoolDto;
 import com.ggang.be.domain.user.infra.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
+    @Override
     public UserEntity getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new GongBaekException(ResponseError.USER_NOT_FOUND));
     }
+
 
     @Override
     public UserSchoolDto getUserSchoolById(Long userId) {
@@ -66,3 +68,4 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new GongBaekException(ResponseError.USER_NOT_FOUND));
     }
 }
+

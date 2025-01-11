@@ -1,5 +1,7 @@
 package com.ggang.be.api.user.service;
 
+import com.ggang.be.domain.user.UserEntity;
+import com.ggang.be.domain.user.dto.SaveUserSignUp;
 import com.ggang.be.domain.user.dto.UserSchoolDto;
 
 public interface UserService {
@@ -7,4 +9,5 @@ public interface UserService {
   
     boolean duplicateCheckNickname(String nickname);
 
+    UserEntity saveUserBySignup(SaveUserSignUp request);
 }

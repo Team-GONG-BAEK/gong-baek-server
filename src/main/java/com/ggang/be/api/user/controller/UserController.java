@@ -7,8 +7,10 @@ import com.ggang.be.api.common.ResponseSuccess;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.facade.SignupFacade;
 import com.ggang.be.api.user.NicknameValidator;
+import com.ggang.be.api.user.dto.SignupRequest;
+import com.ggang.be.api.user.dto.SignupResponse;
+import com.ggang.be.api.user.dto.ValidIntroductionRequest;
 import com.ggang.be.api.user.dto.UserSchoolResponseDto;
-import com.ggang.be.api.user.dto.ValidIntroductionRequestDto;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.user.dto.UserSchoolDto;
 import com.ggang.be.global.util.LengthValidator;
@@ -32,7 +34,7 @@ public class UserController {
 
 
     @GetMapping("/user/validate/introduction")
-    public ResponseEntity<ApiResponse<Void>> validateIntroduction(@RequestBody final ValidIntroductionRequestDto dto) {
+    public ResponseEntity<ApiResponse<Void>> validateIntroduction(@RequestBody final ValidIntroductionRequest dto) {
         if(LengthValidator.rangelengthCheck(dto.introduction(), INTRODUCTION_MIN_LENGTH, INTRODUCTION_MAX_LENGTH))
             return ResponseBuilder.ok(null);
         throw new GongBaekException(ResponseError.INVALID_INPUT_LENGTH);
@@ -45,6 +47,11 @@ public class UserController {
             return ResponseBuilder.ok(null);
     }
 
+    @PostMapping("/user/signup")
+    public ResponseEntity<ApiResponse<SignupResponse>> signup(@RequestBody final SignupRequest request){
+        return ResponseBuilder.created(signupFacade.signup(request));
+    }
+  
     @GetMapping("/user/school")
     public ResponseEntity<ApiResponse<UserSchoolResponseDto>> getGroupInfo(
             @RequestHeader("Authorization") String accessToken

@@ -4,6 +4,8 @@ import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.user.UserEntity;
+import com.ggang.be.domain.user.dto.SaveUserSignUp;
+
 import com.ggang.be.domain.user.dto.UserSchoolDto;
 import com.ggang.be.domain.user.infra.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,26 @@ public class UserServiceImpl implements UserService {
         if(userRepository.existsUserEntitiesByNickname(nickname))
             throw new GongBaekException(ResponseError.NICKNAME_ALREADY_EXISTS);
         return true;
+    }
+
+    @Override
+    @Transactional
+    public UserEntity saveUserBySignup(SaveUserSignUp request) {
+        UserEntity build = UserEntity.builder()
+            .nickname(request.nickname())
+            .school(request.school())
+            .schoolGrade(request.schoolGrade())
+            .gender(request.sex())
+            .introduction(request.introduction())
+            .mbti(request.mbti())
+            .profileImg(request.profileImg())
+            .enterYear(request.enterYear())
+            .schoolMajorName(request.schoolMajorName())
+            .build();
+
+        log.info("userEntity {}", build);
+        return userRepository.save(build);
+
     }
 
     private UserEntity findByIdOrThrow(Long userId) {

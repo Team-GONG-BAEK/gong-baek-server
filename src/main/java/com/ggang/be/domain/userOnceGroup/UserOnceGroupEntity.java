@@ -1,7 +1,7 @@
 package com.ggang.be.domain.userOnceGroup;
 
 import com.ggang.be.domain.BaseTimeEntity;
-import com.ggang.be.domain.onceGroup.OnceGroupEntity;
+import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

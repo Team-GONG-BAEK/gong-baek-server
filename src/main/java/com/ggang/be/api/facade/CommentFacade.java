@@ -12,7 +12,7 @@ import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.user.UserEntity;
-import com.ggang.be.domain.vo.ReadCommentGroup;
+import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.global.annotation.Facade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,10 +1,10 @@
 package com.ggang.be.api.group.onceGroup.service;
 
 import com.ggang.be.domain.comment.CommentEntity;
-import com.ggang.be.domain.onceGroup.OnceGroupEntity;
-import com.ggang.be.domain.onceGroup.dto.OnceGroupDto;
+import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
+import com.ggang.be.domain.group.onceGroup.dto.OnceGroupDto;
 import com.ggang.be.domain.user.UserEntity;
-import com.ggang.be.domain.vo.ReadCommentGroup;
+import com.ggang.be.domain.group.vo.ReadCommentGroup;
 
 public interface OnceGroupService {
     OnceGroupDto getOnceGroupDetail(final long groupId, UserEntity user);

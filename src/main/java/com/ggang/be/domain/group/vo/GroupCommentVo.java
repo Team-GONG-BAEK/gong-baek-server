@@ -1,9 +1,9 @@
-package com.ggang.be.domain.vo;
+package com.ggang.be.domain.group.vo;
 
 import com.ggang.be.api.facade.GroupType;
 import com.ggang.be.domain.comment.CommentEntity;
-import com.ggang.be.domain.everyGroup.EveryGroupEntity;
-import com.ggang.be.domain.onceGroup.OnceGroupEntity;
+import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
+import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 import java.time.format.DateTimeFormatter;
 

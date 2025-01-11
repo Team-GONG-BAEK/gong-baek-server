@@ -1,4 +1,4 @@
-package com.ggang.be.domain.vo;
+package com.ggang.be.domain.group.vo;
 
 import java.util.List;
 

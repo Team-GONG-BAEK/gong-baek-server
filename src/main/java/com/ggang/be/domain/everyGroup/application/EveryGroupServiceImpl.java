@@ -8,6 +8,10 @@ import com.ggang.be.domain.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.everyGroup.dto.EveryGroupDto;
 import com.ggang.be.domain.everyGroup.infra.EveryGroupRepository;
 import com.ggang.be.domain.user.UserEntity;
+import com.ggang.be.domain.vo.GroupCommentVo;
+import com.ggang.be.domain.vo.ReadCommentGroup;
+import java.util.Comparator;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -45,6 +49,26 @@ public class EveryGroupServiceImpl implements EveryGroupService {
         everyGroupRepository.findById(groupId).orElseThrow(() -> new GongBaekException(ResponseError.GROUP_NOT_FOUND))
             .addComment(commentEntity);
         log.info("everyGroupEntity add Comment success CommentId was  : {}", commentEntity.getId());
+    }
+
+    @Override
+    public ReadCommentGroup readCommentInGroup(boolean isPublic, long groupId) {
+
+        EveryGroupEntity everyGroupEntity = everyGroupRepository.findById(groupId)
+            .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_NOT_FOUND));
+
+        List<CommentEntity> commentEntities = everyGroupEntity
+            .getComments().stream().filter(c -> c.isPublic() == isPublic).toList();
+
+        int commentCount = commentEntities.size();
+
+        List<GroupCommentVo> onceGroupCommentVos = commentEntities.stream()
+            .sorted(Comparator.comparing(CommentEntity::getCreatedAt).reversed())
+            .map(c -> GroupCommentVo.ofEveryGroup(everyGroupEntity, c))
+            .toList();
+
+        return ReadCommentGroup.of(commentCount, onceGroupCommentVos);
+
     }
 
     private EveryGroupEntity findIdOrThrow(final long groupId){

@@ -35,7 +35,7 @@ public class UserEntity extends BaseTimeEntity {
     @OneToMany(mappedBy = "userEntity")
     private List<UserEveryGroupEntity> userEveryGroupEntities;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "school_id")
     private SchoolEntity school;
 

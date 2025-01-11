@@ -1,9 +1,9 @@
 package com.ggang.be.api.user.service;
 
-import com.ggang.be.api.user.dto.UserSchoolResponseDto;
+import com.ggang.be.domain.user.dto.UserSchoolDto;
 
 public interface UserService {
-    UserSchoolResponseDto getUserSchoolById(Long userId);
+    UserSchoolDto getUserSchoolById(Long userId);
   
     boolean duplicateCheckNickname(String nickname);
 

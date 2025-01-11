@@ -4,12 +4,13 @@ import com.ggang.be.api.common.ApiResponse;
 import com.ggang.be.api.common.ResponseBuilder;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.common.ResponseSuccess;
-import com.ggang.be.api.user.dto.UserSchoolResponseDto;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.facade.SignupFacade;
 import com.ggang.be.api.user.NicknameValidator;
+import com.ggang.be.api.user.dto.UserSchoolResponseDto;
 import com.ggang.be.api.user.dto.ValidIntroductionRequestDto;
 import com.ggang.be.api.user.service.UserService;
+import com.ggang.be.domain.user.dto.UserSchoolDto;
 import com.ggang.be.global.util.LengthValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,8 +49,8 @@ public class UserController {
     public ResponseEntity<ApiResponse<UserSchoolResponseDto>> getGroupInfo(
             @RequestHeader("Authorization") String accessToken
     ) {
-        UserSchoolResponseDto userSchoolResponseDto = userService.getUserSchoolById(Long.parseLong(accessToken));
-        return ResponseEntity.ok(ApiResponse.success(ResponseSuccess.OK, userSchoolResponseDto));
+        UserSchoolDto userSchoolDto = userService.getUserSchoolById(Long.parseLong(accessToken));
+        return ResponseEntity.ok(ApiResponse.success(ResponseSuccess.OK, UserSchoolResponseDto.of(userSchoolDto)));
     }
 
 }

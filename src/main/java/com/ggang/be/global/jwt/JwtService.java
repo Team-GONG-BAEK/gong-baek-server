@@ -1,5 +1,7 @@
 package com.ggang.be.global.jwt;
 
+import com.ggang.be.api.common.ResponseError;
+import com.ggang.be.api.exception.GongBaekException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -39,12 +41,17 @@ public class JwtService {
     }
 
     public String parseTokenAndGetUserId(String token){
+
+        if(token == null || !token.startsWith("Bearer "))
+            throw new GongBaekException(ResponseError.INVALID_TOKEN);
+
         try {
+            String splitToken = token.split(" ")[1];
             SecretKey secretKey = Keys.hmacShaKeyFor(jwtProperties.getKey().getBytes(StandardCharsets.UTF_8));
-            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get(USER_ID).toString();
+            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(splitToken).getPayload().get(USER_ID).toString();
         }catch (JwtException e){
             log.error("JWT parsing error : {}", e.getMessage());
-            throw e;
+            throw new GongBaekException(ResponseError.INVALID_TOKEN);
         }
     }
 

@@ -1,8 +1,9 @@
-package com.ggang.be.domain.everyGroup;
+package com.ggang.be.domain.group.everyGroup;
 
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.constant.WeekDate;
+import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,5 +32,7 @@ public class EveryGroupFixture {
             .title("EveryGroup Weekly Meeting")
             .build();
     }
+
+
 
 }

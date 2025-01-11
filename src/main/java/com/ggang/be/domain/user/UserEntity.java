@@ -8,15 +8,19 @@ import com.ggang.be.domain.lectureTimeSlot.LectureTimeSlotEntity;
 import com.ggang.be.domain.school.SchoolEntity;
 import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;
 import com.ggang.be.domain.userOnceGroup.UserOnceGroupEntity;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import jakarta.persistence.*;
 import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity(name = "user")
 @Table(indexes = {
     @Index(name="user_nickname_index", columnList = "nickname")
 })
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity extends BaseTimeEntity {
 
     @Id
@@ -30,7 +34,7 @@ public class UserEntity extends BaseTimeEntity {
     @OneToMany(mappedBy = "userEntity")
     private List<UserEveryGroupEntity> userEveryGroupEntities;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "school_id")
     private SchoolEntity school;
 
@@ -47,9 +51,11 @@ public class UserEntity extends BaseTimeEntity {
     private int enterYear;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Mbti mbti;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Column(nullable = false)
@@ -63,4 +69,18 @@ public class UserEntity extends BaseTimeEntity {
     @OneToMany(mappedBy = "userEntity")
     private List<LectureTimeSlotEntity> lectureTimeSlotEntities;
 
+
+    @Builder
+    private UserEntity(SchoolEntity school, String schoolMajorName, int profileImg, String nickname,
+        int schoolGrade, int enterYear, Mbti mbti, Gender gender, String introduction) {
+        this.school = school;
+        this.schoolMajorName = schoolMajorName;
+        this.profileImg = profileImg;
+        this.nickname = nickname;
+        this.schoolGrade = schoolGrade;
+        this.enterYear = enterYear;
+        this.mbti = mbti;
+        this.gender = gender;
+        this.introduction = introduction;
+    }
 }

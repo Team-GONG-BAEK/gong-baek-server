@@ -62,6 +62,7 @@ class UserServiceImplTest {
 
 
     @Test
+    @DisplayName("회원가입 정보 저장 테스트")
     void saveUserBySignup_shouldSaveAndReturnUserEntity() {
         // Given
 

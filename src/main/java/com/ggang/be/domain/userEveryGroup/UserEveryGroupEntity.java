@@ -4,11 +4,12 @@ import com.ggang.be.domain.BaseTimeEntity;
 import com.ggang.be.domain.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name = "user_every_group")
 public class UserEveryGroupEntity extends BaseTimeEntity {
 

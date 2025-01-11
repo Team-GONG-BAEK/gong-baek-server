@@ -5,4 +5,5 @@ import com.ggang.be.domain.user.UserEntity;
 
 public interface EveryGroupService {
     EveryGroupDto getEveryGroupDetail(final long groupId, UserEntity userEntity);
+    long getEveryGroupRegisterUserId(final long groupId);
 }

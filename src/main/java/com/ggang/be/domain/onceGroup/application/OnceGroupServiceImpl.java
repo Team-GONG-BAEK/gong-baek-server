@@ -23,6 +23,12 @@ public class OnceGroupServiceImpl implements OnceGroupService {
         return OnceGroupDto.toDto(onceGroupEntity, userEntity);
     }
 
+    @Override
+    public long getOnceGroupRegisterUserId(final long groupId){
+        OnceGroupEntity entity = findIdOrThrow(groupId);
+        return entity.getUserEntity().getId();
+    }
+
     private OnceGroupEntity findIdOrThrow(final long groupId){
         return onceGroupRepository.findById(groupId).orElseThrow(
                 () -> new GongBaekException(ResponseError.GROUP_NOT_FOUND)

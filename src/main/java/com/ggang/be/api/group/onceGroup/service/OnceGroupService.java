@@ -5,4 +5,5 @@ import com.ggang.be.domain.user.UserEntity;
 
 public interface OnceGroupService {
     OnceGroupDto getOnceGroupDetail(final long groupId, UserEntity user);
+    long getOnceGroupRegisterUserId(final long groupId);
 }

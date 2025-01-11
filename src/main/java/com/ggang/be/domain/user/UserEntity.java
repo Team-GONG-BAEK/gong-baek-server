@@ -10,6 +10,7 @@ import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;
 import com.ggang.be.domain.userOnceGroup.UserOnceGroupEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
+
 import java.util.List;
 
 @Getter

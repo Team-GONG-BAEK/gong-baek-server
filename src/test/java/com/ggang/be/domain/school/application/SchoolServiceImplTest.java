@@ -52,5 +52,24 @@ class SchoolServiceImplTest {
             .containsExactly("1", "2");
     }
 
+    @Test
+    @DisplayName("학교 이름으로 해당 학교 엔티티 검색 - 엔티티 타입으로 검색")
+    void findSchoolEntityByName() {
+        // given
+        SchoolEntity schoolDomain = SchoolEntity.builder()
+            .schoolDomain("schoolDomain")
+            .schoolName("schoolName")
+            .schoolMajors(List.of())
+            .build();
+
+        when(schoolRepository.findBySchoolName("schoolName")).thenReturn(java.util.Optional.of(schoolDomain));
+
+        // when
+        SchoolEntity schoolEntityByName = schoolServiceImpl.findSchoolEntityByName("schoolName");
+
+        // then
+        Assertions.assertThat(schoolEntityByName).isInstanceOf(SchoolEntity.class).isEqualTo(schoolDomain);
+    }
+
 
 }

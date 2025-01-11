@@ -33,4 +33,10 @@ public class SchoolServiceImpl implements SchoolService {
             .map(School::fromEntity)
             .orElseThrow(() -> new GongBaekException(ResponseError.NOT_FOUND));
     }
+
+    @Override
+    public SchoolEntity findSchoolEntityByName(String schoolName) {
+        return schoolRepository.findBySchoolName(schoolName)
+            .orElseThrow(() -> new GongBaekException(ResponseError.NOT_FOUND));
+    }
 }

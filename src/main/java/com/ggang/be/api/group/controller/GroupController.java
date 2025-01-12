@@ -46,6 +46,7 @@ public class GroupController {
         return ResponseEntity.ok(ApiResponse.success(ResponseSuccess.OK, groupUserInfoResponseDto));
     }
 
+    // TODO : 테스트 코드 작성 진행해야함!
     @PostMapping("/gongbaek")
     public ResponseEntity<ApiResponse<RegisterGongbaekResponse>> registerGongbaek(@RequestHeader("Authorization") String token,
         @RequestBody final RegisterGongbaekRequest dto){

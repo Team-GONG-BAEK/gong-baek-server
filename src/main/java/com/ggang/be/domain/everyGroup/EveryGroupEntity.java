@@ -45,6 +45,7 @@ public class EveryGroupEntity extends BaseTimeEntity {
     private double endTime;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     private int coverImg;

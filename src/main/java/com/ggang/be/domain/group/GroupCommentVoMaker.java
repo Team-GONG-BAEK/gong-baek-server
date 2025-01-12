@@ -13,14 +13,14 @@ public class GroupCommentVoMaker {
 
     public List<GroupCommentVo> makeByEveryGroup(List<CommentEntity> commentEntities, EveryGroupEntity everyGroupEntity) {
         return commentEntities.stream()
-            .sorted(Comparator.comparing(CommentEntity::getCreatedAt).reversed())
+            .sorted(Comparator.comparing(CommentEntity::getCreatedAt))
             .map(c -> GroupCommentVo.ofEveryGroup(everyGroupEntity, c))
             .toList();
     }
 
     public List<GroupCommentVo> makeByOnceGroup(List<CommentEntity> commentEntities, OnceGroupEntity onceGroupEntity) {
         return commentEntities.stream()
-            .sorted(Comparator.comparing(CommentEntity::getCreatedAt).reversed())
+            .sorted(Comparator.comparing(CommentEntity::getCreatedAt))
             .map(c -> GroupCommentVo.ofOnceGroup(onceGroupEntity, c))
             .toList();
     }

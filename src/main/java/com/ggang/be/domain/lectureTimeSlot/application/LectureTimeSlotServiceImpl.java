@@ -30,7 +30,7 @@ public class LectureTimeSlotServiceImpl implements LectureTimeSlotService {
 
     @Override
     public void isExistInLectureTImeSlot(UserEntity findUserEntity, LectureTimeSlotRequest dto) {
-        if(lectureTimeSlotRepository.existsByStartTimeAndEndTimeAndUserEntityAndWeekDate(
+        if(lectureTimeSlotRepository.isInTime(
                 dto.startTime(), dto.endTime(), findUserEntity, dto.weekDate()
         ))
             throw new GongBaekException(ResponseError.TIME_SLOT_ALREADY_EXIST);

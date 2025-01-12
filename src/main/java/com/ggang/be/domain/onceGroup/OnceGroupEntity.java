@@ -7,15 +7,19 @@ import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userOnceGroup.UserOnceGroupEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity(name = "once_group")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OnceGroupEntity extends BaseTimeEntity {
 
     @Id
@@ -23,7 +27,7 @@ public class OnceGroupEntity extends BaseTimeEntity {
     @Column(name = "once_group_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_user_id")
     private UserEntity userEntity;
 
@@ -41,6 +45,7 @@ public class OnceGroupEntity extends BaseTimeEntity {
     private double endTime;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     private int coverImg;
@@ -49,6 +54,7 @@ public class OnceGroupEntity extends BaseTimeEntity {
     private String location;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     private int maxPeopleCount;
@@ -60,6 +66,27 @@ public class OnceGroupEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String title;
 
+
+    @Builder
+    private OnceGroupEntity(String title, String introduction, int currentPeopleCount,
+        int maxPeopleCount, Status status, String location, int coverImg, Category category,
+        double endTime, double startTime, LocalDate groupDate, List<CommentEntity> comments,
+        UserEntity userEntity) {
+        this.title = title;
+        this.introduction = introduction;
+        this.currentPeopleCount = currentPeopleCount;
+        this.maxPeopleCount = maxPeopleCount;
+        this.status = status;
+        this.location = location;
+        this.coverImg = coverImg;
+        this.category = category;
+        this.endTime = endTime;
+        this.startTime = startTime;
+        this.groupDate = groupDate;
+        this.comments = comments;
+        this.userEntity = userEntity;
+    }
+
     public boolean isHost(UserEntity currentUser) {
         return this.userEntity.getId().equals(currentUser.getId());
     }
@@ -67,5 +94,9 @@ public class OnceGroupEntity extends BaseTimeEntity {
     public boolean isApply(UserEntity currentUser) {
         return this.participantUsers.stream()
                 .anyMatch(participant -> participant.getUserEntity().getId().equals(currentUser.getId()));
+    }
+
+    public void addComment(CommentEntity commentEntity) {
+        this.comments.add(commentEntity);
     }
 }

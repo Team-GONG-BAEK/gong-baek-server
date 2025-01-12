@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,6 +38,7 @@ class EveryGroupServiceImplTest {
     private EveryGroupServiceImpl everyGroupServiceImpl;
 
     @Test
+    @DisplayName("댓글 작성")
     void writeCommentInGroup() {
 
         //given
@@ -53,6 +55,7 @@ class EveryGroupServiceImplTest {
     }
 
     @Test
+    @DisplayName("공개 댓글 조회")
     void readCommentInGroupTrueCase() {
         // given
         EveryGroupEntity build = EveryGroupFixture.getTestEveryGroup();
@@ -78,6 +81,7 @@ class EveryGroupServiceImplTest {
     }
 
     @Test
+    @DisplayName("비공개 댓글 조회")
     void readCommentInGroupFalseCase() {
 
         // given
@@ -105,6 +109,7 @@ class EveryGroupServiceImplTest {
     }
 
     @Test
+    @DisplayName("댓글 조회시 그룹 발견하지 못한 경우")
     void readCommentInGroupGroupNotFound() {
         // given
         when(everyGroupRepository.findById(99L)).thenReturn(Optional.empty());

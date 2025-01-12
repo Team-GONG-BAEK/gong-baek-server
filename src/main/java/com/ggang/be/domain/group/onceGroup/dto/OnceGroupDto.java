@@ -1,11 +1,12 @@
-package com.ggang.be.domain.everyGroup.dto;
+package com.ggang.be.domain.group.onceGroup.dto;
 
-import com.ggang.be.domain.everyGroup.EveryGroupEntity;
+import com.ggang.be.domain.constant.WeekDate;
+import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 
-public record EveryGroupDto(
+public record OnceGroupDto(
         long groupId,
-        String title,
+        String groupTitle,
         String location,
         String status,
         int currentPeopleCount,
@@ -16,11 +17,12 @@ public record EveryGroupDto(
         String category,
         int coverImg,
         String weekDay,
+        String weekDate,
         double startTime,
         double endTime
 ) {
-    public static EveryGroupDto toDto(EveryGroupEntity entity, UserEntity currentUser) {
-        return new EveryGroupDto(
+    public static OnceGroupDto toDto(OnceGroupEntity entity, UserEntity currentUser) {
+        return new OnceGroupDto(
                 entity.getId(),
                 entity.getTitle(),
                 entity.getLocation(),
@@ -32,10 +34,11 @@ public record EveryGroupDto(
                 entity.getIntroduction(),
                 entity.getCategory().toString(),
                 entity.getCoverImg(),
-                entity.getWeekDate().toString(),
+                WeekDate.fromDayOfWeek(entity.getGroupDate().getDayOfWeek()).name(),
+                entity.getGroupDate().toString(),
                 entity.getStartTime(),
                 entity.getEndTime()
-                );
+        );
     }
 
 }

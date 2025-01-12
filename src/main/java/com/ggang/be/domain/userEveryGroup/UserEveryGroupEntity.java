@@ -1,7 +1,7 @@
 package com.ggang.be.domain.userEveryGroup;
 
 import com.ggang.be.domain.BaseTimeEntity;
-import com.ggang.be.domain.everyGroup.EveryGroupEntity;
+import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

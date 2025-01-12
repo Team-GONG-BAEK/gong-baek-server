@@ -10,4 +10,13 @@ public class CommentFixture {
             .userEntity(null)
             .build();
     }
+
+    public static CommentEntity getTestCommentIsPublic(boolean isPublic) {
+        return CommentEntity.builder().
+            body("test").
+            isPublic(isPublic)
+            .userEntity(null)
+            .build();
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.ggang.be.domain.onceGroup;
+package com.ggang.be.domain.group.onceGroup;
 
 import com.ggang.be.domain.BaseTimeEntity;
 import com.ggang.be.domain.comment.CommentEntity;

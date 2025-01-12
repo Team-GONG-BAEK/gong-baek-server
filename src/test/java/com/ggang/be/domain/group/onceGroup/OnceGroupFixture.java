@@ -1,7 +1,8 @@
-package com.ggang.be.domain.onceGroup;
+package com.ggang.be.domain.group.onceGroup;
 
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
+import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 import java.time.LocalDate;
 import java.util.ArrayList;

@@ -44,7 +44,11 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
     public ReadEveryGroup getMyAppliedGroups(UserEntity currentUser, boolean status){
         List<UserEveryGroupEntity> userEveryGroupEntities = getMyEveryGroup(currentUser);
 
-        return ReadEveryGroup.of(groupVoMaker.makeEveryGroup(getGroupsByStatus(userEveryGroupEntities, status)));
+        List<EveryGroupEntity> filteredGroups = getGroupsByStatus(userEveryGroupEntities, status).stream()
+                .filter(group -> !group.getUserEntity().getId().equals(currentUser.getId()))
+                .toList();
+
+        return ReadEveryGroup.of(groupVoMaker.makeEveryGroup(filteredGroups));
     }
 
     @Override

@@ -41,7 +41,11 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
     public ReadOnceGroup getMyAppliedGroups(UserEntity currentUser, boolean status){
         List<UserOnceGroupEntity> userOnceGroupEntities = getMyOnceGroup(currentUser);
 
-        return ReadOnceGroup.of(groupVoMaker.makeOnceGroup(getGroupsByStatus(userOnceGroupEntities, status)));
+        List<OnceGroupEntity> filteredGroups = getGroupsByStatus(userOnceGroupEntities, status).stream()
+                .filter(group -> !group.getUserEntity().getId().equals(currentUser.getId()))
+                .toList();
+
+        return ReadOnceGroup.of(groupVoMaker.makeOnceGroup(filteredGroups));
     }
 
     @Override

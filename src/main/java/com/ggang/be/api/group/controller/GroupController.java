@@ -86,12 +86,12 @@ public class GroupController {
     }
 
     @GetMapping("/fill/groups")
-    public ResponseEntity<ApiResponse<List<GroupVo>>> getFillGroups(
+    public ResponseEntity<ApiResponse<List<ActiveGroupsResponse>>> getFillGroups(
             @RequestHeader("Authorization") final String accessToken
     ) {
         Long userId = jwtService.parseTokenAndGetUserId(accessToken);
 
-        return ResponseBuilder.ok(groupFacade.getFillGroups(userId).groups());
+        return ResponseBuilder.ok(groupFacade.getFillGroups(userId));
     }
 
     @GetMapping("/group/my/participation")

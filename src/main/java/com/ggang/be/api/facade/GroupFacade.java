@@ -6,11 +6,13 @@ import com.ggang.be.api.gongbaekTimeSlot.service.GongbaekTimeSlotService;
 import com.ggang.be.api.group.dto.*;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
+import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
 import com.ggang.be.api.mapper.GroupResponseMapper;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.constant.GroupType;
+import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.domain.group.dto.ReadGroup;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
@@ -47,6 +49,7 @@ public class GroupFacade {
     private final UserOnceGroupService userOnceGroupService;
     private final UserService userService;
     private final GongbaekTimeSlotService gongbaekTimeSlotService;
+    private final LectureTimeSlotService lectureTimeSlotService;
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
         UserEntity currentUser = userService.getUserById(userId);
@@ -133,13 +136,18 @@ public class GroupFacade {
         return ReadGroup.of(groupResponses);
     }
 
-    public ReadGroup getFillGroups(long userId) {
+    public List<ActiveGroupsResponse> getFillGroups(long userId) {
         UserEntity currentUser = userService.getUserById(userId);
 
-        return ReadGroup.of(getActiveGroups(currentUser));
+        List<GroupVo> allGroups = getActiveGroups(currentUser);
+
+        return allGroups.stream()
+                .filter(groupVo -> checkGroupsLectureTimeSlot(currentUser, groupVo.startTime(), groupVo.endTime(), groupVo.weekDate()))
+                .map(ActiveGroupsResponse::fromGroupVo)
+                .collect(Collectors.toList());
     }
 
-    private List<GroupVo> getActiveGroups (UserEntity currentUser) {
+    private List<GroupVo> getActiveGroups(UserEntity currentUser) {
         List<EveryGroupVo> everyGroupResponses = everyGroupService.getActiveEveryGroups(currentUser).groups();
         List<OnceGroupVo> onceGroupResponses = onceGroupService.getActiveOnceGroups(currentUser).groups();
 
@@ -147,8 +155,11 @@ public class GroupFacade {
                         everyGroupResponses.stream().map(GroupVo::fromEveryGroup),
                         onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
                 .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
-                .collect(Collectors.toList()
-                );
+                .toList();
+    }
+
+    private boolean checkGroupsLectureTimeSlot(UserEntity findUserEntity, double startTime, double endTime, WeekDate weekDate) {
+        return !lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(findUserEntity, startTime, endTime, weekDate);
     }
 
     private NearestGroupResponse getNearestGroupFromDates(NearestEveryGroup nearestEveryGroup, NearestOnceGroup nearestOnceGroup) {

@@ -33,15 +33,17 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
     }
 
     @Override
-    public ReadEveryGroup getMyAppliedGroups(UserEntity currentUser, boolean status){
+    public ReadEveryGroup getMyAppliedGroups(UserEntity currentUser, boolean status) {
         List<UserEveryGroupEntity> userEveryGroupEntities
             = userEveryGroupRepository.findByUserEntity_id(currentUser.getId());
 
-        return ReadEveryGroup.of(groupVoMaker.makeEveryGroup(getGroupsByStatus(userEveryGroupEntities, status)));
+        return ReadEveryGroup.of(
+            groupVoMaker.makeEveryGroup(getGroupsByStatus(userEveryGroupEntities, status)));
     }
 
     @Override
-    public List<EveryGroupEntity> getGroupsByStatus(List<UserEveryGroupEntity> userEveryGroupEntities, boolean status) {
+    public List<EveryGroupEntity> getGroupsByStatus(
+        List<UserEveryGroupEntity> userEveryGroupEntities, boolean status) {
         if (status) {
             return userEveryGroupEntities.stream()
                 .map(UserEveryGroupEntity::getEveryGroupEntity)

@@ -6,7 +6,7 @@ import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
-import com.ggang.be.domain.lectureTimeSlot.dto.LectureTimeSlotRequest;
+import com.ggang.be.domain.timslot.lectureTimeSlot.dto.LectureTimeSlotRequest;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.global.annotation.Facade;
 import com.ggang.be.global.util.TimeValidator;

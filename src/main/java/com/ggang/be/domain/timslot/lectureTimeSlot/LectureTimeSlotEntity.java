@@ -1,4 +1,5 @@
-package com.ggang.be.domain.gongbaekTimeSlot;
+package com.ggang.be.domain.timslot.lectureTimeSlot;
+
 
 import com.ggang.be.domain.BaseTimeEntity;
 import com.ggang.be.domain.constant.WeekDate;
@@ -14,16 +15,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 
-@Entity(name = "gongbaek_time_slot")
+@Entity(name = "lecture_time_slot")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GongbaekTimeSlotEntity extends BaseTimeEntity {
+public class LectureTimeSlotEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Enumerated(value = EnumType.STRING)
     private WeekDate weekDate;
 
     private double startTime;
@@ -35,7 +36,7 @@ public class GongbaekTimeSlotEntity extends BaseTimeEntity {
 
 
     @Builder
-    private GongbaekTimeSlotEntity(WeekDate weekDate, double startTime, double endTime,
+    private LectureTimeSlotEntity(WeekDate weekDate, double startTime, double endTime,
         UserEntity userEntity) {
         this.weekDate = weekDate;
         this.startTime = startTime;

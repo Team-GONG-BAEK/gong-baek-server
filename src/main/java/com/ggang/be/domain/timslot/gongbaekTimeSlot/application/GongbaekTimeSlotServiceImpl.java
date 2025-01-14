@@ -1,11 +1,9 @@
-package com.ggang.be.domain.gongbaekTimeSlot.application;
+package com.ggang.be.domain.timslot.gongbaekTimeSlot.application;
 
-import com.ggang.be.api.common.ResponseError;
-import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.gongbaekTimeSlot.service.GongbaekTimeSlotService;
-import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
-import com.ggang.be.domain.gongbaekTimeSlot.dto.GongbaekTimeSlotRequest;
-import com.ggang.be.domain.gongbaekTimeSlot.infra.GongbaekTimeSlotRepository;
+import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
+import com.ggang.be.domain.timslot.gongbaekTimeSlot.dto.GongbaekTimeSlotRequest;
+import com.ggang.be.domain.timslot.gongbaekTimeSlot.infra.GongbaekTimeSlotRepository;
 import com.ggang.be.domain.user.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

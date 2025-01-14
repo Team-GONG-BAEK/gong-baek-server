@@ -1,7 +1,7 @@
 package com.ggang.be.api.group.everyGroup.service;
 
 import com.ggang.be.domain.comment.CommentEntity;
-import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
+import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDetail;

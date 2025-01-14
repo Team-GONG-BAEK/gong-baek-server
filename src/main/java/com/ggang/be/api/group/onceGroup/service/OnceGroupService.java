@@ -1,7 +1,7 @@
 package com.ggang.be.api.group.onceGroup.service;
 
 import com.ggang.be.domain.comment.CommentEntity;
-import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
+import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupDto;
@@ -9,6 +9,7 @@ import com.ggang.be.domain.group.onceGroup.dto.ReadOnceGroup;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.user.UserEntity;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface OnceGroupService {

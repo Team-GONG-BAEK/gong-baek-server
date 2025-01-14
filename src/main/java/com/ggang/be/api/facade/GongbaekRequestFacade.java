@@ -37,12 +37,11 @@ public class GongbaekRequestFacade {
         checkLectureTimeSlot(dto, findUserEntity); // 지금 해당 요일에 강의시간표가 들어가져있는지? 확인
     }
 
-
     private void isRequestTimeTableValid(RegisterGongbaekRequest dto, UserEntity findUserEntity) {
         RegisterGroupServiceRequest serviceRequest = RegisterGongbaekRequest.toServiceRequest(
             findUserEntity, dto);
-        everyGroupService.isExistedInTime(serviceRequest); //지금 요일에 주차별 모임에 해당 시간표가 들어가져있는지?  확인
-        onceGroupService.isExistInOnceGroupTimeSlot(serviceRequest); // 지금 해당 일자에 모임이 있는지
+        everyGroupService.isExistedInTime(serviceRequest);
+        onceGroupService.isExistInOnceGroupTimeSlot(serviceRequest);
     }
 
     private void isDateValid(RegisterGongbaekRequest dto) {
@@ -61,7 +60,5 @@ public class GongbaekRequestFacade {
             findUserEntity, dto);
         lectureTimeSlotService.isExistInLectureTImeSlot(findUserEntity, lectureTimeSlotRequest);
     }
-
-
 
 }

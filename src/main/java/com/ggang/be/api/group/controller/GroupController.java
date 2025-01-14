@@ -6,7 +6,6 @@ import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.common.ResponseSuccess;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.facade.GroupFacade;
-import com.ggang.be.api.facade.GroupType;
 import com.ggang.be.api.group.dto.FillGroupFilterRequest;
 import com.ggang.be.api.group.dto.GroupRequestDto;
 import com.ggang.be.api.group.dto.GroupResponse;
@@ -32,8 +31,10 @@ public class GroupController {
             @RequestHeader("Authorization") String accessToken,
             @RequestBody final GroupRequestDto groupRequestDto
     ) {
+        Long userId = jwtService.parseTokenAndGetUserId(accessToken);
+
         GroupResponse groupResponseDto = groupFacade.getGroupInfo(
-                GroupType.fromString(groupRequestDto.groupType()), groupRequestDto.groupId(), accessToken
+                groupRequestDto.groupType(), groupRequestDto.groupId(), userId
         );
         return ResponseEntity.ok(ApiResponse.success(ResponseSuccess.OK, groupResponseDto));
     }
@@ -43,10 +44,11 @@ public class GroupController {
             @RequestHeader("Authorization") final String accessToken,
             @RequestBody final GroupRequestDto groupRequestDto
     ){
+        jwtService.isValidToken(accessToken);
+
         GroupUserInfoResponseDto groupUserInfoResponseDto
                 = GroupUserInfoResponseDto.of(groupFacade.getGroupUserInfo(
-                        GroupType.fromString(groupRequestDto.groupType()), groupRequestDto.groupId(), accessToken
-        ));
+                        groupRequestDto.groupType(), groupRequestDto.groupId()));
         return ResponseEntity.ok(ApiResponse.success(ResponseSuccess.OK, groupUserInfoResponseDto));
     }
 

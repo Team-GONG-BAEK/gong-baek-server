@@ -30,8 +30,8 @@ public class GroupFacade {
     private final OnceGroupService onceGroupService;
     private final UserService userService;
 
-    public GroupResponse getGroupInfo(GroupType groupType, Long groupId, String accessToken) {
-        UserEntity currentUser = userService.getUserById(Long.parseLong(accessToken));
+    public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
+        UserEntity currentUser = userService.getUserById(userId);
 
         return switch (groupType) {
             case WEEKLY -> GroupResponseMapper.fromEveryGroup(
@@ -43,9 +43,7 @@ public class GroupFacade {
         };
     }
 
-    public UserInfo getGroupUserInfo(GroupType groupType, Long groupId, String accessToken) {
-        userService.getUserById(Long.parseLong(accessToken));
-
+    public UserInfo getGroupUserInfo(GroupType groupType, Long groupId) {
         long userId = switch (groupType) {
             case WEEKLY -> everyGroupService.getEveryGroupRegisterUserId(groupId);
             case ONCE -> onceGroupService.getOnceGroupRegisterUserId(groupId);

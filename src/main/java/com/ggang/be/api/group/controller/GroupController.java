@@ -11,6 +11,8 @@ import com.ggang.be.api.group.dto.FillGroupFilterRequest;
 import com.ggang.be.api.group.dto.GroupRequestDto;
 import com.ggang.be.api.group.dto.GroupResponse;
 import com.ggang.be.api.group.dto.GroupUserInfoResponseDto;
+import com.ggang.be.api.group.dto.ReadFillMembersRequest;
+import com.ggang.be.api.group.dto.ReadFillMembersResponse;
 import com.ggang.be.api.group.dto.RegisterGongbaekRequest;
 import com.ggang.be.api.group.dto.RegisterGongbaekResponse;
 import com.ggang.be.domain.constant.FillGroupType;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class GroupController {
+
     private final GroupFacade groupFacade;
     private final GongbaekRequestFacade gongbaekRequestFacade;
     private final JwtService jwtService;
@@ -62,13 +65,21 @@ public class GroupController {
 
     // TODO : 테스트 코드 작성 진행해야함!
     @PostMapping("/gongbaek")
-    public ResponseEntity<ApiResponse<RegisterGongbaekResponse>> registerGongbaek(@RequestHeader("Authorization") String token,
-        @RequestBody final RegisterGongbaekRequest dto){
+    public ResponseEntity<ApiResponse<RegisterGongbaekResponse>> registerGongbaek(
+        @RequestHeader("Authorization") String token,
+        @RequestBody final RegisterGongbaekRequest dto) {
         Long userId = jwtService.parseTokenAndGetUserId(token);
 
         gongbaekRequestFacade.validateRegisterRequest(userId, dto);
 
         return ResponseBuilder.ok(groupFacade.registerGongbaek(userId, dto));
+    }
+
+    @GetMapping("/fill/members")
+    public ResponseEntity<ApiResponse<ReadFillMembersResponse>> getGroupMembers(
+        @RequestHeader("Authorization") String token, @RequestBody ReadFillMembersRequest dto) {
+        jwtService.isValidToken(token);
+        return ResponseBuilder.ok(groupFacade.getGroupUsersInfo(dto));
     }
 
 

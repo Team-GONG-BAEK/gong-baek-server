@@ -118,6 +118,7 @@ public class OnceGroupServiceImpl implements OnceGroupService {
             throw new GongBaekException(ResponseError.GROUP_ALREADY_EXIST);
     }
 
+
     private OnceGroupEntity buildOnceGroupEntity(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
         return OnceGroupEntity.builder()

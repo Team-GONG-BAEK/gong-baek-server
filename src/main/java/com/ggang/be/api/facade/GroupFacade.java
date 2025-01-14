@@ -3,33 +3,37 @@ package com.ggang.be.api.facade;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.gongbaekTimeSlot.service.GongbaekTimeSlotService;
-import com.ggang.be.api.group.dto.RegisterGongbaekRequest;
-import com.ggang.be.api.group.dto.RegisterGongbaekResponse;
 import com.ggang.be.api.group.dto.FillGroupFilterRequest;
 import com.ggang.be.api.group.dto.GroupResponse;
+import com.ggang.be.api.group.dto.ReadFillMembersRequest;
+import com.ggang.be.api.group.dto.ReadFillMembersResponse;
+import com.ggang.be.api.group.dto.RegisterGongbaekRequest;
+import com.ggang.be.api.group.dto.RegisterGongbaekResponse;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
+import com.ggang.be.api.group.everyGroup.service.UserEveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
+import com.ggang.be.api.group.onceGroup.service.UserOnceGroupService;
 import com.ggang.be.api.mapper.GroupResponseMapper;
 import com.ggang.be.api.user.service.UserService;
-import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
-import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
-import com.ggang.be.domain.group.dto.GroupVo;
-import com.ggang.be.domain.group.dto.ReadGroup;
-import com.ggang.be.domain.group.everyGroup.dto.EveryGroupVo;
-import com.ggang.be.domain.group.onceGroup.dto.OnceGroupVo;
 import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.gongbaekTimeSlot.dto.GongbaekTimeSlotRequest;
+import com.ggang.be.domain.group.dto.GroupVo;
+import com.ggang.be.domain.group.dto.ReadGroup;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
+import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
+import com.ggang.be.domain.group.everyGroup.dto.EveryGroupVo;
+import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
+import com.ggang.be.domain.group.onceGroup.dto.OnceGroupVo;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.UserInfo;
+import com.ggang.be.domain.userEveryGroup.dto.FillMember;
 import com.ggang.be.global.annotation.Facade;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Facade
@@ -49,10 +53,10 @@ public class GroupFacade {
 
         return switch (groupType) {
             case WEEKLY -> GroupResponseMapper.fromEveryGroup(
-                    everyGroupService.getEveryGroupDetail(groupId, currentUser)
+                everyGroupService.getEveryGroupDetail(groupId, currentUser)
             );
             case ONCE -> GroupResponseMapper.fromOnceGroup(
-                    onceGroupService.getOnceGroupDetail(groupId, currentUser)
+                onceGroupService.getOnceGroupDetail(groupId, currentUser)
             );
         };
     }
@@ -76,11 +80,14 @@ public class GroupFacade {
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity = gongbaekTimeSlotService.registerGongbaekTimeSlot(
             findUserEntity, gongbaekDto);
 
-
-        if(dto.groupType() == GroupType.WEEKLY)
-            return RegisterGongbaekResponse.of(everyGroupService.registerEveryGroup(serviceRequest, gongbaekTimeSlotEntity));
-        if(dto.groupType() == GroupType.ONCE)
-            return RegisterGongbaekResponse.of(onceGroupService.registerOnceGroup(serviceRequest, gongbaekTimeSlotEntity));
+        if (dto.groupType() == GroupType.WEEKLY) {
+            return RegisterGongbaekResponse.of(
+                everyGroupService.registerEveryGroup(serviceRequest, gongbaekTimeSlotEntity));
+        }
+        if (dto.groupType() == GroupType.ONCE) {
+            return RegisterGongbaekResponse.of(
+                onceGroupService.registerOnceGroup(serviceRequest, gongbaekTimeSlotEntity));
+        }
 
         throw new GongBaekException(ResponseError.BAD_REQUEST);
     }
@@ -132,5 +139,22 @@ public class GroupFacade {
                 .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
                 .collect(Collectors.toList()
                 );
+    }
+    public ReadFillMembersResponse getGroupUsersInfo(ReadFillMembersRequest dto) {
+        if (dto.groupType() == GroupType.WEEKLY) {
+            EveryGroupEntity findEveryGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(
+                dto.groupId());
+            List<FillMember> everyGroupUsersInfos = userEveryGroupService.getEveryGroupUsersInfo(
+                ReadFillMembersRequest.toEveryGroupMemberInfo(findEveryGroupEntity));
+            return ReadFillMembersResponse.ofEveryGroup(findEveryGroupEntity, everyGroupUsersInfos);
+        }
+        if (dto.groupType() == GroupType.ONCE) {
+            OnceGroupEntity findOnceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(
+                dto.groupId());
+            List<FillMember> onceGroupUserInfos = userOnceGroupService.getOnceGroupUsersInfo(
+                ReadFillMembersRequest.toOnceGroupMemberInfo(findOnceGroupEntity));
+            return ReadFillMembersResponse.ofOnceGroup(findOnceGroupEntity, onceGroupUserInfos);
+        }
+        throw new GongBaekException(ResponseError.BAD_REQUEST);
     }
 }

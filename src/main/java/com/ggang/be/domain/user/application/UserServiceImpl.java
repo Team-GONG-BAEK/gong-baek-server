@@ -4,7 +4,6 @@ import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.user.UserEntity;
-
 import com.ggang.be.domain.user.dto.SaveUserSignUp;
 import com.ggang.be.domain.user.dto.UserSchoolDto;
 import com.ggang.be.domain.user.infra.UserRepository;

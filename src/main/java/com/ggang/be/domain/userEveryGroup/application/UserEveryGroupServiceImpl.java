@@ -1,7 +1,8 @@
 package com.ggang.be.domain.userEveryGroup.application;
 
 
-import com.ggang.be.api.group.everyGroup.service.UserEveryGroupService;
+import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
+import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.ReadEveryGroupMember;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
@@ -9,15 +10,22 @@ import com.ggang.be.domain.group.everyGroup.dto.ReadEveryGroup;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;
 import com.ggang.be.domain.userEveryGroup.dto.FillMember;
+import com.ggang.be.domain.userEveryGroup.dto.NearestEveryGroup;
 import com.ggang.be.domain.userEveryGroup.infra.UserEveryGroupRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
+@Slf4j
 public class UserEveryGroupServiceImpl implements UserEveryGroupService {
 
     private final UserEveryGroupRepository userEveryGroupRepository;
@@ -33,28 +41,40 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
     }
 
     @Override
-    public ReadEveryGroup getMyAppliedGroups(UserEntity currentUser, boolean status) {
-        List<UserEveryGroupEntity> userEveryGroupEntities
-            = userEveryGroupRepository.findByUserEntity_id(currentUser.getId());
+    public ReadEveryGroup getMyAppliedGroups(UserEntity currentUser, boolean status){
+        List<UserEveryGroupEntity> userEveryGroupEntities = getMyEveryGroup(currentUser);
 
-        return ReadEveryGroup.of(
-            groupVoMaker.makeEveryGroup(getGroupsByStatus(userEveryGroupEntities, status)));
+        List<EveryGroupEntity> filteredGroups = getGroupsByStatus(userEveryGroupEntities, status).stream()
+                .filter(group -> !group.getUserEntity().getId().equals(currentUser.getId()))
+                .toList();
+
+        return ReadEveryGroup.of(groupVoMaker.makeEveryGroup(filteredGroups));
     }
 
     @Override
-    public List<EveryGroupEntity> getGroupsByStatus(
-        List<UserEveryGroupEntity> userEveryGroupEntities, boolean status) {
-        if (status) {
-            return userEveryGroupEntities.stream()
+    public NearestEveryGroup getMyNearestEveryGroup(UserEntity currentUser){
+        List<UserEveryGroupEntity> userEveryGroupEntities = getMyEveryGroup(currentUser);
+
+        EveryGroupEntity nearestGroup = getNearestGroup(getGroupsByStatus(userEveryGroupEntities, true));
+
+        return NearestEveryGroup.toDto(nearestGroup);
+    }
+
+    private EveryGroupEntity getNearestGroup(List<EveryGroupEntity> groups) {
+        return groups.stream()
+                .min(Comparator.comparing(group -> WeekDate.getNextMeetingDate(group.getGongbaekTimeSlotEntity().getWeekDate())))
+                .orElse(null);
+    }
+
+    private List<UserEveryGroupEntity> getMyEveryGroup(UserEntity currentUser){
+        return userEveryGroupRepository.findByUserEntity_id(currentUser.getId());
+    }
+
+    private List<EveryGroupEntity> getGroupsByStatus(List<UserEveryGroupEntity> userEveryGroupEntities, boolean status) {
+        return userEveryGroupEntities.stream()
                 .map(UserEveryGroupEntity::getEveryGroupEntity)
-                .filter(everyGroupEntity -> everyGroupEntity.getStatus().isActive())
+                .filter(group -> (status && group.getStatus().isActive()) || (!status && group.getStatus().isClosed()))
                 .collect(Collectors.toList());
-        } else {
-            return userEveryGroupEntities.stream()
-                .map(UserEveryGroupEntity::getEveryGroupEntity)
-                .filter(everyGroupEntity -> everyGroupEntity.getStatus().isClosed())
-                .collect(Collectors.toList());
-        }
     }
 
     private FillMember makeUserEveryFillMemberResponse(UserEveryGroupEntity ue) {

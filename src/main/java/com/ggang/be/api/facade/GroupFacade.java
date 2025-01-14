@@ -3,20 +3,14 @@ package com.ggang.be.api.facade;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.gongbaekTimeSlot.service.GongbaekTimeSlotService;
-import com.ggang.be.api.group.dto.FillGroupFilterRequest;
-import com.ggang.be.api.group.dto.GroupResponse;
-import com.ggang.be.api.group.dto.ReadFillMembersRequest;
-import com.ggang.be.api.group.dto.ReadFillMembersResponse;
-import com.ggang.be.api.group.dto.RegisterGongbaekRequest;
-import com.ggang.be.api.group.dto.RegisterGongbaekResponse;
+import com.ggang.be.api.group.dto.*;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
-import com.ggang.be.api.group.everyGroup.service.UserEveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
-import com.ggang.be.api.group.onceGroup.service.UserOnceGroupService;
 import com.ggang.be.api.mapper.GroupResponseMapper;
 import com.ggang.be.api.user.service.UserService;
-import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
-import com.ggang.be.domain.timslot.gongbaekTimeSlot.dto.GongbaekTimeSlotRequest;
+import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
+import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
+import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.domain.group.dto.ReadGroup;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
@@ -24,16 +18,22 @@ import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupVo;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupVo;
+import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
+import com.ggang.be.domain.timslot.gongbaekTimeSlot.dto.GongbaekTimeSlotRequest;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.UserInfo;
 import com.ggang.be.domain.userEveryGroup.dto.FillMember;
+import com.ggang.be.domain.userEveryGroup.dto.NearestEveryGroup;
+import com.ggang.be.domain.userOnceGroup.dto.NearestOnceGroup;
 import com.ggang.be.global.annotation.Facade;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Facade
@@ -59,6 +59,24 @@ public class GroupFacade {
                 onceGroupService.getOnceGroupDetail(groupId, currentUser)
             );
         };
+    }
+
+    public NearestGroupResponse getNearestGroupInfo(long userId) {
+        UserEntity currentUser = userService.getUserById(userId);
+        NearestEveryGroup nearestEveryGroup = userEveryGroupService.getMyNearestEveryGroup(currentUser);
+        NearestOnceGroup nearestOnceGroup = userOnceGroupService.getMyNearestOnceGroup(currentUser);
+
+        if (nearestEveryGroup == null && nearestOnceGroup == null) {
+            return null;
+        }
+
+        if (nearestEveryGroup == null) {
+            return GroupResponseMapper.toNearestGroupResponse(nearestOnceGroup);
+        } else if (nearestOnceGroup == null) {
+            return GroupResponseMapper.toNearestGroupResponse(nearestEveryGroup);
+        }
+
+        return getNearestGroupFromDates(nearestEveryGroup, nearestOnceGroup);
     }
 
     public UserInfo getGroupUserInfo(GroupType groupType, Long groupId) {
@@ -104,8 +122,6 @@ public class GroupFacade {
             findUserEntity, dto);
     }
 
-
-
     public ReadGroup getGroups(long userId, FillGroupFilterRequest filterRequestDto) {
         UserEntity currentUser = userService.getUserById(userId);
 
@@ -115,6 +131,20 @@ public class GroupFacade {
         };
 
         return ReadGroup.of(groupResponses);
+    }
+
+    private NearestGroupResponse getNearestGroupFromDates(NearestEveryGroup nearestEveryGroup, NearestOnceGroup nearestOnceGroup) {
+        LocalDate everyGroupDate = nearestEveryGroup.weekDate();
+        LocalDate onceGroupDate = nearestOnceGroup.weekDate();
+
+        log.info("EveryGroup Date: {}", everyGroupDate);
+        log.info("OnceGroup Date: {}", onceGroupDate);
+
+        if (everyGroupDate.isBefore(onceGroupDate)) {
+            return GroupResponseMapper.toNearestGroupResponse(nearestEveryGroup);
+        } else {
+            return GroupResponseMapper.toNearestGroupResponse(nearestOnceGroup);
+        }
     }
 
     private List<GroupVo> getGroupsRegister (UserEntity currentUser, boolean status) {

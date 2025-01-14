@@ -1,6 +1,6 @@
 package com.ggang.be.domain.userOnceGroup.application;
 
-import com.ggang.be.api.group.onceGroup.service.UserOnceGroupService;
+import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.ReadOnceGroupMember;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
@@ -8,14 +8,21 @@ import com.ggang.be.domain.group.onceGroup.dto.ReadOnceGroup;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userEveryGroup.dto.FillMember;
 import com.ggang.be.domain.userOnceGroup.UserOnceGroupEntity;
+import com.ggang.be.domain.userOnceGroup.dto.NearestOnceGroup;
 import com.ggang.be.domain.userOnceGroup.infra.UserOnceGroupRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
+@Slf4j
 public class UserOnceGroupServiceImpl implements UserOnceGroupService {
 
     private final UserOnceGroupRepository userOnceGroupRepository;
@@ -32,26 +39,22 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
 
     @Override
     public ReadOnceGroup getMyAppliedGroups(UserEntity currentUser, boolean status){
-        List<UserOnceGroupEntity> userOnceGroupEntities
-            = userOnceGroupRepository.findByUserEntity_id(currentUser.getId());
+        List<UserOnceGroupEntity> userOnceGroupEntities = getMyOnceGroup(currentUser);
 
-        return ReadOnceGroup.of(groupVoMaker.makeOnceGroup(getGroupsByStatus(userOnceGroupEntities, status)));
+        List<OnceGroupEntity> filteredGroups = getGroupsByStatus(userOnceGroupEntities, status).stream()
+                .filter(group -> !group.getUserEntity().getId().equals(currentUser.getId()))
+                .toList();
+
+        return ReadOnceGroup.of(groupVoMaker.makeOnceGroup(filteredGroups));
     }
 
     @Override
-    public List<OnceGroupEntity> getGroupsByStatus(List<UserOnceGroupEntity> userOnceGroupEntities,
-        boolean status) {
-        if (status) {
-            return userOnceGroupEntities.stream()
-                .map(UserOnceGroupEntity::getOnceGroupEntity)
-                .filter(everyGroupEntity -> everyGroupEntity.getStatus().isActive())
-                .collect(Collectors.toList());
-        } else {
-            return userOnceGroupEntities.stream()
-                .map(UserOnceGroupEntity::getOnceGroupEntity)
-                .filter(everyGroupEntity -> everyGroupEntity.getStatus().isClosed())
-                .collect(Collectors.toList());
-        }
+    public NearestOnceGroup getMyNearestOnceGroup(UserEntity currentUser){
+        List<UserOnceGroupEntity> userOnceGroupEntities = getMyOnceGroup(currentUser);
+
+        OnceGroupEntity nearestGroup = getNearestGroup(getGroupsByStatus(userOnceGroupEntities, true));
+
+        return NearestOnceGroup.toDto(nearestGroup);
     }
 
     @Override
@@ -59,6 +62,22 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
         return userOnceGroupRepository.findAllByUserEntity(findUserEntity);
     }
 
+    private OnceGroupEntity getNearestGroup(List<OnceGroupEntity> groups) {
+        return groups.stream()
+                .min(Comparator.comparing(OnceGroupEntity::getGroupDate))
+                .orElse(null);
+    }
+
+    private List<UserOnceGroupEntity> getMyOnceGroup(UserEntity currentUser){
+        return userOnceGroupRepository.findByUserEntity_id(currentUser.getId());
+    }
+
+    private List<OnceGroupEntity> getGroupsByStatus(List<UserOnceGroupEntity> userOnceGroupEntities, boolean status) {
+        return userOnceGroupEntities.stream()
+                .map(UserOnceGroupEntity::getOnceGroupEntity)
+                .filter(group -> filterByStatus(group, status))
+                .collect(Collectors.toList());
+    }
 
     private FillMember makeUserOnceFillMemberResponse(UserOnceGroupEntity ue) {
         OnceGroupEntity onceGroupEntity = ue.getOnceGroupEntity();
@@ -67,5 +86,8 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
         return FillMember.of(userEntity, isHost);
     }
 
+    private boolean filterByStatus(OnceGroupEntity group, boolean status) {
+        return (status && group.getStatus().isActive()) || (!status && group.getStatus().isClosed());
+    }
 
 }

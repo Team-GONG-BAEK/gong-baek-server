@@ -34,8 +34,8 @@ public class CommentController {
 
     @GetMapping("/comments")
     public ResponseEntity<ApiResponse<ReadCommentResponse>> getComments(@RequestHeader("Authorization") final String token, @RequestParam boolean isPublic, @RequestBody final ReadCommentRequest dto){
-        jwtService.isValidToken(token);
-        return ResponseBuilder.ok(commentFacade.readComment(isPublic, dto));
+        Long userId = jwtService.parseTokenAndGetUserId(token);
+        return ResponseBuilder.ok(commentFacade.readComment(userId, isPublic, dto));
     }
 
 }

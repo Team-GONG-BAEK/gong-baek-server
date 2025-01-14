@@ -24,7 +24,7 @@ public interface EveryGroupService {
 
     void writeCommentInGroup(CommentEntity commentEntity, final long groupId);
 
-    ReadCommentGroup readCommentInGroup(boolean commentEntity, final long groupId);
+    ReadCommentGroup readCommentInGroup(UserEntity userEntity, boolean commentEntity, final long groupId);
 
     Long registerEveryGroup(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity);

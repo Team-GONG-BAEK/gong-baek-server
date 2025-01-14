@@ -9,7 +9,6 @@ import com.ggang.be.domain.group.onceGroup.dto.ReadOnceGroup;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.user.UserEntity;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface OnceGroupService {
@@ -25,7 +24,7 @@ public interface OnceGroupService {
 
     void writeCommentInGroup(CommentEntity commentEntity, final long groupId);
 
-    ReadCommentGroup readCommentInGroup(boolean isPublic, final long groupId);
+    ReadCommentGroup readCommentInGroup(UserEntity userEntity, boolean isPublic, final long groupId);
 
     Long registerOnceGroup(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity);

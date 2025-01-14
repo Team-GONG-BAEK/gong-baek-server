@@ -46,15 +46,16 @@ public class CommentFacade {
             onceGroupService.writeCommentInGroup(commentEntity, dto.groupId());
     }
 
-    public ReadCommentResponse readComment(final boolean isPublic, ReadCommentRequest dto) {
-        return ReadCommentResponse.of(readByCase(isPublic, dto));
+    public ReadCommentResponse readComment(Long userId, final boolean isPublic, ReadCommentRequest dto) {
+        UserEntity findUserEntity = userService.getUserById(userId);
+        return ReadCommentResponse.of(readByCase(findUserEntity, isPublic, dto));
     }
 
-    private ReadCommentGroup readByCase(boolean isPublic, ReadCommentRequest dto) {
+    private ReadCommentGroup readByCase(UserEntity userEntity, boolean isPublic, ReadCommentRequest dto) {
         if(dto.groupType() == GroupType.WEEKLY)
-            return everyGroupService.readCommentInGroup(isPublic, dto.groupId());
+            return everyGroupService.readCommentInGroup(userEntity, isPublic, dto.groupId());
         if(dto.groupType() == GroupType.ONCE)
-            return onceGroupService.readCommentInGroup(isPublic, dto.groupId());
+            return onceGroupService.readCommentInGroup(userEntity, isPublic, dto.groupId());
         throw new GongBaekException(ResponseError.BAD_REQUEST);
     }
 

@@ -103,7 +103,6 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     @Transactional
     public Long registerEveryGroup(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
-        isExistedInTime(serviceRequest);
 
         EveryGroupEntity buildEntity = buildEveryGroupEntity(
             serviceRequest, gongbaekTimeSlotEntity);
@@ -126,14 +125,6 @@ public class EveryGroupServiceImpl implements EveryGroupService {
             .introduction(serviceRequest.introduction())
             .userEntity(serviceRequest.userEntity())
             .build();
-    }
-
-    @Override
-    public void isExistedInTime(RegisterGroupServiceRequest serviceRequest) {
-        if(everyGroupRepository.isInTime
-            (serviceRequest.userEntity(), serviceRequest.startTime(), serviceRequest.endTime(),
-                serviceRequest.weekDay(), Status.CLOSED))
-            throw new GongBaekException(ResponseError.GROUP_ALREADY_EXIST);
     }
 
 

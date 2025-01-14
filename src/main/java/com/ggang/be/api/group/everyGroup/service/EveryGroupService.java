@@ -29,5 +29,4 @@ public interface EveryGroupService {
     Long registerEveryGroup(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
 
-    void isExistedInTime(RegisterGroupServiceRequest serviceRequest);
 }

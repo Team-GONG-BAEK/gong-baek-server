@@ -1,10 +1,12 @@
 package com.ggang.be.domain.userOnceGroup;
 
 import com.ggang.be.domain.BaseTimeEntity;
+import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,5 +27,12 @@ public class UserOnceGroupEntity extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "once_group_id")
     private OnceGroupEntity onceGroupEntity;
+
+
+    @Builder
+    private UserOnceGroupEntity(UserEntity userEntity, OnceGroupEntity onceGroupEntity) {
+        this.userEntity = userEntity;
+        this.onceGroupEntity = onceGroupEntity;
+    }
 
 }

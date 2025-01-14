@@ -5,6 +5,7 @@ import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,4 +27,10 @@ public class UserEveryGroupEntity extends BaseTimeEntity {
     @JoinColumn(name = "every_group_id")
     private EveryGroupEntity everyGroupEntity;
 
+
+    @Builder
+    private UserEveryGroupEntity(UserEntity userEntity, EveryGroupEntity everyGroupEntity) {
+        this.userEntity = userEntity;
+        this.everyGroupEntity = everyGroupEntity;
+    }
 }

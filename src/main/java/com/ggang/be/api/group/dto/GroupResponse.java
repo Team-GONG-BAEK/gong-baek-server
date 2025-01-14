@@ -2,7 +2,7 @@ package com.ggang.be.api.group.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record GroupResponseDto(
+public record GroupResponse(
         long groupId,
         String groupType,
         String groupTitle,

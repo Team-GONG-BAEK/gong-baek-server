@@ -7,14 +7,17 @@ import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.group.GroupCommentVoMaker;
+import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
-import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDto;
+import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDetail;
+import com.ggang.be.domain.group.everyGroup.dto.ReadEveryGroup;
 import com.ggang.be.domain.group.everyGroup.infra.EveryGroupRepository;
 import com.ggang.be.domain.group.vo.GroupCommentVo;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.user.UserEntity;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,12 +30,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class EveryGroupServiceImpl implements EveryGroupService {
 
     private final EveryGroupRepository everyGroupRepository;
+    private final GroupVoMaker groupVoMaker;
     private final GroupCommentVoMaker groupCommentVoMaker;
 
     @Override
-    public EveryGroupDto getEveryGroupDetail(final long groupId, final UserEntity userEntity) {
+    public EveryGroupDetail getEveryGroupDetail(final long groupId, final UserEntity userEntity) {
         EveryGroupEntity entity = findIdOrThrow(groupId);
-        return EveryGroupDto.toDto(entity, userEntity);
+        return EveryGroupDetail.toDto(entity, userEntity);
     }
 
     @Override
@@ -42,9 +46,29 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     }
 
     @Override
+    public ReadEveryGroup getMyRegisteredGroups(UserEntity currentUser, boolean status) {
+        List<EveryGroupEntity> everyGroupEntities = everyGroupRepository.findByUserEntity_Id(currentUser.getId());
+
+        return ReadEveryGroup.of(groupVoMaker.makeEveryGroup(getGroupsByStatus(everyGroupEntities, status)));
+    }
+
+    @Override
+    public List<EveryGroupEntity> getGroupsByStatus(List<EveryGroupEntity> everyGroupEntities, boolean status) {
+        if (status) {
+            return everyGroupEntities.stream()
+                    .filter(group -> group.getStatus().isActive())
+                    .collect(Collectors.toList());
+        } else {
+            return everyGroupEntities.stream()
+                    .filter(group -> group.getStatus().isClosed())
+                    .collect(Collectors.toList());
+        }
+    }
+
+    @Override
     public EveryGroupEntity findEveryGroupEntityByGroupId(long groupId) {
         return everyGroupRepository.findById(groupId).orElseThrow(
-            () -> new GongBaekException(ResponseError.GROUP_NOT_FOUND)
+                () -> new GongBaekException(ResponseError.GROUP_NOT_FOUND)
         );
     }
 
@@ -52,8 +76,8 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     @Transactional
     public void writeCommentInGroup(CommentEntity commentEntity, final long groupId) {
         everyGroupRepository.findById(groupId)
-            .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_NOT_FOUND))
-            .addComment(commentEntity);
+                .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_NOT_FOUND))
+                .addComment(commentEntity);
         log.info("everyGroupEntity add Comment success CommentId was  : {}", commentEntity.getId());
     }
 
@@ -61,15 +85,15 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     public ReadCommentGroup readCommentInGroup(boolean isPublic, long groupId) {
 
         EveryGroupEntity everyGroupEntity = everyGroupRepository.findById(groupId)
-            .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_NOT_FOUND));
+                .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_NOT_FOUND));
 
         List<CommentEntity> commentEntities = everyGroupEntity
-            .getComments().stream().filter(c -> c.isPublic() == isPublic).toList();
+                .getComments().stream().filter(c -> c.isPublic() == isPublic).toList();
 
         int commentCount = commentEntities.size();
 
         List<GroupCommentVo> onceGroupCommentVos = groupCommentVoMaker.makeByEveryGroup(
-            commentEntities, everyGroupEntity);
+                commentEntities, everyGroupEntity);
 
         return ReadCommentGroup.of(commentCount, onceGroupCommentVos);
 

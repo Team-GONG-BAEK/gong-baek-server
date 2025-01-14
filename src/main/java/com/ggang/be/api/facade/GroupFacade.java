@@ -3,13 +3,20 @@ package com.ggang.be.api.facade;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.gongbaekTimeSlot.service.GongbaekTimeSlotService;
-import com.ggang.be.api.group.dto.GroupResponseDto;
 import com.ggang.be.api.group.dto.RegisterGongbaekRequest;
 import com.ggang.be.api.group.dto.RegisterGongbaekResponse;
+import com.ggang.be.api.group.dto.FillGroupFilterRequest;
+import com.ggang.be.api.group.dto.GroupResponse;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.api.mapper.GroupResponseMapper;
 import com.ggang.be.api.user.service.UserService;
+import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
+import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
+import com.ggang.be.domain.group.dto.GroupVo;
+import com.ggang.be.domain.group.dto.ReadGroup;
+import com.ggang.be.domain.group.everyGroup.dto.EveryGroupVo;
+import com.ggang.be.domain.group.onceGroup.dto.OnceGroupVo;
 import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.gongbaekTimeSlot.dto.GongbaekTimeSlotRequest;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
@@ -17,19 +24,28 @@ import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.UserInfo;
 import com.ggang.be.global.annotation.Facade;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 
 @Facade
 @RequiredArgsConstructor
+@Slf4j
 public class GroupFacade {
 
     private final EveryGroupService everyGroupService;
     private final OnceGroupService onceGroupService;
+    private final UserEveryGroupService userEveryGroupService;
+    private final UserOnceGroupService userOnceGroupService;
     private final UserService userService;
     private final GongbaekTimeSlotService gongbaekTimeSlotService;
 
-    public GroupResponseDto getGroupInfo(GroupType groupType, Long groupId, String accessToken) {
-        UserEntity currentUser = userService.getUserById(Long.parseLong(accessToken));
+    public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
+        UserEntity currentUser = userService.getUserById(userId);
 
         return switch (groupType) {
             case WEEKLY -> GroupResponseMapper.fromEveryGroup(
@@ -41,9 +57,7 @@ public class GroupFacade {
         };
     }
 
-    public UserInfo getGroupUserInfo(GroupType groupType, Long groupId, String accessToken) {
-        userService.getUserById(Long.parseLong(accessToken));
-
+    public UserInfo getGroupUserInfo(GroupType groupType, Long groupId) {
         long userId = switch (groupType) {
             case WEEKLY -> everyGroupService.getEveryGroupRegisterUserId(groupId);
             case ONCE -> onceGroupService.getOnceGroupRegisterUserId(groupId);
@@ -63,9 +77,9 @@ public class GroupFacade {
             findUserEntity, gongbaekDto);
 
 
-        if(dto.groupType() == GroupType.WEEKLY) 
+        if(dto.groupType() == GroupType.WEEKLY)
             return RegisterGongbaekResponse.of(everyGroupService.registerEveryGroup(serviceRequest, gongbaekTimeSlotEntity));
-        if(dto.groupType() == GroupType.ONCE) 
+        if(dto.groupType() == GroupType.ONCE)
             return RegisterGongbaekResponse.of(onceGroupService.registerOnceGroup(serviceRequest, gongbaekTimeSlotEntity));
 
         throw new GongBaekException(ResponseError.BAD_REQUEST);
@@ -84,4 +98,39 @@ public class GroupFacade {
     }
 
 
+
+    public ReadGroup getGroups(long userId, FillGroupFilterRequest filterRequestDto) {
+        UserEntity currentUser = userService.getUserById(userId);
+
+        List<GroupVo> groupResponses = switch (filterRequestDto.getFillGroupCategory()) {
+            case REGISTER -> getGroupsRegister(currentUser, filterRequestDto.status());
+            case APPLY -> getGroupsApply(currentUser, filterRequestDto.status());
+        };
+
+        return ReadGroup.of(groupResponses);
+    }
+
+    private List<GroupVo> getGroupsRegister (UserEntity currentUser, boolean status) {
+        List<EveryGroupVo> everyGroupResponses = everyGroupService.getMyRegisteredGroups(currentUser, status).groups();
+        List<OnceGroupVo> onceGroupResponses = onceGroupService.getMyRegisteredGroups(currentUser, status).groups();
+
+        return Stream.concat(
+                        everyGroupResponses.stream().map(GroupVo::fromEveryGroup),
+                        onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
+                .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
+                .collect(Collectors.toList()
+                );
+    }
+
+    private List<GroupVo> getGroupsApply (UserEntity currentUser, boolean status) {
+        List<EveryGroupVo> everyGroupResponses = userEveryGroupService.getMyAppliedGroups(currentUser, status).groups();
+        List<OnceGroupVo> onceGroupResponses = userOnceGroupService.getMyAppliedGroups(currentUser, status).groups();
+
+        return Stream.concat(
+                        everyGroupResponses.stream().map(GroupVo::fromEveryGroup),
+                        onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
+                .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
+                .collect(Collectors.toList()
+                );
+    }
 }

@@ -8,7 +8,7 @@ import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.facade.GongbaekRequestFacade;
 import com.ggang.be.api.facade.GroupFacade;
 import com.ggang.be.api.group.dto.FillGroupFilterRequest;
-import com.ggang.be.api.group.dto.GroupRequestDto;
+import com.ggang.be.api.group.dto.GroupRequest;
 import com.ggang.be.api.group.dto.GroupResponse;
 import com.ggang.be.api.group.dto.GroupUserInfoResponseDto;
 import com.ggang.be.api.group.dto.ReadFillMembersRequest;
@@ -41,7 +41,7 @@ public class GroupController {
     @GetMapping("/fill/info")
     public ResponseEntity<ApiResponse<GroupResponse>> getGroupInfo(
             @RequestHeader("Authorization") final String accessToken,
-            @RequestBody final GroupRequestDto groupRequestDto
+            @RequestBody final GroupRequest groupRequestDto
     ) {
         Long userId = jwtService.parseTokenAndGetUserId(accessToken);
 
@@ -54,7 +54,7 @@ public class GroupController {
     @GetMapping("/fill/user/info")
     public ResponseEntity<ApiResponse<GroupUserInfoResponseDto>> getGroupUserInfo(
             @RequestHeader("Authorization") final String accessToken,
-            @RequestBody final GroupRequestDto groupRequestDto
+            @RequestBody final GroupRequest groupRequestDto
     ){
         jwtService.isValidToken(accessToken);
 

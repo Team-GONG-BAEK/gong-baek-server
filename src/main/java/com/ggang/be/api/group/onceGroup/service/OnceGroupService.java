@@ -3,7 +3,11 @@ package com.ggang.be.api.group.onceGroup.service;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupDto;
 import com.ggang.be.domain.group.onceGroup.dto.ReadOnceGroup;
+import com.ggang.be.domain.comment.CommentEntity;
+import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
+import com.ggang.be.domain.group.onceGroup.dto.OnceGroupDto;
 import com.ggang.be.domain.user.UserEntity;
+import com.ggang.be.domain.group.vo.ReadCommentGroup;
 
 import java.util.List;
 
@@ -17,4 +21,10 @@ public interface OnceGroupService {
     List<OnceGroupEntity> getGroupsByStatus(List<OnceGroupEntity> onceGroupEntities, boolean status);
 
     ReadOnceGroup getMyAppliedGroups(UserEntity userEntity, boolean status);
+
+    OnceGroupEntity findOnceGroupEntityByGroupId(long groupId);
+
+    void writeCommentInGroup(CommentEntity commentEntity, final long groupId);
+
+    ReadCommentGroup readCommentInGroup(boolean isPublic, final long groupId);
 }

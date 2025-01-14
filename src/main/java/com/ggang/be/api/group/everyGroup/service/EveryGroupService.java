@@ -1,9 +1,13 @@
 package com.ggang.be.api.group.everyGroup.service;
 
+import com.ggang.be.domain.comment.CommentEntity;
+import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
+import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDto;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDetail;
 import com.ggang.be.domain.group.everyGroup.dto.ReadEveryGroup;
 import com.ggang.be.domain.user.UserEntity;
+import com.ggang.be.domain.group.vo.ReadCommentGroup;
 
 import java.util.List;
 
@@ -17,4 +21,10 @@ public interface EveryGroupService {
     List<EveryGroupEntity> getGroupsByStatus(List<EveryGroupEntity> everyGroupEntities, boolean status);
 
     ReadEveryGroup getMyAppliedGroups(UserEntity userEntity, boolean status);
+
+    EveryGroupEntity findEveryGroupEntityByGroupId(long groupId);
+
+    void writeCommentInGroup(CommentEntity commentEntity, final long groupId);
+
+    ReadCommentGroup readCommentInGroup(boolean commentEntity, final long groupId);
 }

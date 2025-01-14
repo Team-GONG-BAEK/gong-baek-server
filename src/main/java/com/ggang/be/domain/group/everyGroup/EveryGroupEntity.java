@@ -8,15 +8,19 @@ import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity(name = "every_group")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EveryGroupEntity extends BaseTimeEntity {
 
     @Id
@@ -24,7 +28,7 @@ public class EveryGroupEntity extends BaseTimeEntity {
     @Column(name = "every_group_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_user_id")
     private UserEntity userEntity;
 
@@ -39,6 +43,7 @@ public class EveryGroupEntity extends BaseTimeEntity {
     private LocalDate dueDate;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private WeekDate weekDate;
 
     private double startTime;
@@ -54,6 +59,7 @@ public class EveryGroupEntity extends BaseTimeEntity {
     private String location;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     private int maxPeopleCount;
@@ -65,6 +71,27 @@ public class EveryGroupEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String title;
 
+    @Builder
+    private EveryGroupEntity(UserEntity userEntity,
+        List<CommentEntity> comments, LocalDate dueDate, WeekDate weekDate, double startTime,
+        double endTime, Category category, int coverImg, String location, Status status,
+        int maxPeopleCount, int currentPeopleCount, String introduction, String title) {
+        this.userEntity = userEntity;
+        this.comments = comments;
+        this.dueDate = dueDate;
+        this.weekDate = weekDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.category = category;
+        this.coverImg = coverImg;
+        this.location = location;
+        this.status = status;
+        this.maxPeopleCount = maxPeopleCount;
+        this.currentPeopleCount = currentPeopleCount;
+        this.introduction = introduction;
+        this.title = title;
+    }
+
     public boolean isHost(UserEntity currentUser) {
         return this.userEntity.getId().equals(currentUser.getId());
     }
@@ -72,5 +99,9 @@ public class EveryGroupEntity extends BaseTimeEntity {
     public boolean isApply(UserEntity currentUser) {
         return this.userEveryGroupEntities.stream()
                 .anyMatch(participant -> participant.getUserEntity().getId().equals(currentUser.getId()));
+    }
+
+    public void addComment(CommentEntity commentEntity) {
+        this.comments.add(commentEntity);
     }
 }

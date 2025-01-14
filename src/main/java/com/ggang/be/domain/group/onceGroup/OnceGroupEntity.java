@@ -32,7 +32,7 @@ public class OnceGroupEntity extends BaseTimeEntity {
     @JoinColumn(name = "creator_user_id")
     private UserEntity userEntity;
 
-    @OneToMany(mappedBy = "onceGroupEntity")
+    @OneToMany(mappedBy = "onceGroupEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserOnceGroupEntity> participantUsers = new LinkedHashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

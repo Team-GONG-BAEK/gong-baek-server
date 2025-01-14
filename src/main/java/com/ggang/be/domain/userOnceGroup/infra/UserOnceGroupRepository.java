@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserOnceGroupRepository extends JpaRepository<UserOnceGroupEntity, Long> {
 
     List<UserOnceGroupEntity> findUserOnceGroupEntityByOnceGroupEntity(OnceGroupEntity entity);
+    List<UserOnceGroupEntity> findByUserEntity_id(Long id);
 }

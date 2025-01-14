@@ -6,7 +6,7 @@ public enum Status {
     CLOSED;
 
     public boolean isActive() {
-        return this == RECRUITING;
+        return this == RECRUITING || this == RECRUITED;
     }
 
     public boolean isClosed() {

@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserEveryGroupRepository extends JpaRepository<UserEveryGroupEntity, Long> {
     List<UserEveryGroupEntity> findUserEveryGroupEntityByEveryGroupEntity(EveryGroupEntity entity);
+    List<UserEveryGroupEntity> findByUserEntity_id(Long id);
 }

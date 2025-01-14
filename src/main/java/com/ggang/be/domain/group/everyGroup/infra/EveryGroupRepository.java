@@ -4,11 +4,14 @@ import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
-import java.time.LocalDate;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface EveryGroupRepository extends JpaRepository<EveryGroupEntity, Long> {
+    List<EveryGroupEntity> findByUserEntity_Id(Long userEntityUserId);
+
+    List<EveryGroupEntity> findByUserEveryGroupEntities_UserEntity_Id(Long userId);
 
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END " +
         "FROM every_group o " +

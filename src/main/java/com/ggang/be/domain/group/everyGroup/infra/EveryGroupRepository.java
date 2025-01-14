@@ -8,6 +8,4 @@ import java.util.List;
 public interface EveryGroupRepository extends JpaRepository<EveryGroupEntity, Long> {
     List<EveryGroupEntity> findByUserEntity_Id(Long userEntityUserId);
 
-    List<EveryGroupEntity> findByUserEveryGroupEntities_UserEntity_Id(Long userId);
-
 }

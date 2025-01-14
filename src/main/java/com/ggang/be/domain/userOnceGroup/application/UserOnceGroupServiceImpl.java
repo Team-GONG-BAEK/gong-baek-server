@@ -57,6 +57,11 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
         return NearestOnceGroup.toDto(nearestGroup);
     }
 
+    @Override
+    public List<UserOnceGroupEntity> readUserTIme(UserEntity findUserEntity) {
+        return userOnceGroupRepository.findAllByUserEntity(findUserEntity);
+    }
+
     private OnceGroupEntity getNearestGroup(List<OnceGroupEntity> groups) {
         return groups.stream()
                 .min(Comparator.comparing(OnceGroupEntity::getGroupDate))
@@ -72,14 +77,7 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
                 .map(UserOnceGroupEntity::getOnceGroupEntity)
                 .filter(group -> filterByStatus(group, status))
                 .collect(Collectors.toList());
-                .filter(group -> filterByStatus(group, status))
     }
-
-    @Override
-    public List<UserOnceGroupEntity> readUserTIme(UserEntity findUserEntity) {
-        return userOnceGroupRepository.findAllByUserEntity(findUserEntity);
-    }
-
 
     private FillMember makeUserOnceFillMemberResponse(UserOnceGroupEntity ue) {
         OnceGroupEntity onceGroupEntity = ue.getOnceGroupEntity();
@@ -87,7 +85,6 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
         boolean isHost = onceGroupEntity.getUserEntity().getNickname().equals(userEntity.getNickname());
         return FillMember.of(userEntity, isHost);
     }
-
 
     private boolean filterByStatus(OnceGroupEntity group, boolean status) {
         return (status && group.getStatus().isActive()) || (!status && group.getStatus().isClosed());

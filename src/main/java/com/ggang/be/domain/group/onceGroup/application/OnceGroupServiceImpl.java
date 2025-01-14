@@ -14,7 +14,6 @@ import com.ggang.be.domain.group.onceGroup.infra.OnceGroupRepository;
 import com.ggang.be.domain.group.vo.GroupCommentVo;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.user.UserEntity;
-import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -94,6 +93,7 @@ public class OnceGroupServiceImpl implements OnceGroupService {
                 serviceRequest.weekDate(), Status.CLOSED))
             throw new GongBaekException(ResponseError.GROUP_ALREADY_EXIST);
     }
+
 
     private OnceGroupEntity buildOnceGroupEntity(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {

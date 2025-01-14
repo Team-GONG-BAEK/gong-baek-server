@@ -2,6 +2,7 @@ package com.ggang.be.api.facade;
 
 import com.ggang.be.api.group.dto.FillGroupFilterRequest;
 import com.ggang.be.api.group.dto.GroupResponse;
+import com.ggang.be.api.group.dto.NearestGroupResponse;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.api.mapper.GroupResponseMapper;
@@ -14,10 +15,13 @@ import com.ggang.be.domain.group.everyGroup.dto.EveryGroupVo;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupVo;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.UserInfo;
+import com.ggang.be.domain.userEveryGroup.dto.NearestEveryGroup;
+import com.ggang.be.domain.userOnceGroup.dto.NearestOnceGroup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -47,6 +51,24 @@ public class GroupFacade {
         };
     }
 
+    public NearestGroupResponse getNearestGroupInfo(long userId) {
+        UserEntity currentUser = userService.getUserById(userId);
+        NearestEveryGroup nearestEveryGroup = userEveryGroupService.getMyNearestEveryGroup(currentUser);
+        NearestOnceGroup nearestOnceGroup = userOnceGroupService.getMyNearestOnceGroup(currentUser);
+
+        if (nearestEveryGroup == null && nearestOnceGroup == null) {
+            return null;
+        }
+
+        if (nearestEveryGroup == null) {
+            return GroupResponseMapper.toNearestGroupResponse(nearestOnceGroup);
+        } else if (nearestOnceGroup == null) {
+            return GroupResponseMapper.toNearestGroupResponse(nearestEveryGroup);
+        }
+
+        return getNearestGroupFromDates(nearestEveryGroup, nearestOnceGroup);
+    }
+
     public UserInfo getGroupUserInfo(GroupType groupType, Long groupId) {
         long userId = switch (groupType) {
             case WEEKLY -> everyGroupService.getEveryGroupRegisterUserId(groupId);
@@ -65,6 +87,20 @@ public class GroupFacade {
         };
 
         return ReadGroup.of(groupResponses);
+    }
+
+    private NearestGroupResponse getNearestGroupFromDates(NearestEveryGroup nearestEveryGroup, NearestOnceGroup nearestOnceGroup) {
+        LocalDate everyGroupDate = nearestEveryGroup.weekDate();
+        LocalDate onceGroupDate = nearestOnceGroup.weekDate();
+
+        log.info("EveryGroup Date: {}", everyGroupDate);
+        log.info("OnceGroup Date: {}", onceGroupDate);
+
+        if (everyGroupDate.isBefore(onceGroupDate)) {
+            return GroupResponseMapper.toNearestGroupResponse(nearestEveryGroup);
+        } else {
+            return GroupResponseMapper.toNearestGroupResponse(nearestOnceGroup);
+        }
     }
 
     private List<GroupVo> getGroupsRegister (UserEntity currentUser, boolean status) {

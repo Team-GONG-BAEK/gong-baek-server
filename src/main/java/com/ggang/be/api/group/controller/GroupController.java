@@ -6,10 +6,7 @@ import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.common.ResponseSuccess;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.facade.GroupFacade;
-import com.ggang.be.api.group.dto.FillGroupFilterRequest;
-import com.ggang.be.api.group.dto.GroupRequestDto;
-import com.ggang.be.api.group.dto.GroupResponse;
-import com.ggang.be.api.group.dto.GroupUserInfoResponseDto;
+import com.ggang.be.api.group.dto.*;
 import com.ggang.be.domain.constant.FillGroupType;
 import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.global.jwt.JwtService;
@@ -28,7 +25,7 @@ public class GroupController {
 
     @GetMapping("/fill/info")
     public ResponseEntity<ApiResponse<GroupResponse>> getGroupInfo(
-            @RequestHeader("Authorization") String accessToken,
+            @RequestHeader("Authorization") final String accessToken,
             @RequestBody final GroupRequestDto groupRequestDto
     ) {
         Long userId = jwtService.parseTokenAndGetUserId(accessToken);
@@ -64,5 +61,14 @@ public class GroupController {
         }
 
         return ResponseBuilder.ok(groupFacade.getGroups(userId, groupFilterRequest).groups());
+    }
+
+    @GetMapping("/group/my/participation")
+    public ResponseEntity<ApiResponse<NearestGroupResponse>> getNearestGroup(
+            @RequestHeader("Authorization") final String accessToken
+    ){
+        Long userId = jwtService.parseTokenAndGetUserId(accessToken);
+
+        return ResponseBuilder.ok(groupFacade.getNearestGroupInfo(userId));
     }
 }

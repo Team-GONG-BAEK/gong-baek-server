@@ -20,8 +20,8 @@ public record OnceGroupVo(long groupId, Status status, Category category, int co
                 GroupType.ONCE,
                 onceGroupEntity.getTitle(),
                 onceGroupEntity.getGroupDate(),
-                onceGroupEntity.getStartTime(),
-                onceGroupEntity.getEndTime(),
+                onceGroupEntity.getGongbaekTimeSlotEntity().getStartTime(),
+                onceGroupEntity.getGongbaekTimeSlotEntity().getEndTime(),
                 onceGroupEntity.getLocation(),
                 onceGroupEntity.getCreatedAt()
         );

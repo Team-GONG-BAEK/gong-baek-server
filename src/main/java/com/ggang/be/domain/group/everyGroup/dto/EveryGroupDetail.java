@@ -32,9 +32,9 @@ public record EveryGroupDetail(
                 entity.getIntroduction(),
                 entity.getCategory().toString(),
                 entity.getCoverImg(),
-                entity.getWeekDate().toString(),
-                entity.getStartTime(),
-                entity.getEndTime()
+                entity.getGongbaekTimeSlotEntity().getWeekDate().toString(),
+                entity.getGongbaekTimeSlotEntity().getStartTime(),
+                entity.getGongbaekTimeSlotEntity().getEndTime()
                 );
     }
 

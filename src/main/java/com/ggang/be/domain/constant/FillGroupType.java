@@ -1,5 +1,8 @@
 package com.ggang.be.domain.constant;
 
+import com.ggang.be.api.common.ResponseError;
+import com.ggang.be.api.exception.GongBaekException;
+
 public enum FillGroupType {
     REGISTER,
     APPLY;
@@ -7,12 +10,11 @@ public enum FillGroupType {
     public static FillGroupType of(String type) {
         return FillGroupType.valueOf(type.toUpperCase());
     }
-    public static boolean isValidCategory(String category) {
-        try {
-            FillGroupType.valueOf(category);
+    public static boolean isValidCategory(FillGroupType fillGroupType) {
+        if (fillGroupType == FillGroupType.REGISTER || fillGroupType == FillGroupType.APPLY) {
             return true;
-        } catch (IllegalArgumentException e) {
-            return false;
+        } else {
+            throw new GongBaekException(ResponseError.BAD_REQUEST);
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.ggang.be.domain.everyGroup;
+package com.ggang.be.domain.group.everyGroup;
 
 import com.ggang.be.domain.BaseTimeEntity;
 import com.ggang.be.domain.comment.CommentEntity;

@@ -2,8 +2,8 @@ package com.ggang.be.api.mapper;
 
 import com.ggang.be.api.facade.GroupType;
 import com.ggang.be.api.group.dto.GroupResponse;
-import com.ggang.be.domain.everyGroup.dto.EveryGroupDto;
-import com.ggang.be.domain.onceGroup.dto.OnceGroupDto;
+import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDetail;
+import com.ggang.be.domain.group.onceGroup.dto.OnceGroupDto;
 
 public record GroupResponseMapper() {
 
@@ -28,7 +28,7 @@ public record GroupResponseMapper() {
         );
     }
 
-    public static GroupResponse fromEveryGroup(EveryGroupDto dto) {
+    public static GroupResponse fromEveryGroup(EveryGroupDetail dto) {
         return new GroupResponse(
                 dto.groupId(),
                 GroupType.WEEKLY.toString(),

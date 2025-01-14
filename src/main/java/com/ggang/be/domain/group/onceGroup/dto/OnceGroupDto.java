@@ -1,7 +1,7 @@
-package com.ggang.be.domain.onceGroup.dto;
+package com.ggang.be.domain.group.onceGroup.dto;
 
 import com.ggang.be.domain.constant.WeekDate;
-import com.ggang.be.domain.onceGroup.OnceGroupEntity;
+import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 
 public record OnceGroupDto(

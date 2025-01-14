@@ -3,12 +3,14 @@ package com.ggang.be.api.exception;
 import com.ggang.be.api.common.ApiResponse;
 import com.ggang.be.api.common.ResponseBuilder;
 import com.ggang.be.api.common.ResponseError;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(GongBaekException.class)

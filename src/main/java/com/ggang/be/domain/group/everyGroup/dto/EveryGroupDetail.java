@@ -1,9 +1,9 @@
-package com.ggang.be.domain.everyGroup.dto;
+package com.ggang.be.domain.group.everyGroup.dto;
 
-import com.ggang.be.domain.everyGroup.EveryGroupEntity;
+import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 
-public record EveryGroupDto(
+public record EveryGroupDetail(
         long groupId,
         String title,
         String location,
@@ -19,8 +19,8 @@ public record EveryGroupDto(
         double startTime,
         double endTime
 ) {
-    public static EveryGroupDto toDto(EveryGroupEntity entity, UserEntity currentUser) {
-        return new EveryGroupDto(
+    public static EveryGroupDetail toDto(EveryGroupEntity entity, UserEntity currentUser) {
+        return new EveryGroupDetail(
                 entity.getId(),
                 entity.getTitle(),
                 entity.getLocation(),

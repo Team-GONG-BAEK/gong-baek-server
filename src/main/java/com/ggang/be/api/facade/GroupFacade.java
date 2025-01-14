@@ -6,6 +6,8 @@ import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.api.mapper.GroupResponseMapper;
 import com.ggang.be.api.user.service.UserService;
+import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
+import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.domain.group.dto.ReadGroup;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupVo;
@@ -28,6 +30,8 @@ public class GroupFacade {
 
     private final EveryGroupService everyGroupService;
     private final OnceGroupService onceGroupService;
+    private final UserEveryGroupService userEveryGroupService;
+    private final UserOnceGroupService userOnceGroupService;
     private final UserService userService;
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
@@ -76,8 +80,8 @@ public class GroupFacade {
     }
 
     private List<GroupVo> getGroupsApply (UserEntity currentUser, boolean status) {
-        List<EveryGroupVo> everyGroupResponses = everyGroupService.getMyAppliedGroups(currentUser, status).groups();
-        List<OnceGroupVo> onceGroupResponses = onceGroupService.getMyAppliedGroups(currentUser, status).groups();
+        List<EveryGroupVo> everyGroupResponses = userEveryGroupService.getMyAppliedGroups(currentUser, status).groups();
+        List<OnceGroupVo> onceGroupResponses = userOnceGroupService.getMyAppliedGroups(currentUser, status).groups();
 
         return Stream.concat(
                         everyGroupResponses.stream().map(GroupVo::fromEveryGroup),

@@ -3,18 +3,16 @@ package com.ggang.be.domain.group.everyGroup.application;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
-import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.group.GroupCommentVoMaker;
+import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDetail;
 import com.ggang.be.domain.group.everyGroup.dto.ReadEveryGroup;
-import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDto;
 import com.ggang.be.domain.group.everyGroup.infra.EveryGroupRepository;
 import com.ggang.be.domain.group.vo.GroupCommentVo;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.user.UserEntity;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,7 +29,6 @@ public class EveryGroupServiceImpl implements EveryGroupService {
 
     private final EveryGroupRepository everyGroupRepository;
     private final GroupVoMaker groupVoMaker;
-
     private final GroupCommentVoMaker groupCommentVoMaker;
 
     @Override
@@ -49,14 +46,6 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     @Override
     public ReadEveryGroup getMyRegisteredGroups(UserEntity currentUser, boolean status) {
         List<EveryGroupEntity> everyGroupEntities = everyGroupRepository.findByUserEntity_Id(currentUser.getId());
-
-        return ReadEveryGroup.of(groupVoMaker.makeEveryGroup(getGroupsByStatus(everyGroupEntities, status)));
-    }
-
-    @Override
-    public ReadEveryGroup getMyAppliedGroups(UserEntity currentUser, boolean status){
-        List<EveryGroupEntity> everyGroupEntities
-                = everyGroupRepository.findByUserEveryGroupEntities_UserEntity_Id(currentUser.getId());
 
         return ReadEveryGroup.of(groupVoMaker.makeEveryGroup(getGroupsByStatus(everyGroupEntities, status)));
     }

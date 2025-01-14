@@ -6,6 +6,4 @@ import com.ggang.be.domain.user.UserEntity;
 
 public interface GongbaekTimeSlotService {
     GongbaekTimeSlotEntity registerGongbaekTimeSlot(UserEntity userEntity, GongbaekTimeSlotRequest dto);
-
-    void isExistInWeekDateGongbaekTimeSlot(UserEntity findUserEntity, GongbaekTimeSlotRequest gongbaekDto);
 }

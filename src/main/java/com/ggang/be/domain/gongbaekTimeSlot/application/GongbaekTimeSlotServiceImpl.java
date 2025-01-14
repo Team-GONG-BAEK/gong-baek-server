@@ -32,15 +32,6 @@ public class GongbaekTimeSlotServiceImpl implements GongbaekTimeSlotService {
         return gongbaekTimeSlotRepository.save(buildEntity);
     }
 
-    @Override
-    public void isExistInWeekDateGongbaekTimeSlot(UserEntity findUserEntity,
-        GongbaekTimeSlotRequest dto) {
-        if(gongbaekTimeSlotRepository.existsByStartTimeAndEndTimeAndUserEntityAndWeekDate(
-            dto.startTime(), dto.endTime(), findUserEntity, dto.weekDay()
-        ))
-            throw new GongBaekException(ResponseError.GONGBAEK_TIME_SLOT_ALREADY_EXIST);
-    }
-
 
 
 }

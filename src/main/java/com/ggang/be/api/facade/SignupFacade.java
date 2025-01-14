@@ -8,7 +8,7 @@ import com.ggang.be.api.user.dto.SignupRequest;
 import com.ggang.be.api.user.dto.SignupResponse;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.api.user.vo.TimeTableVo;
-import com.ggang.be.domain.lectureTimeSlot.vo.LectureTimeSlotVo;
+import com.ggang.be.domain.timslot.lectureTimeSlot.vo.LectureTimeSlotVo;
 import com.ggang.be.domain.school.SchoolEntity;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.SaveUserSignUp;

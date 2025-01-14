@@ -1,7 +1,7 @@
 package com.ggang.be.domain.group.onceGroup.dto;
 
 import com.ggang.be.domain.constant.WeekDate;
-import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
+import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 

@@ -1,4 +1,4 @@
-package com.ggang.be.domain.lectureTimeSlot.dto;
+package com.ggang.be.domain.timslot.lectureTimeSlot.dto;
 
 import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.user.UserEntity;

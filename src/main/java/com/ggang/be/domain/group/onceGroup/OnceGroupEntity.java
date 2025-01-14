@@ -4,7 +4,7 @@ import com.ggang.be.domain.BaseTimeEntity;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
-import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
+import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userOnceGroup.UserOnceGroupEntity;
 import jakarta.persistence.*;

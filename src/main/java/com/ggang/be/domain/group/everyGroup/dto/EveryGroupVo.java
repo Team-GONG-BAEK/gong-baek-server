@@ -5,7 +5,6 @@ import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
-
 import java.time.LocalDateTime;
 
 public record EveryGroupVo(long groupId, Status status, Category category, int coverImg, GroupType groupType,
@@ -18,9 +17,9 @@ public record EveryGroupVo(long groupId, Status status, Category category, int c
                 everyGroupEntity.getCoverImg(),
                 GroupType.WEEKLY,
                 everyGroupEntity.getTitle(),
-                everyGroupEntity.getWeekDate(),
-                everyGroupEntity.getStartTime(),
-                everyGroupEntity.getEndTime(),
+                everyGroupEntity.getGongbaekTimeSlotEntity().getWeekDate(),
+                everyGroupEntity.getGongbaekTimeSlotEntity().getStartTime(),
+                everyGroupEntity.getGongbaekTimeSlotEntity().getEndTime(),
                 everyGroupEntity.getLocation(),
                 everyGroupEntity.getCreatedAt()
         );

@@ -11,6 +11,7 @@ import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.comment.CommentEntity;
+import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.global.annotation.Facade;

@@ -1,6 +1,6 @@
 package com.ggang.be.api.group.dto;
 
-import com.ggang.be.api.facade.GroupType;
+import com.ggang.be.domain.constant.GroupType;
 
 public record GroupRequestDto(
     long groupId,

@@ -10,6 +10,7 @@ import com.ggang.be.api.mapper.GroupResponseMapper;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
+import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.gongbaekTimeSlot.dto.GongbaekTimeSlotRequest;
 import com.ggang.be.domain.group.dto.GroupVo;

@@ -1,6 +1,6 @@
 package com.ggang.be.api.mapper;
 
-import com.ggang.be.api.facade.GroupType;
+import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.api.group.dto.GroupResponse;
 import com.ggang.be.api.group.dto.NearestGroupResponse;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDetail;

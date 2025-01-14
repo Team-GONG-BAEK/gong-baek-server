@@ -1,6 +1,6 @@
 package com.ggang.be.api.group.dto;
 
-import com.ggang.be.api.facade.GroupType;
+import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.dto.ReadEveryGroupMember;
 import com.ggang.be.domain.group.dto.ReadOnceGroupMember;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;

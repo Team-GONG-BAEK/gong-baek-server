@@ -1,6 +1,6 @@
 package com.ggang.be.domain.group;
 
-import com.ggang.be.api.facade.GroupType;
+import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.vo.GroupCommentVo;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

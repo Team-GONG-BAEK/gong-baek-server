@@ -70,7 +70,7 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
     private List<OnceGroupEntity> getGroupsByStatus(List<UserOnceGroupEntity> userOnceGroupEntities, boolean status) {
         return userOnceGroupEntities.stream()
                 .map(UserOnceGroupEntity::getOnceGroupEntity)
-                .filter(group -> (status && group.getStatus().isActive()) || (!status && group.getStatus().isClosed()))
+                .filter(group -> filterByStatus(group, status))
                 .collect(Collectors.toList());
     }
 
@@ -81,5 +81,9 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
         return FillMember.of(userEntity, isHost);
     }
 
+
+    private boolean filterByStatus(OnceGroupEntity group, boolean status) {
+        return (status && group.getStatus().isActive()) || (!status && group.getStatus().isClosed());
+    }
 
 }

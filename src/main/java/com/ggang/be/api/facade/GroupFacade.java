@@ -53,10 +53,10 @@ public class GroupFacade {
 
         return switch (groupType) {
             case WEEKLY -> GroupResponseMapper.fromEveryGroup(
-                everyGroupService.getEveryGroupDetail(groupId, currentUser)
+                    everyGroupService.getEveryGroupDetail(groupId, currentUser)
             );
             case ONCE -> GroupResponseMapper.fromOnceGroup(
-                onceGroupService.getOnceGroupDetail(groupId, currentUser)
+                    onceGroupService.getOnceGroupDetail(groupId, currentUser)
             );
         };
     }
@@ -96,33 +96,33 @@ public class GroupFacade {
         RegisterGroupServiceRequest serviceRequest = convertDtoToServiceDto(dto, findUserEntity);
 
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity = gongbaekTimeSlotService.registerGongbaekTimeSlot(
-            findUserEntity, gongbaekDto);
+                findUserEntity, gongbaekDto);
 
         if (dto.groupType() == GroupType.WEEKLY) {
             return RegisterGongbaekResponse.of(
-                everyGroupService.registerEveryGroup(serviceRequest, gongbaekTimeSlotEntity));
+                    everyGroupService.registerEveryGroup(serviceRequest, gongbaekTimeSlotEntity));
         }
         if (dto.groupType() == GroupType.ONCE) {
             return RegisterGongbaekResponse.of(
-                onceGroupService.registerOnceGroup(serviceRequest, gongbaekTimeSlotEntity));
+                    onceGroupService.registerOnceGroup(serviceRequest, gongbaekTimeSlotEntity));
         }
 
         throw new GongBaekException(ResponseError.BAD_REQUEST);
     }
 
     private RegisterGroupServiceRequest convertDtoToServiceDto(RegisterGongbaekRequest dto,
-        UserEntity findUserEntity) {
+                                                               UserEntity findUserEntity) {
         return RegisterGongbaekRequest.toServiceRequest(
-            findUserEntity, dto);
+                findUserEntity, dto);
     }
 
     private GongbaekTimeSlotRequest convertDtoToGongbaekDto(RegisterGongbaekRequest dto,
-        UserEntity findUserEntity) {
+                                                            UserEntity findUserEntity) {
         return RegisterGongbaekRequest.toGongbaekTimeSlotRequest(
-            findUserEntity, dto);
+                findUserEntity, dto);
     }
 
-    public ReadGroup getGroups(long userId, FillGroupFilterRequest filterRequestDto) {
+    public ReadGroup getMyGroups(long userId, FillGroupFilterRequest filterRequestDto) {
         UserEntity currentUser = userService.getUserById(userId);
 
         List<GroupVo> groupResponses = switch (filterRequestDto.getFillGroupCategory()) {
@@ -131,6 +131,24 @@ public class GroupFacade {
         };
 
         return ReadGroup.of(groupResponses);
+    }
+
+    public ReadGroup getFillGroups(long userId) {
+        UserEntity currentUser = userService.getUserById(userId);
+
+        return ReadGroup.of(getActiveGroups(currentUser));
+    }
+
+    private List<GroupVo> getActiveGroups (UserEntity currentUser) {
+        List<EveryGroupVo> everyGroupResponses = everyGroupService.getActiveEveryGroups(currentUser).groups();
+        List<OnceGroupVo> onceGroupResponses = onceGroupService.getActiveOnceGroups(currentUser).groups();
+
+        return Stream.concat(
+                        everyGroupResponses.stream().map(GroupVo::fromEveryGroup),
+                        onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
+                .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
+                .collect(Collectors.toList()
+                );
     }
 
     private NearestGroupResponse getNearestGroupFromDates(NearestEveryGroup nearestEveryGroup, NearestOnceGroup nearestOnceGroup) {
@@ -173,16 +191,16 @@ public class GroupFacade {
     public ReadFillMembersResponse getGroupUsersInfo(ReadFillMembersRequest dto) {
         if (dto.groupType() == GroupType.WEEKLY) {
             EveryGroupEntity findEveryGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(
-                dto.groupId());
+                    dto.groupId());
             List<FillMember> everyGroupUsersInfos = userEveryGroupService.getEveryGroupUsersInfo(
-                ReadFillMembersRequest.toEveryGroupMemberInfo(findEveryGroupEntity));
+                    ReadFillMembersRequest.toEveryGroupMemberInfo(findEveryGroupEntity));
             return ReadFillMembersResponse.ofEveryGroup(findEveryGroupEntity, everyGroupUsersInfos);
         }
         if (dto.groupType() == GroupType.ONCE) {
             OnceGroupEntity findOnceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(
-                dto.groupId());
+                    dto.groupId());
             List<FillMember> onceGroupUserInfos = userOnceGroupService.getOnceGroupUsersInfo(
-                ReadFillMembersRequest.toOnceGroupMemberInfo(findOnceGroupEntity));
+                    ReadFillMembersRequest.toOnceGroupMemberInfo(findOnceGroupEntity));
             return ReadFillMembersResponse.ofOnceGroup(findOnceGroupEntity, onceGroupUserInfos);
         }
         throw new GongBaekException(ResponseError.BAD_REQUEST);

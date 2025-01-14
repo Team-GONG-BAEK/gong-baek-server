@@ -5,7 +5,6 @@ import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.constant.Status;
-import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.group.GroupCommentVoMaker;
 import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
@@ -15,10 +14,8 @@ import com.ggang.be.domain.group.onceGroup.dto.ReadOnceGroup;
 import com.ggang.be.domain.group.onceGroup.infra.OnceGroupRepository;
 import com.ggang.be.domain.group.vo.GroupCommentVo;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
+import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -57,7 +54,19 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     }
 
     @Override
-    public List<OnceGroupEntity> getGroupsByStatus(List<OnceGroupEntity> onceGroupEntities, boolean status){
+    public ReadOnceGroup getActiveOnceGroups(UserEntity currentUser) {
+        List<OnceGroupEntity> onceGroupEntities = onceGroupRepository.findAll();
+
+        return ReadOnceGroup.of(groupVoMaker.makeOnceGroup(getRecruitingGroups(onceGroupEntities)));
+    }
+
+    private List<OnceGroupEntity> getRecruitingGroups(List<OnceGroupEntity> onceGroupEntities) {
+        return onceGroupEntities.stream()
+                .filter(group -> group.getStatus().isRecruiting())
+                .collect(Collectors.toList());
+    }
+
+    private List<OnceGroupEntity> getGroupsByStatus(List<OnceGroupEntity> onceGroupEntities, boolean status){
         if (status) {
             return onceGroupEntities.stream()
                     .filter(group -> group.getStatus().isActive())

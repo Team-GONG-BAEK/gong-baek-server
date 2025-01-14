@@ -7,27 +7,15 @@ import com.ggang.be.api.common.ResponseSuccess;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.facade.GongbaekRequestFacade;
 import com.ggang.be.api.facade.GroupFacade;
-import com.ggang.be.api.group.dto.FillGroupFilterRequest;
-import com.ggang.be.api.group.dto.GroupRequest;
-import com.ggang.be.api.group.dto.GroupResponse;
-import com.ggang.be.api.group.dto.GroupUserInfoResponseDto;
-import com.ggang.be.api.group.dto.ReadFillMembersRequest;
-import com.ggang.be.api.group.dto.ReadFillMembersResponse;
-import com.ggang.be.api.group.dto.RegisterGongbaekRequest;
-import com.ggang.be.api.group.dto.RegisterGongbaekResponse;
 import com.ggang.be.api.group.dto.*;
 import com.ggang.be.domain.constant.FillGroupType;
 import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.global.jwt.JwtService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -83,10 +71,8 @@ public class GroupController {
         return ResponseBuilder.ok(groupFacade.getGroupUsersInfo(dto));
     }
 
-
-
-    @GetMapping("/groups")
-    public ResponseEntity<ApiResponse<List<GroupVo>>> getGroups(
+    @GetMapping("/my/groups")
+    public ResponseEntity<ApiResponse<List<GroupVo>>> getMyGroups(
             @RequestHeader("Authorization") final String accessToken,
             @RequestBody final FillGroupFilterRequest groupFilterRequest
     ) {
@@ -96,7 +82,16 @@ public class GroupController {
             throw new GongBaekException(ResponseError.BAD_REQUEST);
         }
 
-        return ResponseBuilder.ok(groupFacade.getGroups(userId, groupFilterRequest).groups());
+        return ResponseBuilder.ok(groupFacade.getMyGroups(userId, groupFilterRequest).groups());
+    }
+
+    @GetMapping("/fill/groups")
+    public ResponseEntity<ApiResponse<List<GroupVo>>> getFillGroups(
+            @RequestHeader("Authorization") final String accessToken
+    ) {
+        Long userId = jwtService.parseTokenAndGetUserId(accessToken);
+
+        return ResponseBuilder.ok(groupFacade.getFillGroups(userId).groups());
     }
 
     @GetMapping("/group/my/participation")

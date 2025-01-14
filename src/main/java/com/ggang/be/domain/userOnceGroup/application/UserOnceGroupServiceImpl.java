@@ -1,7 +1,6 @@
 package com.ggang.be.domain.userOnceGroup.application;
 
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
-import com.ggang.be.api.group.onceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.ReadOnceGroupMember;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
@@ -19,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

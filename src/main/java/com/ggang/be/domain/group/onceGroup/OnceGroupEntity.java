@@ -11,12 +11,12 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import lombok.NoArgsConstructor;
 
 @Getter
 @Entity(name = "once_group")
@@ -47,9 +47,6 @@ public class OnceGroupEntity extends BaseTimeEntity {
     private LocalDate groupDate;
 
     @Column(nullable = false)
-    private LocalDate dueDate;
-
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Category category;
 
@@ -75,7 +72,7 @@ public class OnceGroupEntity extends BaseTimeEntity {
     @Builder
     private OnceGroupEntity(String title, String introduction, int currentPeopleCount,
         int maxPeopleCount, Status status, String location, int coverImg, Category category,
-        LocalDate groupDate,LocalDate dueDate, List<CommentEntity> comments,
+        LocalDate groupDate, List<CommentEntity> comments,
         UserEntity userEntity, GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
         this.title = title;
         this.introduction = introduction;
@@ -86,9 +83,7 @@ public class OnceGroupEntity extends BaseTimeEntity {
         this.coverImg = coverImg;
         this.category = category;
         this.gongbaekTimeSlotEntity = gongbaekTimeSlotEntity;
-
         this.groupDate = groupDate;
-        this.dueDate = dueDate;
         this.comments = comments;
         this.userEntity = userEntity;
     }

@@ -26,12 +26,12 @@ public record NearestEveryGroup(
                 entity.getCategory(),
                 GroupType.WEEKLY,
                 entity.getTitle(),
-                entity.getWeekDate(),
-                WeekDate.getNextMeetingDate(entity.getWeekDate()),
+                entity.getGongbaekTimeSlotEntity().getWeekDate(),
+                WeekDate.getNextMeetingDate(entity.getGongbaekTimeSlotEntity().getWeekDate()),
                 entity.getCurrentPeopleCount(),
                 entity.getMaxPeopleCount(),
-                entity.getStartTime(),
-                entity.getEndTime(),
+                entity.getGongbaekTimeSlotEntity().getStartTime(),
+                entity.getGongbaekTimeSlotEntity().getEndTime(),
                 entity.getLocation()
         );
     }

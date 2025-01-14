@@ -30,8 +30,8 @@ public record NearestOnceGroup(
                 entity.getGroupDate(),
                 entity.getCurrentPeopleCount(),
                 entity.getMaxPeopleCount(),
-                entity.getStartTime(),
-                entity.getEndTime(),
+                entity.getGongbaekTimeSlotEntity().getStartTime(),
+                entity.getGongbaekTimeSlotEntity().getEndTime(),
                 entity.getLocation()
         );
     }

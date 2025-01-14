@@ -1,16 +1,16 @@
 package com.ggang.be.domain.userEveryGroup.application;
 
 
-import com.ggang.be.api.group.everyGroup.service.UserEveryGroupService;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
+import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.ReadEveryGroupMember;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.ReadEveryGroup;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;
-import com.ggang.be.domain.userEveryGroup.dto.NearestEveryGroup;
 import com.ggang.be.domain.userEveryGroup.dto.FillMember;
+import com.ggang.be.domain.userEveryGroup.dto.NearestEveryGroup;
 import com.ggang.be.domain.userEveryGroup.infra.UserEveryGroupRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 
 @Service
@@ -44,8 +42,6 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
 
     @Override
     public ReadEveryGroup getMyAppliedGroups(UserEntity currentUser, boolean status){
-        List<UserEveryGroupEntity> userEveryGroupEntities
-            = userEveryGroupRepository.findByUserEntity_id(currentUser.getId());
         List<UserEveryGroupEntity> userEveryGroupEntities = getMyEveryGroup(currentUser);
 
         return ReadEveryGroup.of(groupVoMaker.makeEveryGroup(getGroupsByStatus(userEveryGroupEntities, status)));
@@ -62,7 +58,7 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
 
     private EveryGroupEntity getNearestGroup(List<EveryGroupEntity> groups) {
         return groups.stream()
-                .min(Comparator.comparing(EveryGroupEntity::getDueDate))
+                .min(Comparator.comparing(group -> WeekDate.getNextMeetingDate(group.getGongbaekTimeSlotEntity().getWeekDate())))
                 .orElse(null);
     }
 

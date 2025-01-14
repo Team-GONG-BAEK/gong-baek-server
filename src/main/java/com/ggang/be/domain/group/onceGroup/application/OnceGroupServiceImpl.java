@@ -16,12 +16,13 @@ import com.ggang.be.domain.group.onceGroup.infra.OnceGroupRepository;
 import com.ggang.be.domain.group.vo.GroupCommentVo;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.user.UserEntity;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -123,7 +124,6 @@ public class OnceGroupServiceImpl implements OnceGroupService {
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
         return OnceGroupEntity.builder()
             .groupDate(serviceRequest.weekDate())
-            .dueDate(serviceRequest.weekDate())
             .category(serviceRequest.category())
             .coverImg(serviceRequest.coverImg())
             .location(serviceRequest.location())

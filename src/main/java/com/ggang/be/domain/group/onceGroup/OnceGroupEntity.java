@@ -1,4 +1,4 @@
-package com.ggang.be.domain.onceGroup;
+package com.ggang.be.domain.group.onceGroup;
 
 import com.ggang.be.domain.BaseTimeEntity;
 import com.ggang.be.domain.comment.CommentEntity;
@@ -27,7 +27,7 @@ public class OnceGroupEntity extends BaseTimeEntity {
     @JoinColumn(name = "creator_user_id")
     private UserEntity userEntity;
 
-    @OneToMany(mappedBy = "onceGroupEntity")
+    @OneToMany(mappedBy = "onceGroupEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserOnceGroupEntity> participantUsers = new LinkedHashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

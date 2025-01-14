@@ -1,7 +1,7 @@
-package com.ggang.be.domain.lectureTimeSlot.vo;
+package com.ggang.be.domain.timslot.lectureTimeSlot.vo;
 
 import com.ggang.be.domain.constant.WeekDate;
-import com.ggang.be.domain.lectureTimeSlot.LectureTimeSlotEntity;
+import com.ggang.be.domain.timslot.lectureTimeSlot.LectureTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
 
 public record LectureTimeSlotVo(WeekDate weekDate, Double startTime, Double endTime) {

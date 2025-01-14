@@ -1,11 +1,12 @@
-package com.ggang.be.domain.lectureTimeSlot.application;
+package com.ggang.be.domain.timslot.lectureTimeSlot.application;
 
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
-import com.ggang.be.domain.lectureTimeSlot.dto.LectureTimeSlotRequest;
-import com.ggang.be.domain.lectureTimeSlot.vo.LectureTimeSlotVo;
-import com.ggang.be.domain.lectureTimeSlot.infra.LectureTimeSlotRepository;
+import com.ggang.be.domain.timslot.lectureTimeSlot.LectureTimeSlotEntity;
+import com.ggang.be.domain.timslot.lectureTimeSlot.dto.LectureTimeSlotRequest;
+import com.ggang.be.domain.timslot.lectureTimeSlot.vo.LectureTimeSlotVo;
+import com.ggang.be.domain.timslot.lectureTimeSlot.infra.LectureTimeSlotRepository;
 import com.ggang.be.domain.user.UserEntity;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,12 @@ public class LectureTimeSlotServiceImpl implements LectureTimeSlotService {
                 dto.startTime(), dto.endTime(), findUserEntity, dto.weekDate()
         ))
             throw new GongBaekException(ResponseError.TIME_SLOT_ALREADY_EXIST);
+    }
+
+    @Override
+    public List<LectureTimeSlotEntity> readUserTime(UserEntity userById) {
+        return lectureTimeSlotRepository.findAllByUserEntity(
+            userById);
     }
 
 }

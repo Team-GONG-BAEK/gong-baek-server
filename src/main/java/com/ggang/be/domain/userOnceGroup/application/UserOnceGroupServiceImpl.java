@@ -72,7 +72,14 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
                 .map(UserOnceGroupEntity::getOnceGroupEntity)
                 .filter(group -> filterByStatus(group, status))
                 .collect(Collectors.toList());
+                .filter(group -> filterByStatus(group, status))
     }
+
+    @Override
+    public List<UserOnceGroupEntity> readUserTIme(UserEntity findUserEntity) {
+        return userOnceGroupRepository.findAllByUserEntity(findUserEntity);
+    }
+
 
     private FillMember makeUserOnceFillMemberResponse(UserOnceGroupEntity ue) {
         OnceGroupEntity onceGroupEntity = ue.getOnceGroupEntity();

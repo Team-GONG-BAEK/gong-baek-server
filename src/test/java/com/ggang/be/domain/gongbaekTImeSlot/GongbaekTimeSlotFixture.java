@@ -1,7 +1,7 @@
 package com.ggang.be.domain.gongbaekTImeSlot;
 
 import com.ggang.be.domain.constant.WeekDate;
-import com.ggang.be.domain.gongbaekTimeSlot.GongbaekTimeSlotEntity;
+import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 
 public class GongbaekTimeSlotFixture {
 

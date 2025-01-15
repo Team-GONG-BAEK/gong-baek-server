@@ -1,15 +1,13 @@
 package com.ggang.be.api.group.everyGroup.service;
 
 import com.ggang.be.domain.comment.CommentEntity;
-import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDetail;
 import com.ggang.be.domain.group.everyGroup.dto.ReadEveryGroup;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
+import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
-
-import java.util.List;
 
 public interface EveryGroupService {
     EveryGroupDetail getEveryGroupDetail(final long groupId, UserEntity userEntity);
@@ -18,8 +16,6 @@ public interface EveryGroupService {
 
     ReadEveryGroup getMyRegisteredGroups(UserEntity currentUser, boolean status);
 
-    List<EveryGroupEntity> getGroupsByStatus(List<EveryGroupEntity> everyGroupEntities, boolean status);
-
     EveryGroupEntity findEveryGroupEntityByGroupId(long groupId);
 
     void writeCommentInGroup(CommentEntity commentEntity, final long groupId);
@@ -27,7 +23,9 @@ public interface EveryGroupService {
     ReadCommentGroup readCommentInGroup(UserEntity userEntity, boolean commentEntity, final long groupId);
 
     Long registerEveryGroup(RegisterGroupServiceRequest serviceRequest,
-        GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
+                            GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
 
     void isExistedInTime(RegisterGroupServiceRequest serviceRequest);
+
+    ReadEveryGroup getActiveEveryGroups(UserEntity currentUser);
 }

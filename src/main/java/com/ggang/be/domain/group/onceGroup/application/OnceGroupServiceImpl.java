@@ -141,6 +141,12 @@ public class OnceGroupServiceImpl implements OnceGroupService {
         return true;
     }
 
+    @Override
+    @Transactional
+    public boolean validateCancelOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity){
+        return onceGroupEntity.isApply(currentUser);
+    }
+
     private OnceGroupEntity buildOnceGroupEntity(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
         return OnceGroupEntity.builder()

@@ -102,7 +102,12 @@ public class EveryGroupEntity extends BaseTimeEntity {
     }
 
     public void addCurrentPeopleCount() {
-        this.currentPeopleCount = this.currentPeopleCount + 1;
+        this.currentPeopleCount++;
+        checkCurrentStatus(this.currentPeopleCount, this.maxPeopleCount);
+    }
+
+    public void decreaseCurrentPeopleCount() {
+        this.currentPeopleCount--;
         checkCurrentStatus(this.currentPeopleCount, this.maxPeopleCount);
     }
 

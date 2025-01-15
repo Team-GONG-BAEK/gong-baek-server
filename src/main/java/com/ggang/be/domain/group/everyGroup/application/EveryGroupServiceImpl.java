@@ -133,6 +133,11 @@ public class EveryGroupServiceImpl implements EveryGroupService {
         return true;
     }
 
+    @Override
+    public boolean validateCancelEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
+        return everyGroupEntity.isApply(currentUser);
+    }
+
     private EveryGroupEntity buildEveryGroupEntity(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
         return EveryGroupEntity.builder()

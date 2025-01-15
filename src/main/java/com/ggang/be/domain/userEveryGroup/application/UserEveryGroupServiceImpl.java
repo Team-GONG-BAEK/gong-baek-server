@@ -49,7 +49,7 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
                 .build();
 
         userEveryGroupRepository.save(userEveryGroupEntity);
-        everyGroupEntity.setCurrentPeopleCount();
+        everyGroupEntity.addCurrentPeopleCount();
     }
 
     @Override

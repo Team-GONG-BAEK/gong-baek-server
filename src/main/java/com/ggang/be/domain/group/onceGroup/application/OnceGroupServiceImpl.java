@@ -134,11 +134,9 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     @Override
     @Transactional
     public boolean validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity){
-        if(onceGroupEntity.isApply(currentUser) || onceGroupEntity.isHost(currentUser))
-            throw new GongBaekException(ResponseError.USERNAME_ALREADY_EXISTS);
-
-        if(onceGroupEntity.getCurrentPeopleCount() == onceGroupEntity.getMaxPeopleCount())
-            throw new GongBaekException(ResponseError.GROUP_ALREADY_FULL);
+        validateAlreadyApplied(currentUser, onceGroupEntity);
+        validateHostAccess(currentUser, onceGroupEntity);
+        validateGroupFull(onceGroupEntity);
 
         return true;
     }
@@ -158,6 +156,24 @@ public class OnceGroupServiceImpl implements OnceGroupService {
             .introduction(serviceRequest.introduction())
             .userEntity(serviceRequest.userEntity())
             .build();
+    }
+
+    private void validateAlreadyApplied(UserEntity currentUser, OnceGroupEntity onceGroupEntity) {
+        if(onceGroupEntity.isApply(currentUser)) {
+            throw new GongBaekException(ResponseError.APPLY_ALREADY_EXIST);
+        }
+    }
+
+    private void validateHostAccess(UserEntity currentUser, OnceGroupEntity onceGroupEntity) {
+        if(onceGroupEntity.isHost(currentUser)) {
+            throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
+        }
+    }
+
+    private void validateGroupFull(OnceGroupEntity onceGroupEntity) {
+        if(onceGroupEntity.getCurrentPeopleCount() == onceGroupEntity.getMaxPeopleCount()) {
+            throw new GongBaekException(ResponseError.GROUP_ALREADY_FULL);
+        }
     }
 
     private OnceGroupEntity findIdOrThrow(final long groupId) {

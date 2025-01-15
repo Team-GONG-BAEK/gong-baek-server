@@ -127,11 +127,9 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     @Override
     @Transactional
     public boolean validateApplyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity){
-        if(everyGroupEntity.isApply(currentUser) || everyGroupEntity.isHost(currentUser))
-            throw new GongBaekException(ResponseError.APPLY_ALREADY_EXIST);
-
-        if(everyGroupEntity.getCurrentPeopleCount() >= everyGroupEntity.getMaxPeopleCount())
-            throw new GongBaekException(ResponseError.GROUP_ALREADY_FULL);
+        validateAlreadyApplied(currentUser, everyGroupEntity);
+        validateHostAccess(currentUser, everyGroupEntity);
+        validateGroupFull(everyGroupEntity);
 
         return true;
     }
@@ -159,6 +157,24 @@ public class EveryGroupServiceImpl implements EveryGroupService {
             (serviceRequest.userEntity(), serviceRequest.startTime(), serviceRequest.endTime(),
                 serviceRequest.weekDay(), Status.CLOSED))
             throw new GongBaekException(ResponseError.GROUP_ALREADY_EXIST);
+    }
+
+    private void validateAlreadyApplied(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
+        if(everyGroupEntity.isApply(currentUser)) {
+            throw new GongBaekException(ResponseError.APPLY_ALREADY_EXIST);
+        }
+    }
+
+    private void validateHostAccess(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
+        if(everyGroupEntity.isHost(currentUser)) {
+            throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
+        }
+    }
+
+    private void validateGroupFull(EveryGroupEntity everyGroupEntity) {
+        if(everyGroupEntity.getCurrentPeopleCount() == everyGroupEntity.getMaxPeopleCount()) {
+            throw new GongBaekException(ResponseError.GROUP_ALREADY_FULL);
+        }
     }
 
     private EveryGroupEntity findIdOrThrow(final long groupId) {

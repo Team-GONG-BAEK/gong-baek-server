@@ -71,7 +71,7 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
                 .build();
 
         userOnceGroupRepository.save(userOnceGroupEntity);
-        onceGroupEntity.setCurrentPeopleCount();
+        onceGroupEntity.addCurrentPeopleCount();
     }
 
     private OnceGroupEntity getNearestGroup(List<OnceGroupEntity> groups) {

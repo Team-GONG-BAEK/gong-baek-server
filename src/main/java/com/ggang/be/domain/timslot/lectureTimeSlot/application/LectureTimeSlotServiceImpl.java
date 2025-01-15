@@ -41,7 +41,7 @@ public class LectureTimeSlotServiceImpl implements LectureTimeSlotService {
 
     @Override
     public boolean isActiveGroupsInLectureTimeSlot(UserEntity findUserEntity, double startTime, double endTime, WeekDate weekDate) {
-        return lectureTimeSlotRepository.isInTime(startTime, endTime, findUserEntity, weekDate);
+        return lectureTimeSlotRepository.isPossibleTime(startTime, endTime, findUserEntity, weekDate);
     }
 
     @Override

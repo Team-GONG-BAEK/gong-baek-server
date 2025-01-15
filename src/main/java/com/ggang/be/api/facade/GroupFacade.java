@@ -140,7 +140,14 @@ public class GroupFacade {
     public List<ActiveGroupsResponse> getFillGroups(long userId) {
         UserEntity currentUser = userService.getUserById(userId);
 
-        List<GroupVo> allGroups = getActiveGroups(currentUser);
+        List<EveryGroupVo> everyGroupResponses = getActiveEveryGroups(currentUser);
+        List<OnceGroupVo> onceGroupResponses = getActiveOnceGroups(currentUser);
+
+        List<GroupVo> allGroups = Stream.concat(
+                        everyGroupResponses.stream().map(GroupVo::fromEveryGroup),
+                        onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
+                .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
+                .toList();
 
         return allGroups.stream()
                 .filter(groupVo -> checkGroupsLectureTimeSlot(currentUser, groupVo.startTime(), groupVo.endTime(), groupVo.weekDate()))
@@ -148,19 +155,44 @@ public class GroupFacade {
                 .collect(Collectors.toList());
     }
 
-    private List<GroupVo> getActiveGroups(UserEntity currentUser) {
-        List<EveryGroupVo> everyGroupResponses = everyGroupService.getActiveEveryGroups(currentUser).groups();
-        List<OnceGroupVo> onceGroupResponses = onceGroupService.getActiveOnceGroups(currentUser).groups();
+    public List<ActiveGroupsResponse> getLatestGroups(long userId, GroupType groupType) {
+        UserEntity currentUser = userService.getUserById(userId);
 
-        return Stream.concat(
-                        everyGroupResponses.stream().map(GroupVo::fromEveryGroup),
-                        onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
-                .sorted(Comparator.comparing(GroupVo::createdAt).reversed())
-                .toList();
+        List<GroupVo> allGroups;
+        switch (groupType) {
+            case WEEKLY -> {
+                List<EveryGroupVo> everyGroupResponses = getActiveEveryGroups(currentUser);
+                allGroups = everyGroupResponses.stream()
+                        .map(GroupVo::fromEveryGroup)
+                        .collect(Collectors.toList());
+            }
+            case ONCE -> {
+                List<OnceGroupVo> onceGroupResponses = getActiveOnceGroups(currentUser);
+                allGroups = onceGroupResponses.stream()
+                        .map(GroupVo::fromOnceGroup)
+                        .collect(Collectors.toList());
+            }
+            default -> throw new GongBaekException(ResponseError.BAD_REQUEST);
+        }
+
+        return allGroups.stream()
+                .filter(groupVo -> checkGroupsLectureTimeSlot(currentUser, groupVo.startTime(), groupVo.endTime(), groupVo.weekDate()))
+                .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
+                .limit(5)
+                .map(ActiveGroupsResponse::fromGroupVo)
+                .collect(Collectors.toList());
+    }
+
+    private List<EveryGroupVo> getActiveEveryGroups(UserEntity currentUser) {
+        return everyGroupService.getActiveEveryGroups(currentUser).groups();
+    }
+
+    private List<OnceGroupVo> getActiveOnceGroups(UserEntity currentUser) {
+        return onceGroupService.getActiveOnceGroups(currentUser).groups();
     }
 
     private boolean checkGroupsLectureTimeSlot(UserEntity findUserEntity, double startTime, double endTime, WeekDate weekDate) {
-        return !lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(findUserEntity, startTime, endTime, weekDate);
+        return lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(findUserEntity, startTime, endTime, weekDate);
     }
 
     private NearestGroupResponse getNearestGroupFromDates(NearestEveryGroup nearestEveryGroup, NearestOnceGroup nearestOnceGroup) {
@@ -184,7 +216,7 @@ public class GroupFacade {
         return Stream.concat(
                         everyGroupResponses.stream().map(GroupVo::fromEveryGroup),
                         onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
-                .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
+                .sorted(Comparator.comparing(GroupVo::createdAt).reversed())
                 .collect(Collectors.toList()
                 );
     }
@@ -200,7 +232,6 @@ public class GroupFacade {
                 .collect(Collectors.toList()
                 );
     }
-
     public ReadFillMembersResponse getGroupUsersInfo(ReadFillMembersRequest dto) {
         if (dto.groupType() == GroupType.WEEKLY) {
             EveryGroupEntity findEveryGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(

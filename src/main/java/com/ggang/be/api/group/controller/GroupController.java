@@ -9,6 +9,7 @@ import com.ggang.be.api.facade.GongbaekRequestFacade;
 import com.ggang.be.api.facade.GroupFacade;
 import com.ggang.be.api.group.dto.*;
 import com.ggang.be.domain.constant.FillGroupType;
+import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.global.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -92,6 +93,16 @@ public class GroupController {
         Long userId = jwtService.parseTokenAndGetUserId(accessToken);
 
         return ResponseBuilder.ok(groupFacade.getFillGroups(userId));
+    }
+
+    @GetMapping("/group/latest")
+    public ResponseEntity<ApiResponse<List<ActiveGroupsResponse>>> getLatestGroups(
+            @RequestHeader("Authorization") final String accessToken,
+            @RequestParam("groupType") final GroupType groupType
+    ) {
+        Long userId = jwtService.parseTokenAndGetUserId(accessToken);
+
+        return ResponseBuilder.ok(groupFacade.getLatestGroups(userId, groupType));
     }
 
     @GetMapping("/group/my/participation")

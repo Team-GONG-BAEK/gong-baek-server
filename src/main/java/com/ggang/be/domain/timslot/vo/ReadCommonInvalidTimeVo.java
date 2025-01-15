@@ -8,7 +8,6 @@ public record ReadCommonInvalidTimeVo(
     double startTime,
     double endTime
 ) {
-
     public static ReadCommonInvalidTimeVo fromLectureEntity(
         LectureTimeSlotEntity lectureTimeSlotEntity) {
         return new ReadCommonInvalidTimeVo(lectureTimeSlotEntity.getWeekDate(),

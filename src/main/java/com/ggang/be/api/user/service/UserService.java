@@ -5,7 +5,6 @@ import com.ggang.be.domain.user.dto.SaveUserSignUp;
 import com.ggang.be.domain.user.dto.UserSchoolDto;
 
 public interface UserService {
-  
     UserEntity getUserById(Long userId);
 
     UserSchoolDto getUserSchoolById(Long userId);

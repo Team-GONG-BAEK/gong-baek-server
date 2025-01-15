@@ -7,19 +7,19 @@ import com.ggang.be.domain.user.UserEntity;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class JwtService {
-
     private static final String USER_ID = "userId";
     private final JwtProperties jwtProperties;
     private final UserService userService;

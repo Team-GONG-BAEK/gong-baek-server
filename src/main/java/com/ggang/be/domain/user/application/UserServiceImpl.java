@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new GongBaekException(ResponseError.USER_NOT_FOUND));
     }
 
-
     @Override
     public UserSchoolDto getUserSchoolById(Long userId) {
         String schoolName = userRepository.findSchoolNameById(userId)
@@ -59,7 +58,6 @@ public class UserServiceImpl implements UserService {
 
         log.info("userEntity {}", build);
         return userRepository.save(build);
-
     }
 
     @Override
@@ -72,7 +70,6 @@ public class UserServiceImpl implements UserService {
     public void updateRefreshToken(String refreshToken, UserEntity userEntity) {
         userEntity.updateRefreshToken(refreshToken);
     }
-
 
     private UserEntity findByIdOrThrow(Long userId) {
         return userRepository.findById(userId)

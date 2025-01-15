@@ -43,7 +43,6 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @Slf4j
 public class GroupFacade {
-
     private final EveryGroupService everyGroupService;
     private final OnceGroupService onceGroupService;
     private final UserEveryGroupService userEveryGroupService;
@@ -134,16 +133,16 @@ public class GroupFacade {
         }
     }
 
-    private RegisterGroupServiceRequest convertDtoToServiceDto(RegisterGongbaekRequest dto,
-                                                               UserEntity findUserEntity) {
-        return RegisterGongbaekRequest.toServiceRequest(
-                findUserEntity, dto);
+    private RegisterGroupServiceRequest convertDtoToServiceDto(
+            RegisterGongbaekRequest dto, UserEntity findUserEntity
+    ) {
+        return RegisterGongbaekRequest.toServiceRequest(findUserEntity, dto);
     }
 
-    private GongbaekTimeSlotRequest convertDtoToGongbaekDto(RegisterGongbaekRequest dto,
-                                                            UserEntity findUserEntity) {
-        return RegisterGongbaekRequest.toGongbaekTimeSlotRequest(
-                findUserEntity, dto);
+    private GongbaekTimeSlotRequest convertDtoToGongbaekDto(
+            RegisterGongbaekRequest dto, UserEntity findUserEntity
+    ) {
+        return RegisterGongbaekRequest.toGongbaekTimeSlotRequest(findUserEntity, dto);
     }
 
     public ReadGroup getMyGroups(long userId, FillGroupFilterRequest filterRequestDto) {
@@ -252,6 +251,7 @@ public class GroupFacade {
                 .collect(Collectors.toList()
                 );
     }
+
     public ReadFillMembersResponse getGroupUsersInfo(ReadFillMembersRequest dto) {
         if (dto.groupType() == GroupType.WEEKLY) {
             EveryGroupEntity findEveryGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(

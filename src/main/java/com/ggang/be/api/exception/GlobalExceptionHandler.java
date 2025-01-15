@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(GongBaekException.class)
     public ResponseEntity<ApiResponse<Void>> handleGlobalException(GongBaekException e) {
         log.error("GongBaekException occurred", e);

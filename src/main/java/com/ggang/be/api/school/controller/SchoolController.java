@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class SchoolController {
-
     private final SearchSchoolFacade searchSchoolFacade;
-
 
     @GetMapping("/school/search")
     public ResponseEntity<ApiResponse<SchoolSearchResponse>> searchSchool(@RequestParam("searchKeyword") final String searchKeyword) {
@@ -27,7 +25,4 @@ public class SchoolController {
         return ResponseEntity.ok(ApiResponse.success(ResponseSuccess.OK,
             searchSchoolFacade.searchSchool(searchKeyword)));
     }
-
-
-
 }

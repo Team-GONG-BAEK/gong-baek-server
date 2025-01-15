@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class GongbaekRequestFacade {
-
     private final LectureTimeSlotService  lectureTimeSlotService;
     private final UserService userService;
 
@@ -26,9 +25,8 @@ public class GongbaekRequestFacade {
 
         UserEntity findUserEntity = userService.getUserById(userId);
 
-        checkLectureTimeSlot(dto, findUserEntity); // 지금 해당 요일에 강의시간표가 들어가져있는지? 확인
+        checkLectureTimeSlot(dto, findUserEntity);
     }
-
 
     private void isDateValid(RegisterGongbaekRequest dto) {
         if(dto.groupType() == GroupType.ONCE)
@@ -46,5 +44,4 @@ public class GongbaekRequestFacade {
             findUserEntity, dto);
         lectureTimeSlotService.isExistInLectureTImeSlot(findUserEntity, lectureTimeSlotRequest);
     }
-
 }

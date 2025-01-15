@@ -25,6 +25,20 @@ public class UserEntityFixture {
             .build();
     }
 
+    public static UserEntity createBySchool(SchoolEntity school){
+        return UserEntity.builder()
+            .nickname("test")
+            .school(school)
+            .schoolGrade(3)
+            .gender(Gender.MAN)
+            .introduction("introduction")
+            .mbti(Mbti.INFJ)
+            .profileImg(1)
+            .enterYear(2020)
+            .schoolMajorName("Computer Science")
+            .build();
+    }
+
 
     public static UserEntity create(){
 

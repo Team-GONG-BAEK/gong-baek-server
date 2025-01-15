@@ -14,4 +14,6 @@ public interface UserEveryGroupService {
     ReadEveryGroup getMyAppliedGroups(UserEntity currentUser, boolean status);
 
     NearestEveryGroup getMyNearestEveryGroup(UserEntity currentUser);
+
+    void isValidCommentAccess(UserEntity userEntity,final long groupId);
 }

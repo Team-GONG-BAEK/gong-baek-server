@@ -33,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -154,7 +155,7 @@ public class GroupFacade {
         return Stream.concat(
                         everyGroupResponses.stream().map(GroupVo::fromEveryGroup),
                         onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
-                .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
+                .sorted(Comparator.comparing(GroupVo::createdAt).reversed())
                 .toList();
     }
 
@@ -199,6 +200,7 @@ public class GroupFacade {
                 .collect(Collectors.toList()
                 );
     }
+
     public ReadFillMembersResponse getGroupUsersInfo(ReadFillMembersRequest dto) {
         if (dto.groupType() == GroupType.WEEKLY) {
             EveryGroupEntity findEveryGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(

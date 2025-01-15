@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class SchoolMajorController {
-
     private final SearchSchoolMajorFacade searchSchoolMajorFacade;
 
     @GetMapping("/school/major/search")
@@ -29,8 +28,7 @@ public class SchoolMajorController {
         log.info("schoolMajorKeyword : {}", schoolMajorKeyword);
 
         return ResponseBuilder.ok(
-            searchSchoolMajorFacade.searchSchoolMajorBySchoolName(schoolName, schoolMajorKeyword));
+                searchSchoolMajorFacade.searchSchoolMajorBySchoolName(schoolName, schoolMajorKeyword)
+        );
     }
-
-
 }

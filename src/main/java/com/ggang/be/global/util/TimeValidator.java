@@ -3,13 +3,12 @@ package com.ggang.be.global.util;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.domain.constant.WeekDate;
-import java.time.LocalDate;
 import lombok.extern.slf4j.Slf4j;
+
+import java.time.LocalDate;
 
 @Slf4j
 public class TimeValidator {
-
-
     public static  void isWeekDateRight(WeekDate writeWeekDate, LocalDate writeDate) {
         WeekDate realWeekDate = WeekDate.fromDayOfWeek(writeDate.getDayOfWeek());
         if(!realWeekDate.equals(writeWeekDate)) {
@@ -35,5 +34,4 @@ public class TimeValidator {
             throw new GongBaekException(ResponseError.BAD_REQUEST);
         }
     }
-
 }

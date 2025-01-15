@@ -14,8 +14,8 @@ import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.constant.GroupType;
-import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
+import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.global.annotation.Facade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,15 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Facade
 @RequiredArgsConstructor
 public class CommentFacade {
-
-
     private final EveryGroupService everyGroupService;
     private final OnceGroupService onceGroupService;
     private final CommentService commentService;
     private final UserEveryGroupService userEveryGroupService;
     private final UserOnceGroupService userOnceGroupService;
     private final UserService userService;
-
 
     @Transactional
     public WriteCommentResponse writeComment(final long userId, WriteCommentRequest dto) {
@@ -53,14 +50,10 @@ public class CommentFacade {
     public ReadCommentResponse readComment(Long userId, final boolean isPublic, ReadCommentRequest dto) {
         UserEntity findUserEntity = userService.getUserById(userId);
 
-
-
-
         return ReadCommentResponse.of(readByCase(findUserEntity, isPublic, dto));
     }
 
     private ReadCommentGroup readByCase(UserEntity userEntity, boolean isPublic, ReadCommentRequest dto) {
-
         if(dto.groupType() == GroupType.WEEKLY) {
             isValidEveryGroupCommentAccess(userEntity, isPublic, dto);
             return everyGroupService.readCommentInGroup(userEntity, isPublic, dto.groupId());

@@ -1,7 +1,6 @@
 package com.ggang.be.domain.userOnceGroup;
 
 import com.ggang.be.domain.BaseTimeEntity;
-import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 import jakarta.persistence.*;
@@ -34,5 +33,4 @@ public class UserOnceGroupEntity extends BaseTimeEntity {
         this.userEntity = userEntity;
         this.onceGroupEntity = onceGroupEntity;
     }
-
 }

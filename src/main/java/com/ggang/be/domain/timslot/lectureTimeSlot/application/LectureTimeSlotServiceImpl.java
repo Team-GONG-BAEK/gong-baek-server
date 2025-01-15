@@ -19,9 +19,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class LectureTimeSlotServiceImpl implements LectureTimeSlotService {
-
     private final LectureTimeSlotRepository lectureTimeSlotRepository;
-
 
     @Override
     @Transactional

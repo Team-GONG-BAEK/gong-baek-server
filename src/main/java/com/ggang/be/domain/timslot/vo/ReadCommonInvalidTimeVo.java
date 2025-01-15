@@ -9,7 +9,6 @@ public record ReadCommonInvalidTimeVo(
     double startTime,
     double endTime
 ) {
-
     public static ReadCommonInvalidTimeVo fromLectureEntity(
         int idx,
         LectureTimeSlotEntity lectureTimeSlotEntity) {

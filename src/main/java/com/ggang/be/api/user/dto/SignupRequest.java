@@ -4,8 +4,8 @@ import com.ggang.be.api.user.vo.TimeTableVo;
 import com.ggang.be.domain.constant.Gender;
 import com.ggang.be.domain.constant.Mbti;
 import com.ggang.be.domain.school.SchoolEntity;
-import com.ggang.be.domain.school.application.School;
 import com.ggang.be.domain.user.dto.SaveUserSignUp;
+
 import java.util.List;
 
 public record SignupRequest(Integer profileImg,

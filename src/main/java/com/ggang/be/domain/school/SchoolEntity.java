@@ -4,11 +4,12 @@ import com.ggang.be.domain.BaseTimeEntity;
 import com.ggang.be.domain.schoolMajor.SchoolMajorEntity;
 import com.ggang.be.domain.user.UserEntity;
 import jakarta.persistence.*;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity(name = "school")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

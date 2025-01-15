@@ -22,7 +22,6 @@ import java.util.List;
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class GroupController {
-
     private final GroupFacade groupFacade;
     private final GongbaekRequestFacade gongbaekRequestFacade;
     private final JwtService jwtService;
@@ -57,7 +56,8 @@ public class GroupController {
     @PostMapping("/gongbaek")
     public ResponseEntity<ApiResponse<RegisterGongbaekResponse>> registerGongbaek(
         @RequestHeader("Authorization") String token,
-        @RequestBody final RegisterGongbaekRequest dto) {
+        @RequestBody final RegisterGongbaekRequest dto
+    ) {
         Long userId = jwtService.parseTokenAndGetUserId(token);
 
         gongbaekRequestFacade.validateRegisterRequest(userId, dto);

@@ -1,9 +1,10 @@
 package com.ggang.be.domain.schoolMajor.infra;
 
 import com.ggang.be.domain.schoolMajor.SchoolMajorEntity;
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface SchoolMajorRepository extends JpaRepository<SchoolMajorEntity, Long> {
 

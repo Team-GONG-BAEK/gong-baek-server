@@ -13,6 +13,4 @@ public record SaveUserSignUp(Integer profileImg,
                              String introduction,
                              Gender sex,
                              SchoolEntity school) {
-
-
 }

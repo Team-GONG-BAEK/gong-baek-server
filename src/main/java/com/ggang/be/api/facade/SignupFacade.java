@@ -8,15 +8,16 @@ import com.ggang.be.api.user.dto.SignupRequest;
 import com.ggang.be.api.user.dto.SignupResponse;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.api.user.vo.TimeTableVo;
-import com.ggang.be.domain.timslot.lectureTimeSlot.vo.LectureTimeSlotVo;
 import com.ggang.be.domain.school.SchoolEntity;
+import com.ggang.be.domain.timslot.lectureTimeSlot.vo.LectureTimeSlotVo;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.SaveUserSignUp;
 import com.ggang.be.global.jwt.JwtService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -27,11 +28,9 @@ public class SignupFacade {
     private final LectureTimeSlotService lectureTimeSlotService;
     private final JwtService jwtService;
 
-
     public void duplicateCheckNickname(final String nickname) {
         userService.duplicateCheckNickname(nickname);
     }
-
 
     @Transactional
     public SignupResponse signup(SignupRequest request) {
@@ -43,8 +42,6 @@ public class SignupFacade {
 
         SaveUserSignUp saveUserSignUp = SignupRequest.toSaveUserSignUp(request,
             schoolEntityByName);
-
-
 
         UserEntity userEntity = userService.saveUserBySignup(saveUserSignUp);
 

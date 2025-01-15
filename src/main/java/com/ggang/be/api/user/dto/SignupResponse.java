@@ -4,5 +4,4 @@ public record SignupResponse(Long userId, String accessToken, String refreshToke
     public static SignupResponse of(Long userId, String accessToken, String refreshToken) {
         return new SignupResponse(userId, accessToken, refreshToken);
     }
-
 }

@@ -21,13 +21,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
-
     private final UserService userService;
     private final SignupFacade signupFacade;
     private final JwtService jwtService;
@@ -69,5 +67,4 @@ public class UserController {
         @RequestHeader("Authorization") String refreshToken) {
         return ResponseBuilder.ok(jwtService.reIssueToken(refreshToken));
     }
-
 }

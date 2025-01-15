@@ -16,10 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class GongbaekTimeController {
-
     private final JwtService jwtService;
     private final TimeTableFacade timeTableFacade;
-
 
     @GetMapping("/my/timeTable")
     public ResponseEntity<ApiResponse<ReadInvalidTimeResponse>> readMyInvalidTime(
@@ -29,6 +27,4 @@ public class GongbaekTimeController {
 
         return ResponseBuilder.ok(timeTableFacade.readMyInvalidTime(userId));
     }
-
-
 }

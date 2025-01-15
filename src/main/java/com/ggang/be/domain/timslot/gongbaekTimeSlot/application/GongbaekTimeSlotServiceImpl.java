@@ -29,7 +29,4 @@ public class GongbaekTimeSlotServiceImpl implements GongbaekTimeSlotService {
 
         return gongbaekTimeSlotRepository.save(buildEntity);
     }
-
-
-
 }

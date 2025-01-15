@@ -1,17 +1,18 @@
 package com.ggang.be.domain.group.vo;
 
-import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.comment.CommentEntity;
+import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
+
 import java.time.format.DateTimeFormatter;
 
-public record GroupCommentVo(long groupId, GroupType groupType, long commentId,boolean isWriter, boolean isGroupHost,
-                             String nickname, String body, String createdAt) {
-
+public record GroupCommentVo(
+        long groupId, GroupType groupType, long commentId,boolean isWriter,
+        boolean isGroupHost, String nickname, String body, String createdAt
+) {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
-
 
     public static GroupCommentVo ofEveryGroup(
         UserEntity nowUserEntity,

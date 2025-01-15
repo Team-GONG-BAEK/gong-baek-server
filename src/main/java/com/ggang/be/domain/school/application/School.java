@@ -7,7 +7,6 @@ import lombok.Getter;
 
 @Getter
 public class School {
-
     private Long id;
     private String schoolName;
     private String schoolDomain;

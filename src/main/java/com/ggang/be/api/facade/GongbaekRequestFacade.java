@@ -1,12 +1,9 @@
 package com.ggang.be.api.facade;
 
 import com.ggang.be.api.group.dto.RegisterGongbaekRequest;
-import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
-import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.constant.GroupType;
-import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.timslot.lectureTimeSlot.dto.LectureTimeSlotRequest;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.global.annotation.Facade;
@@ -20,10 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GongbaekRequestFacade {
 
     private final LectureTimeSlotService  lectureTimeSlotService;
-    private final OnceGroupService onceGroupService;
-    private final EveryGroupService everyGroupService;
     private final UserService userService;
-
 
     public void validateRegisterRequest(Long userId, RegisterGongbaekRequest dto) {
         TimeValidator.isTimeValid(dto.startTime(), dto.endTime());
@@ -32,17 +26,9 @@ public class GongbaekRequestFacade {
 
         UserEntity findUserEntity = userService.getUserById(userId);
 
-        isRequestTimeTableValid(dto, findUserEntity);
-
         checkLectureTimeSlot(dto, findUserEntity); // 지금 해당 요일에 강의시간표가 들어가져있는지? 확인
     }
 
-    private void isRequestTimeTableValid(RegisterGongbaekRequest dto, UserEntity findUserEntity) {
-        RegisterGroupServiceRequest serviceRequest = RegisterGongbaekRequest.toServiceRequest(
-            findUserEntity, dto);
-        everyGroupService.isExistedInTime(serviceRequest);
-        onceGroupService.isExistInOnceGroupTimeSlot(serviceRequest);
-    }
 
     private void isDateValid(RegisterGongbaekRequest dto) {
         if(dto.groupType() == GroupType.ONCE)

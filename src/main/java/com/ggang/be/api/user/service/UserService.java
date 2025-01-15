@@ -13,4 +13,8 @@ public interface UserService {
     boolean duplicateCheckNickname(String nickname);
 
     UserEntity saveUserBySignup(SaveUserSignUp request);
+
+    void validateRefreshToken(UserEntity findUser, String refreshToken);
+
+    void updateRefreshToken(String refreshToken, UserEntity userEntity);
 }

@@ -13,7 +13,10 @@ import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.comment.CommentEntity;
+import com.ggang.be.domain.common.SameSchoolValidator;
 import com.ggang.be.domain.constant.GroupType;
+import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
+import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.global.annotation.Facade;
@@ -29,6 +32,7 @@ public class CommentFacade {
     private final UserEveryGroupService userEveryGroupService;
     private final UserOnceGroupService userOnceGroupService;
     private final UserService userService;
+    private final SameSchoolValidator sameSchoolValidator;
 
     @Transactional
     public WriteCommentResponse writeComment(final long userId, WriteCommentRequest dto) {
@@ -55,10 +59,16 @@ public class CommentFacade {
 
     private ReadCommentGroup readByCase(UserEntity userEntity, boolean isPublic, ReadCommentRequest dto) {
         if(dto.groupType() == GroupType.WEEKLY) {
+            EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(
+                dto.groupId());
+            sameSchoolValidator.isUserReadMySchoolEveryGroup(userEntity, everyGroupEntity);
             isValidEveryGroupCommentAccess(userEntity, isPublic, dto);
             return everyGroupService.readCommentInGroup(userEntity, isPublic, dto.groupId());
         }
         if(dto.groupType() == GroupType.ONCE) {
+            OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(
+                dto.groupId());
+            sameSchoolValidator.isUserReadMySchoolOnceGroup(userEntity, onceGroupEntity);
             isValidOnceGroupCommentAccess(userEntity, isPublic, dto);
             return onceGroupService.readCommentInGroup(userEntity, isPublic, dto.groupId());
         }

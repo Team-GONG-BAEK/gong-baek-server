@@ -13,6 +13,8 @@ import com.ggang.be.api.user.dto.ValidIntroductionRequest;
 import com.ggang.be.api.user.dto.UserSchoolResponseDto;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.user.dto.UserSchoolDto;
+import com.ggang.be.global.jwt.JwtService;
+import com.ggang.be.global.jwt.TokenVo;
 import com.ggang.be.global.util.LengthValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,7 @@ public class UserController {
     private final static int INTRODUCTION_MIN_LENGTH = 20;
     private final static int INTRODUCTION_MAX_LENGTH = 100;
     private final SignupFacade signupFacade;
+    private final JwtService jwtService;
 
 
     @GetMapping("/user/validate/introduction")
@@ -59,5 +62,15 @@ public class UserController {
         UserSchoolDto userSchoolDto = userService.getUserSchoolById(Long.parseLong(accessToken));
         return ResponseEntity.ok(ApiResponse.success(ResponseSuccess.OK, UserSchoolResponseDto.of(userSchoolDto)));
     }
+
+
+
+    @PatchMapping("/reissue/token")
+    public ResponseEntity<ApiResponse<TokenVo>> reIssueToken(
+        @RequestHeader("Authorization") String refreshToken) {
+        return ResponseBuilder.ok(jwtService.reIssueToken(refreshToken));
+    }
+
+
 
 }

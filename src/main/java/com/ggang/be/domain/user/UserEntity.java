@@ -15,9 +15,11 @@ import jakarta.persistence.*;
 
 import java.util.List;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
 @Entity(name = "user")
+@DynamicUpdate
 @Table(indexes = {
     @Index(name="user_nickname_index", columnList = "nickname")
 })
@@ -41,6 +43,9 @@ public class UserEntity extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String schoolMajorName;
+
+    @Lob
+    private String refreshToken;
 
     private int profileImg;
 
@@ -70,6 +75,10 @@ public class UserEntity extends BaseTimeEntity {
     @OneToMany(mappedBy = "userEntity")
     private List<LectureTimeSlotEntity> lectureTimeSlotEntities;
 
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
 
     @Builder
     private UserEntity(SchoolEntity school, String schoolMajorName, int profileImg, String nickname,
@@ -83,5 +92,9 @@ public class UserEntity extends BaseTimeEntity {
         this.mbti = mbti;
         this.gender = gender;
         this.introduction = introduction;
+    }
+
+    public boolean validateRefreshToken(String refreshToken) {
+        return this.refreshToken.equals(refreshToken);
     }
 }

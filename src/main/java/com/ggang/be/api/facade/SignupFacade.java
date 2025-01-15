@@ -44,7 +44,10 @@ public class SignupFacade {
         SaveUserSignUp saveUserSignUp = SignupRequest.toSaveUserSignUp(request,
             schoolEntityByName);
 
+
+
         UserEntity userEntity = userService.saveUserBySignup(saveUserSignUp);
+
         List<LectureTimeSlotVo> lectureTimeSlotVos = request.timeTable().stream()
             .map(TimeTableVo::toLectureTimeSlotVo)
             .toList();
@@ -66,6 +69,8 @@ public class SignupFacade {
         Long userId = userEntity.getId();
         String accessToken = jwtService.createAccessToken(userId);
         String refreshToken = jwtService.createRefreshToken(userId);
+
+        userService.updateRefreshToken(refreshToken, userEntity);
 
         return SignupResponse.of(userId, accessToken, refreshToken);
     }

@@ -62,6 +62,18 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public void validateRefreshToken(UserEntity findUser, String refreshToken) {
+        if(!findUser.validateRefreshToken(refreshToken))
+            throw new GongBaekException(ResponseError.INVALID_TOKEN);
+    }
+
+    @Override
+    public void updateRefreshToken(String refreshToken, UserEntity userEntity) {
+        userEntity.updateRefreshToken(refreshToken);
+    }
+
+
     private UserEntity findByIdOrThrow(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new GongBaekException(ResponseError.USER_NOT_FOUND));

@@ -2,17 +2,18 @@ package com.ggang.be.global.jwt;
 
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
+import com.ggang.be.api.user.service.UserService;
+import com.ggang.be.domain.user.UserEntity;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import io.micrometer.common.util.StringUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.Objects;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class JwtService {
 
     private static final String USER_ID = "userId";
     private final JwtProperties jwtProperties;
+    private final UserService userService;
 
     public String createAccessToken(final Long userId) {
         SecretKey secretKey = getSecretKey();
@@ -34,6 +36,10 @@ public class JwtService {
 
     public String createRefreshToken(final Long userId) {
         SecretKey secretKey = getSecretKey();
+        return buildRefreshToken(userId, secretKey);
+    }
+
+    private String buildRefreshToken(Long userId, SecretKey secretKey) {
         return Jwts.builder()
             .subject(userId.toString())
             .expiration(new Date(System.currentTimeMillis() + jwtProperties.getRefreshExpiration()))
@@ -41,6 +47,23 @@ public class JwtService {
             .signWith(secretKey)
             .compact();
     }
+
+    @Transactional
+    public TokenVo reIssueToken(final String refreshToken) {
+        Long userId = parseTokenAndGetUserId(refreshToken);
+        UserEntity findUser = userService.getUserById(userId);
+        String extractPrefixToken = refreshToken.split(" ")[1];
+        isValidRefreshToken(findUser, extractPrefixToken);
+        String renewRefreshToken = createRefreshToken(userId);
+        findUser.updateRefreshToken(renewRefreshToken);
+
+        return TokenVo.of(userId, createAccessToken(userId), renewRefreshToken);
+    }
+
+    private void isValidRefreshToken(UserEntity findUser, String refreshToken) {
+        userService.validateRefreshToken(findUser, refreshToken);
+    }
+
 
     public Long parseTokenAndGetUserId(String token) {
         isValidToken(token);
@@ -68,8 +91,9 @@ public class JwtService {
 
 
     public void isValidToken(String token) {
-        if (token == null || !token.startsWith("Bearer "))
+        if (token == null || !token.startsWith("Bearer ")) {
             throw new GongBaekException(ResponseError.INVALID_TOKEN);
+        }
 
         try {
             String splitToken = token.split(" ")[1];

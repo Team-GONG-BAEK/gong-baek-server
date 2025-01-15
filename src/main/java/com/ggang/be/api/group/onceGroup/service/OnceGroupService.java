@@ -30,4 +30,5 @@ public interface OnceGroupService {
 
     ReadOnceGroup getActiveOnceGroups(UserEntity currentUser);
 
+    boolean validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);
 }

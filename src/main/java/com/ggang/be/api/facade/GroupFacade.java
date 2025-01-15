@@ -114,6 +114,26 @@ public class GroupFacade {
         throw new GongBaekException(ResponseError.BAD_REQUEST);
     }
 
+    @Transactional
+    public void applyGroup(Long userId, GroupRequest requesDto) {
+        UserEntity findUserEntity = userService.getUserById(userId);
+
+        switch (requesDto.groupType()){
+            case WEEKLY -> {
+                EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(requesDto.groupId());
+                if(everyGroupService.validateApplyEveryGroup(findUserEntity, everyGroupEntity))
+                    userEveryGroupService.applyEveryGroup(findUserEntity, everyGroupEntity);
+                else throw new GongBaekException(ResponseError.BAD_REQUEST);
+            }
+            case ONCE -> {
+                OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(requesDto.groupId());
+                if(onceGroupService.validateApplyOnceGroup(findUserEntity, onceGroupEntity))
+                    userOnceGroupService.applyOnceGroup(findUserEntity, onceGroupEntity);
+                else throw new GongBaekException(ResponseError.BAD_REQUEST);
+            }
+        }
+    }
+
     private RegisterGroupServiceRequest convertDtoToServiceDto(RegisterGongbaekRequest dto,
                                                                UserEntity findUserEntity) {
         return RegisterGongbaekRequest.toServiceRequest(

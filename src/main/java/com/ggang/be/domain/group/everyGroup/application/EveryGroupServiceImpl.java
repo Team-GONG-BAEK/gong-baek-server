@@ -123,6 +123,16 @@ public class EveryGroupServiceImpl implements EveryGroupService {
         return everyGroupRepository.save(buildEntity).getId();
     }
 
+    @Override
+    @Transactional
+    public boolean validateApplyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity){
+        validateAlreadyApplied(currentUser, everyGroupEntity);
+        validateHostAccess(currentUser, everyGroupEntity);
+        validateGroupFull(everyGroupEntity);
+
+        return true;
+    }
+
     private EveryGroupEntity buildEveryGroupEntity(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
         return EveryGroupEntity.builder()
@@ -140,6 +150,31 @@ public class EveryGroupServiceImpl implements EveryGroupService {
             .build();
     }
 
+    @Override
+    public void isExistedInTime(RegisterGroupServiceRequest serviceRequest) {
+        if(everyGroupRepository.isInTime
+            (serviceRequest.userEntity(), serviceRequest.startTime(), serviceRequest.endTime(),
+                serviceRequest.weekDay(), Status.CLOSED))
+            throw new GongBaekException(ResponseError.GROUP_ALREADY_EXIST);
+    }
+
+    private void validateAlreadyApplied(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
+        if(everyGroupEntity.isApply(currentUser)) {
+            throw new GongBaekException(ResponseError.APPLY_ALREADY_EXIST);
+        }
+    }
+
+    private void validateHostAccess(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
+        if(everyGroupEntity.isHost(currentUser)) {
+            throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
+        }
+    }
+
+    private void validateGroupFull(EveryGroupEntity everyGroupEntity) {
+        if(everyGroupEntity.getCurrentPeopleCount() == everyGroupEntity.getMaxPeopleCount()) {
+            throw new GongBaekException(ResponseError.GROUP_ALREADY_FULL);
+        }
+    }
 
     private EveryGroupEntity findIdOrThrow(final long groupId) {
         return everyGroupRepository.findById(groupId).orElseThrow(

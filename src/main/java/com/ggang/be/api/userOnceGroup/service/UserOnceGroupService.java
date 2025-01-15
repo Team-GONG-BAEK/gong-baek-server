@@ -1,6 +1,7 @@
 package com.ggang.be.api.userOnceGroup.service;
 
 import com.ggang.be.domain.group.dto.ReadOnceGroupMember;
+import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.group.onceGroup.dto.ReadOnceGroup;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userEveryGroup.dto.FillMember;
@@ -17,6 +18,8 @@ public interface UserOnceGroupService {
     NearestOnceGroup getMyNearestOnceGroup(UserEntity currentUser);
 
     List<UserOnceGroupEntity> readUserTIme(UserEntity findUserEntity);
+
+    void applyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);
 
     void isValidCommentAccess(UserEntity userEntity, final long groupId);
 }

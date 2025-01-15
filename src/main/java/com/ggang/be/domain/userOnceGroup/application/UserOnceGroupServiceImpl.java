@@ -12,13 +12,14 @@ import com.ggang.be.domain.userEveryGroup.dto.FillMember;
 import com.ggang.be.domain.userOnceGroup.UserOnceGroupEntity;
 import com.ggang.be.domain.userOnceGroup.dto.NearestOnceGroup;
 import com.ggang.be.domain.userOnceGroup.infra.UserOnceGroupRepository;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +64,18 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
     @Override
     public List<UserOnceGroupEntity> readUserTIme(UserEntity findUserEntity) {
         return userOnceGroupRepository.findAllByUserEntity(findUserEntity);
+    }
+
+    @Override
+    @Transactional
+    public void applyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity){
+        UserOnceGroupEntity userOnceGroupEntity = UserOnceGroupEntity.builder()
+                .userEntity(currentUser)
+                .onceGroupEntity(onceGroupEntity)
+                .build();
+
+        userOnceGroupRepository.save(userOnceGroupEntity);
+        onceGroupEntity.addCurrentPeopleCount();
     }
 
     @Override

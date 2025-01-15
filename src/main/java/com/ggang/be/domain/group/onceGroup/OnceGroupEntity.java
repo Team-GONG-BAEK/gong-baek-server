@@ -100,4 +100,18 @@ public class OnceGroupEntity extends BaseTimeEntity {
     public void addComment(CommentEntity commentEntity) {
         this.comments.add(commentEntity);
     }
+
+    public void addCurrentPeopleCount() {
+        this.currentPeopleCount = this.currentPeopleCount + 1;
+        checkCurrentStatus(this.currentPeopleCount, this.maxPeopleCount);
+    }
+
+    private void checkCurrentStatus(long currentPeopleCount, long maxPeopleCount){
+        if(currentPeopleCount < maxPeopleCount) {
+            this.status = Status.RECRUITING;
+        }
+        else this.status = Status.RECRUITED;
+    }
+
+    // TODO 동기화 작업 하기
 }

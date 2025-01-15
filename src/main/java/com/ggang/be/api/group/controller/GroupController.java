@@ -113,4 +113,15 @@ public class GroupController {
 
         return ResponseBuilder.ok(groupFacade.getNearestGroupInfo(userId));
     }
+
+    @PostMapping("/group")
+    public ResponseEntity<ApiResponse<Void>> applyGroup(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody final GroupRequest requestDto
+    ) {
+        Long userId = jwtService.parseTokenAndGetUserId(accessToken);
+        groupFacade.applyGroup(userId, requestDto);
+
+        return ResponseBuilder.ok(null);
+    }
 }

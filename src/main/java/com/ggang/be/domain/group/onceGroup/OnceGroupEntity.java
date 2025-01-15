@@ -100,4 +100,16 @@ public class OnceGroupEntity extends BaseTimeEntity {
     public void addComment(CommentEntity commentEntity) {
         this.comments.add(commentEntity);
     }
+
+    public void setCurrentPeopleCount() {
+        this.currentPeopleCount = this.currentPeopleCount + 1;
+        setCurrentStatus(this.currentPeopleCount, this.maxPeopleCount);
+    }
+
+    private void setCurrentStatus(long currentPeopleCount, long maxPeopleCount){
+        if(currentPeopleCount < maxPeopleCount) {
+            this.status = Status.RECRUITING;
+        }
+        else this.status = Status.RECRUITED;
+    }
 }

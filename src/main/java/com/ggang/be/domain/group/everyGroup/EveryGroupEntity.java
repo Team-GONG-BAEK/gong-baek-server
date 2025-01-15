@@ -11,12 +11,12 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import lombok.NoArgsConstructor;
 
 @Getter
 @Entity(name = "every_group")
@@ -99,5 +99,17 @@ public class EveryGroupEntity extends BaseTimeEntity {
 
     public void addComment(CommentEntity commentEntity) {
         this.comments.add(commentEntity);
+    }
+
+    public void setCurrentPeopleCount() {
+        this.currentPeopleCount = this.currentPeopleCount + 1;
+        setCurrentStatus(this.currentPeopleCount, this.maxPeopleCount);
+    }
+
+    private void setCurrentStatus(long currentPeopleCount, long maxPeopleCount){
+        if(currentPeopleCount < maxPeopleCount) {
+            this.status = Status.RECRUITING;
+        }
+        else this.status = Status.RECRUITED;
     }
 }

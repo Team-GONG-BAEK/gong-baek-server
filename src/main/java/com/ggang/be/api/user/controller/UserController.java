@@ -9,12 +9,11 @@ import com.ggang.be.api.facade.SignupFacade;
 import com.ggang.be.api.user.NicknameValidator;
 import com.ggang.be.api.user.dto.SignupRequest;
 import com.ggang.be.api.user.dto.SignupResponse;
-import com.ggang.be.api.user.dto.ValidIntroductionRequest;
 import com.ggang.be.api.user.dto.UserSchoolResponseDto;
+import com.ggang.be.api.user.dto.ValidIntroductionRequest;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.user.dto.UserSchoolDto;
 import com.ggang.be.global.jwt.JwtService;
-import com.ggang.be.global.jwt.TokenVo;
 import com.ggang.be.global.util.LengthValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,12 +28,11 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-
-    private final static int INTRODUCTION_MIN_LENGTH = 20;
-    private final static int INTRODUCTION_MAX_LENGTH = 100;
     private final SignupFacade signupFacade;
     private final JwtService jwtService;
 
+    private final static int INTRODUCTION_MIN_LENGTH = 20;
+    private final static int INTRODUCTION_MAX_LENGTH = 100;
 
     @GetMapping("/user/validate/introduction")
     public ResponseEntity<ApiResponse<Void>> validateIntroduction(@RequestBody final ValidIntroductionRequest dto) {
@@ -57,20 +55,12 @@ public class UserController {
   
     @GetMapping("/user/school")
     public ResponseEntity<ApiResponse<UserSchoolResponseDto>> getGroupInfo(
-            @RequestHeader("Authorization") String accessToken
+            @RequestHeader("Authorization") final String accessToken
     ) {
-        UserSchoolDto userSchoolDto = userService.getUserSchoolById(Long.parseLong(accessToken));
+        Long userId = jwtService.parseTokenAndGetUserId(accessToken);
+        UserSchoolDto userSchoolDto = userService.getUserSchoolById(userId);
+
         return ResponseEntity.ok(ApiResponse.success(ResponseSuccess.OK, UserSchoolResponseDto.of(userSchoolDto)));
     }
-
-
-
-    @PatchMapping("/reissue/token")
-    public ResponseEntity<ApiResponse<TokenVo>> reIssueToken(
-        @RequestHeader("Authorization") String refreshToken) {
-        return ResponseBuilder.ok(jwtService.reIssueToken(refreshToken));
-    }
-
-
 
 }

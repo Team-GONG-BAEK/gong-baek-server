@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @Slf4j
 public class UserEveryGroupServiceImpl implements UserEveryGroupService {
-
     private final UserEveryGroupRepository userEveryGroupRepository;
     private final GroupVoMaker groupVoMaker;
 
@@ -71,6 +70,8 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
 
         EveryGroupEntity nearestGroup = getNearestGroup(getGroupsByStatus(userEveryGroupEntities, true));
 
+        if (nearestGroup == null) return null;
+
         return NearestEveryGroup.toDto(nearestGroup);
     }
 
@@ -107,5 +108,4 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
             .equals(userEntity.getNickname());
         return FillMember.of(userEntity, isHost);
     }
-
 }

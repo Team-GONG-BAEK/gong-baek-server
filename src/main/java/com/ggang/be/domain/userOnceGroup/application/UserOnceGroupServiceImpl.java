@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @Slf4j
 public class UserOnceGroupServiceImpl implements UserOnceGroupService {
-
     private final UserOnceGroupRepository userOnceGroupRepository;
     private final GroupVoMaker groupVoMaker;
 
@@ -55,8 +54,9 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
     public NearestOnceGroup getMyNearestOnceGroup(UserEntity currentUser) {
         List<UserOnceGroupEntity> userOnceGroupEntities = getMyOnceGroup(currentUser);
 
-        OnceGroupEntity nearestGroup = getNearestGroup(
-            getGroupsByStatus(userOnceGroupEntities, true));
+        OnceGroupEntity nearestGroup = getNearestGroup(getGroupsByStatus(userOnceGroupEntities, true));
+
+        if (nearestGroup == null) return null;
 
         return NearestOnceGroup.toDto(nearestGroup);
     }
@@ -120,5 +120,4 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
         return (status && group.getStatus().isActive()) || (!status && group.getStatus()
             .isClosed());
     }
-
 }

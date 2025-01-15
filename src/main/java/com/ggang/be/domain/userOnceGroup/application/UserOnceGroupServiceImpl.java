@@ -79,6 +79,17 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
     }
 
     @Override
+    @Transactional
+    public void cancelOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity){
+        UserOnceGroupEntity userOnceGroupEntity = userOnceGroupRepository.findByUserEntityAndOnceGroupEntity(currentUser, onceGroupEntity)
+                .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_CANCEL_NOT_FOUND));
+
+        userOnceGroupRepository.delete(userOnceGroupEntity);
+        onceGroupEntity.decreaseCurrentPeopleCount();
+        onceGroupEntity.getParticipantUsers().remove(userOnceGroupEntity);
+    }
+
+    @Override
     public void isValidCommentAccess(UserEntity userEntity, long groupId) {
         List<UserOnceGroupEntity> userOnceGroupEntities = userOnceGroupRepository.findAllByUserEntity(
             userEntity);
@@ -87,7 +98,6 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
             .noneMatch(ue -> ue.getOnceGroupEntity().getId() == groupId)) {
             throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
         }
-
     }
 
     private OnceGroupEntity getNearestGroup(List<OnceGroupEntity> groups) {

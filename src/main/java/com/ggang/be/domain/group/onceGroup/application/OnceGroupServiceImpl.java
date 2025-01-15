@@ -131,6 +131,17 @@ public class OnceGroupServiceImpl implements OnceGroupService {
             throw new GongBaekException(ResponseError.GROUP_ALREADY_EXIST);
     }
 
+    @Override
+    @Transactional
+    public boolean validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity){
+        if(onceGroupEntity.isApply(currentUser) || onceGroupEntity.isHost(currentUser))
+            throw new GongBaekException(ResponseError.USERNAME_ALREADY_EXISTS);
+
+        if(onceGroupEntity.getCurrentPeopleCount() == onceGroupEntity.getMaxPeopleCount())
+            throw new GongBaekException(ResponseError.GROUP_ALREADY_FULL);
+
+        return true;
+    }
 
     private OnceGroupEntity buildOnceGroupEntity(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {

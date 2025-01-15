@@ -1,6 +1,7 @@
 package com.ggang.be.api.userEveryGroup.service;
 
 import com.ggang.be.domain.group.dto.ReadEveryGroupMember;
+import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.ReadEveryGroup;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userEveryGroup.dto.FillMember;
@@ -14,4 +15,6 @@ public interface UserEveryGroupService {
     ReadEveryGroup getMyAppliedGroups(UserEntity currentUser, boolean status);
 
     NearestEveryGroup getMyNearestEveryGroup(UserEntity currentUser);
+
+    void applyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
 }

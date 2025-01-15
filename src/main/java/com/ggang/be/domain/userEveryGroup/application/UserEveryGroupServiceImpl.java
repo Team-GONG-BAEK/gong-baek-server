@@ -41,6 +41,18 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
     }
 
     @Override
+    @Transactional
+    public void applyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity){
+        UserEveryGroupEntity userEveryGroupEntity = UserEveryGroupEntity.builder()
+                .userEntity(currentUser)
+                .everyGroupEntity(everyGroupEntity)
+                .build();
+
+        userEveryGroupRepository.save(userEveryGroupEntity);
+        everyGroupEntity.setCurrentPeopleCount();
+    }
+
+    @Override
     public ReadEveryGroup getMyAppliedGroups(UserEntity currentUser, boolean status){
         List<UserEveryGroupEntity> userEveryGroupEntities = getMyEveryGroup(currentUser);
 

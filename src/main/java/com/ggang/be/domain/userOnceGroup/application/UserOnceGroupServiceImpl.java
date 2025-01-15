@@ -62,6 +62,18 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
         return userOnceGroupRepository.findAllByUserEntity(findUserEntity);
     }
 
+    @Override
+    @Transactional
+    public void applyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity){
+        UserOnceGroupEntity userOnceGroupEntity = UserOnceGroupEntity.builder()
+                .userEntity(currentUser)
+                .onceGroupEntity(onceGroupEntity)
+                .build();
+
+        userOnceGroupRepository.save(userOnceGroupEntity);
+        onceGroupEntity.setCurrentPeopleCount();
+    }
+
     private OnceGroupEntity getNearestGroup(List<OnceGroupEntity> groups) {
         return groups.stream()
                 .min(Comparator.comparing(OnceGroupEntity::getGroupDate))

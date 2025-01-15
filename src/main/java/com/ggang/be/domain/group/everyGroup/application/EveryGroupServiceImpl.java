@@ -124,6 +124,18 @@ public class EveryGroupServiceImpl implements EveryGroupService {
         return everyGroupRepository.save(buildEntity).getId();
     }
 
+    @Override
+    @Transactional
+    public boolean validateApplyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity){
+        if(everyGroupEntity.isApply(currentUser) || everyGroupEntity.isHost(currentUser))
+            throw new GongBaekException(ResponseError.APPLY_ALREADY_EXIST);
+
+        if(everyGroupEntity.getCurrentPeopleCount() >= everyGroupEntity.getMaxPeopleCount())
+            throw new GongBaekException(ResponseError.GROUP_ALREADY_FULL);
+
+        return true;
+    }
+
     private EveryGroupEntity buildEveryGroupEntity(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
         return EveryGroupEntity.builder()
@@ -148,7 +160,6 @@ public class EveryGroupServiceImpl implements EveryGroupService {
                 serviceRequest.weekDay(), Status.CLOSED))
             throw new GongBaekException(ResponseError.GROUP_ALREADY_EXIST);
     }
-
 
     private EveryGroupEntity findIdOrThrow(final long groupId) {
         return everyGroupRepository.findById(groupId).orElseThrow(

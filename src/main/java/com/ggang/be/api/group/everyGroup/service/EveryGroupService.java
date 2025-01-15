@@ -28,4 +28,6 @@ public interface EveryGroupService {
     void isExistedInTime(RegisterGroupServiceRequest serviceRequest);
 
     ReadEveryGroup getActiveEveryGroups(UserEntity currentUser);
+
+    boolean validateApplyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
 }

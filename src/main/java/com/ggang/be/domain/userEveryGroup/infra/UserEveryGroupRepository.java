@@ -7,6 +7,7 @@ import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserEveryGroupRepository extends JpaRepository<UserEveryGroupEntity, Long> {
     List<UserEveryGroupEntity> findUserEveryGroupEntityByEveryGroupEntity(EveryGroupEntity entity);
@@ -14,4 +15,6 @@ public interface UserEveryGroupRepository extends JpaRepository<UserEveryGroupEn
     List<UserEveryGroupEntity> findByUserEntity_id(Long id);
 
     List<UserEveryGroupEntity> findAllByUserEntity(UserEntity findUserEntity);
+
+    Optional<UserEveryGroupEntity> findByUserEntityAndEveryGroupEntity(UserEntity userEntity, EveryGroupEntity everyGroupEntity);
 }

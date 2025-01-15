@@ -54,6 +54,17 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
     }
 
     @Override
+    @Transactional
+    public void cancelEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity){
+        UserEveryGroupEntity userEveryGroupEntity
+                = userEveryGroupRepository.findByUserEntityAndEveryGroupEntity(currentUser, everyGroupEntity)
+                .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_CANCEL_NOT_FOUND));
+
+        userEveryGroupRepository.delete(userEveryGroupEntity);
+        everyGroupEntity.decreaseCurrentPeopleCount();
+    }
+
+    @Override
     public ReadEveryGroup getMyAppliedGroups(UserEntity currentUser, boolean status){
         List<UserEveryGroupEntity> userEveryGroupEntities = getMyEveryGroup(currentUser);
 

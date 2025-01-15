@@ -19,4 +19,6 @@ public interface UserEveryGroupService {
     void isValidCommentAccess(UserEntity userEntity,final long groupId);
 
     void applyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
+
+    void cancelEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
 }

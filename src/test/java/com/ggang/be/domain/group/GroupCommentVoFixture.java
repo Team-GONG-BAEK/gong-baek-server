@@ -14,6 +14,7 @@ public class GroupCommentVoFixture {
             GroupType.ONCE,
             commentId,
             true,
+            true,
             "TestUser",
             "This is a sample comment body.",
             now.format(formatter)
@@ -26,6 +27,7 @@ public class GroupCommentVoFixture {
             groupId,
             GroupType.WEEKLY,
             commentId,
+            true,
             true,
             "TestUser",
             "This is a sample comment body.",

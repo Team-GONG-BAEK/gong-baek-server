@@ -1,6 +1,8 @@
 package com.ggang.be.domain.userEveryGroup.application;
 
 
+import com.ggang.be.api.common.ResponseError;
+import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.group.GroupVoMaker;
@@ -70,6 +72,15 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
         EveryGroupEntity nearestGroup = getNearestGroup(getGroupsByStatus(userEveryGroupEntities, true));
 
         return NearestEveryGroup.toDto(nearestGroup);
+    }
+
+    @Override
+    public void isValidCommentAccess(UserEntity userEntity, final long groupId) {
+        List<UserEveryGroupEntity> userEveryGroupEntities = userEveryGroupRepository.findAllByUserEntity(userEntity);
+
+        if(userEveryGroupEntities.stream().noneMatch(ue -> ue.getEveryGroupEntity().getId().equals(groupId)))
+            throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
+
     }
 
     private EveryGroupEntity getNearestGroup(List<EveryGroupEntity> groups) {

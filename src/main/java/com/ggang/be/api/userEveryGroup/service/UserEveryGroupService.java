@@ -16,5 +16,7 @@ public interface UserEveryGroupService {
 
     NearestEveryGroup getMyNearestEveryGroup(UserEntity currentUser);
 
+    void isValidCommentAccess(UserEntity userEntity,final long groupId);
+
     void applyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
 }

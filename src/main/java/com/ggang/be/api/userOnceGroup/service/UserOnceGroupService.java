@@ -20,4 +20,6 @@ public interface UserOnceGroupService {
     List<UserOnceGroupEntity> readUserTIme(UserEntity findUserEntity);
 
     void applyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);
+
+    void isValidCommentAccess(UserEntity userEntity, final long groupId);
 }

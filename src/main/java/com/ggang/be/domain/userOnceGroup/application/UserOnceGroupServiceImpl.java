@@ -1,5 +1,7 @@
 package com.ggang.be.domain.userOnceGroup.application;
 
+import com.ggang.be.api.common.ResponseError;
+import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.ReadOnceGroupMember;
@@ -38,21 +40,23 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
     }
 
     @Override
-    public ReadOnceGroup getMyAppliedGroups(UserEntity currentUser, boolean status){
+    public ReadOnceGroup getMyAppliedGroups(UserEntity currentUser, boolean status) {
         List<UserOnceGroupEntity> userOnceGroupEntities = getMyOnceGroup(currentUser);
 
-        List<OnceGroupEntity> filteredGroups = getGroupsByStatus(userOnceGroupEntities, status).stream()
-                .filter(group -> !group.getUserEntity().getId().equals(currentUser.getId()))
-                .toList();
+        List<OnceGroupEntity> filteredGroups = getGroupsByStatus(userOnceGroupEntities,
+            status).stream()
+            .filter(group -> !group.getUserEntity().getId().equals(currentUser.getId()))
+            .toList();
 
         return ReadOnceGroup.of(groupVoMaker.makeOnceGroup(filteredGroups));
     }
 
     @Override
-    public NearestOnceGroup getMyNearestOnceGroup(UserEntity currentUser){
+    public NearestOnceGroup getMyNearestOnceGroup(UserEntity currentUser) {
         List<UserOnceGroupEntity> userOnceGroupEntities = getMyOnceGroup(currentUser);
 
-        OnceGroupEntity nearestGroup = getNearestGroup(getGroupsByStatus(userOnceGroupEntities, true));
+        OnceGroupEntity nearestGroup = getNearestGroup(
+            getGroupsByStatus(userOnceGroupEntities, true));
 
         return NearestOnceGroup.toDto(nearestGroup);
     }
@@ -74,32 +78,47 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
         onceGroupEntity.addCurrentPeopleCount();
     }
 
-    private OnceGroupEntity getNearestGroup(List<OnceGroupEntity> groups) {
-        return groups.stream()
-                .min(Comparator.comparing(OnceGroupEntity::getGroupDate))
-                .orElse(null);
+    @Override
+    public void isValidCommentAccess(UserEntity userEntity, long groupId) {
+        List<UserOnceGroupEntity> userOnceGroupEntities = userOnceGroupRepository.findAllByUserEntity(
+            userEntity);
+
+        if (userOnceGroupEntities.stream()
+            .noneMatch(ue -> ue.getOnceGroupEntity().getId() == groupId)) {
+            throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
+        }
+
     }
 
-    private List<UserOnceGroupEntity> getMyOnceGroup(UserEntity currentUser){
+    private OnceGroupEntity getNearestGroup(List<OnceGroupEntity> groups) {
+        return groups.stream()
+            .min(Comparator.comparing(OnceGroupEntity::getGroupDate))
+            .orElse(null);
+    }
+
+    private List<UserOnceGroupEntity> getMyOnceGroup(UserEntity currentUser) {
         return userOnceGroupRepository.findByUserEntity_id(currentUser.getId());
     }
 
-    private List<OnceGroupEntity> getGroupsByStatus(List<UserOnceGroupEntity> userOnceGroupEntities, boolean status) {
+    private List<OnceGroupEntity> getGroupsByStatus(List<UserOnceGroupEntity> userOnceGroupEntities,
+        boolean status) {
         return userOnceGroupEntities.stream()
-                .map(UserOnceGroupEntity::getOnceGroupEntity)
-                .filter(group -> filterByStatus(group, status))
-                .collect(Collectors.toList());
+            .map(UserOnceGroupEntity::getOnceGroupEntity)
+            .filter(group -> filterByStatus(group, status))
+            .collect(Collectors.toList());
     }
 
     private FillMember makeUserOnceFillMemberResponse(UserOnceGroupEntity ue) {
         OnceGroupEntity onceGroupEntity = ue.getOnceGroupEntity();
         UserEntity userEntity = ue.getUserEntity();
-        boolean isHost = onceGroupEntity.getUserEntity().getNickname().equals(userEntity.getNickname());
+        boolean isHost = onceGroupEntity.getUserEntity().getNickname()
+            .equals(userEntity.getNickname());
         return FillMember.of(userEntity, isHost);
     }
 
     private boolean filterByStatus(OnceGroupEntity group, boolean status) {
-        return (status && group.getStatus().isActive()) || (!status && group.getStatus().isClosed());
+        return (status && group.getStatus().isActive()) || (!status && group.getStatus()
+            .isClosed());
     }
 
 }

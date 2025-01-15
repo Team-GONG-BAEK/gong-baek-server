@@ -10,6 +10,8 @@ import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.api.user.service.UserService;
+import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
+import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.user.UserEntity;
@@ -26,6 +28,8 @@ public class CommentFacade {
     private final EveryGroupService everyGroupService;
     private final OnceGroupService onceGroupService;
     private final CommentService commentService;
+    private final UserEveryGroupService userEveryGroupService;
+    private final UserOnceGroupService userOnceGroupService;
     private final UserService userService;
 
 
@@ -46,16 +50,36 @@ public class CommentFacade {
             onceGroupService.writeCommentInGroup(commentEntity, dto.groupId());
     }
 
-    public ReadCommentResponse readComment(final boolean isPublic, ReadCommentRequest dto) {
-        return ReadCommentResponse.of(readByCase(isPublic, dto));
+    public ReadCommentResponse readComment(Long userId, final boolean isPublic, ReadCommentRequest dto) {
+        UserEntity findUserEntity = userService.getUserById(userId);
+
+
+
+
+        return ReadCommentResponse.of(readByCase(findUserEntity, isPublic, dto));
     }
 
-    private ReadCommentGroup readByCase(boolean isPublic, ReadCommentRequest dto) {
-        if(dto.groupType() == GroupType.WEEKLY)
-            return everyGroupService.readCommentInGroup(isPublic, dto.groupId());
-        if(dto.groupType() == GroupType.ONCE)
-            return onceGroupService.readCommentInGroup(isPublic, dto.groupId());
+    private ReadCommentGroup readByCase(UserEntity userEntity, boolean isPublic, ReadCommentRequest dto) {
+
+        if(dto.groupType() == GroupType.WEEKLY) {
+            isValidEveryGroupCommentAccess(userEntity, isPublic, dto);
+            return everyGroupService.readCommentInGroup(userEntity, isPublic, dto.groupId());
+        }
+        if(dto.groupType() == GroupType.ONCE) {
+            isValidOnceGroupCommentAccess(userEntity, isPublic, dto);
+            return onceGroupService.readCommentInGroup(userEntity, isPublic, dto.groupId());
+        }
         throw new GongBaekException(ResponseError.BAD_REQUEST);
+    }
+
+    private void isValidOnceGroupCommentAccess(UserEntity userEntity, boolean isPublic, ReadCommentRequest dto) {
+        if(!isPublic)
+            userOnceGroupService.isValidCommentAccess(userEntity, dto.groupId());
+    }
+
+    private void isValidEveryGroupCommentAccess(UserEntity userEntity, boolean isPublic, ReadCommentRequest dto) {
+        if(!isPublic)
+            userEveryGroupService.isValidCommentAccess(userEntity, dto.groupId());
     }
 
 }

@@ -101,15 +101,17 @@ public class EveryGroupEntity extends BaseTimeEntity {
         this.comments.add(commentEntity);
     }
 
-    public void setCurrentPeopleCount() {
+    public void addCurrentPeopleCount() {
         this.currentPeopleCount = this.currentPeopleCount + 1;
-        setCurrentStatus(this.currentPeopleCount, this.maxPeopleCount);
+        checkCurrentStatus(this.currentPeopleCount, this.maxPeopleCount);
     }
 
-    private void setCurrentStatus(long currentPeopleCount, long maxPeopleCount){
+    private void checkCurrentStatus(long currentPeopleCount, long maxPeopleCount){
         if(currentPeopleCount < maxPeopleCount) {
             this.status = Status.RECRUITING;
         }
         else this.status = Status.RECRUITED;
     }
+
+    // TODO 동기화 작업 하기
 }

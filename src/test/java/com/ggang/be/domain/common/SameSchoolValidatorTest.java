@@ -1,7 +1,5 @@
 package com.ggang.be.domain.common;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.EveryGroupFixture;
@@ -14,11 +12,7 @@ import com.ggang.be.domain.user.fixture.UserEntityFixture;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 class SameSchoolValidatorTest {
 
     private SameSchoolValidator sameSchoolValidator = new SameSchoolValidator();

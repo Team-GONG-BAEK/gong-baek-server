@@ -5,7 +5,6 @@ import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.constant.Status;
-import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.group.GroupCommentVoMaker;
 import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
@@ -15,13 +14,15 @@ import com.ggang.be.domain.group.everyGroup.dto.ReadEveryGroup;
 import com.ggang.be.domain.group.everyGroup.infra.EveryGroupRepository;
 import com.ggang.be.domain.group.vo.GroupCommentVo;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
+import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +54,19 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     }
 
     @Override
-    public List<EveryGroupEntity> getGroupsByStatus(List<EveryGroupEntity> everyGroupEntities, boolean status) {
+    public ReadEveryGroup getActiveEveryGroups(UserEntity currentUser) {
+        List<EveryGroupEntity> everyGroupEntities = everyGroupRepository.findAll();
+
+        return ReadEveryGroup.of(groupVoMaker.makeEveryGroup(getRecruitingGroups(everyGroupEntities)));
+    }
+
+    private List<EveryGroupEntity> getRecruitingGroups(List<EveryGroupEntity> everyGroupEntities) {
+        return everyGroupEntities.stream()
+                .filter(group -> group.getStatus().isRecruiting())
+                .collect(Collectors.toList());
+    }
+
+    private List<EveryGroupEntity> getGroupsByStatus(List<EveryGroupEntity> everyGroupEntities, boolean status) {
         if (status) {
             return everyGroupEntities.stream()
                     .filter(group -> group.getStatus().isActive())

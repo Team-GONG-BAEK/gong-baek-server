@@ -1,16 +1,17 @@
 package com.ggang.be.domain.group.onceGroup.dto;
 
-import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.constant.Category;
+import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
+import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record OnceGroupVo(long groupId, Status status, Category category, int coverImg, GroupType groupType,
                           String groupTitle, LocalDate dateTime, double startTime, double endTime, String location,
-                          LocalDateTime createdAt) {
+                          LocalDateTime createdAt, GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
     public static OnceGroupVo of(OnceGroupEntity onceGroupEntity) {
         return new OnceGroupVo(
                 onceGroupEntity.getId(),
@@ -23,7 +24,8 @@ public record OnceGroupVo(long groupId, Status status, Category category, int co
                 onceGroupEntity.getGongbaekTimeSlotEntity().getStartTime(),
                 onceGroupEntity.getGongbaekTimeSlotEntity().getEndTime(),
                 onceGroupEntity.getLocation(),
-                onceGroupEntity.getCreatedAt()
+                onceGroupEntity.getCreatedAt(),
+                onceGroupEntity.getGongbaekTimeSlotEntity()
         );
     }
 }

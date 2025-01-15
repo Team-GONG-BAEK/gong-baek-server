@@ -17,4 +17,6 @@ public interface UserOnceGroupService {
     NearestOnceGroup getMyNearestOnceGroup(UserEntity currentUser);
 
     List<UserOnceGroupEntity> readUserTIme(UserEntity findUserEntity);
+
+    void isValidCommentAccess(UserEntity userEntity, final long groupId);
 }

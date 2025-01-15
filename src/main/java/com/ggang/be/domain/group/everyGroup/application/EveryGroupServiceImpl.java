@@ -95,7 +95,7 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     }
 
     @Override
-    public ReadCommentGroup readCommentInGroup(boolean isPublic, long groupId) {
+    public ReadCommentGroup readCommentInGroup(UserEntity userEntity, boolean isPublic, long groupId) {
 
         EveryGroupEntity everyGroupEntity = everyGroupRepository.findById(groupId)
                 .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_NOT_FOUND));
@@ -106,7 +106,7 @@ public class EveryGroupServiceImpl implements EveryGroupService {
         int commentCount = commentEntities.size();
 
         List<GroupCommentVo> onceGroupCommentVos = groupCommentVoMaker.makeByEveryGroup(
-                commentEntities, everyGroupEntity);
+                userEntity, commentEntities, everyGroupEntity);
 
         return ReadCommentGroup.of(commentCount, onceGroupCommentVos);
 

@@ -14,7 +14,6 @@ import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.common.SameSchoolValidator;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.dto.GroupVo;
-import com.ggang.be.domain.group.dto.ReadGroup;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupVo;
@@ -179,7 +178,7 @@ public class GroupFacade {
         return RegisterGongbaekRequest.toGongbaekTimeSlotRequest(findUserEntity, dto);
     }
 
-    public ReadGroup getMyGroups(long userId, FillGroupFilterRequest filterRequestDto) {
+    public List<MyGroupResponse> getMyGroups(long userId, FillGroupFilterRequest filterRequestDto) {
         UserEntity currentUser = userService.getUserById(userId);
 
         List<GroupVo> groupResponses = switch (filterRequestDto.getFillGroupCategory()) {
@@ -187,7 +186,9 @@ public class GroupFacade {
             case APPLY -> getGroupsApply(currentUser, filterRequestDto.status());
         };
 
-        return ReadGroup.of(groupResponses);
+        return groupResponses.stream()
+                .map(MyGroupResponse::fromGroupVo)
+                .collect(Collectors.toList());
     }
 
     public List<ActiveGroupsResponse> getFillGroups(long userId) {

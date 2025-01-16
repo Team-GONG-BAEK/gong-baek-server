@@ -114,21 +114,41 @@ public class GroupFacade {
     }
 
     @Transactional
-    public void applyGroup(Long userId, GroupRequest requesDto) {
+    public void applyGroup(Long userId, GroupRequest requestDto) {
         UserEntity findUserEntity = userService.getUserById(userId);
 
-        switch (requesDto.groupType()){
+        switch (requestDto.groupType()){
             case WEEKLY -> {
-                EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(requesDto.groupId());
+                EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(requestDto.groupId());
                 if(everyGroupService.validateApplyEveryGroup(findUserEntity, everyGroupEntity))
                     userEveryGroupService.applyEveryGroup(findUserEntity, everyGroupEntity);
                 else throw new GongBaekException(ResponseError.BAD_REQUEST);
             }
             case ONCE -> {
-                OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(requesDto.groupId());
+                OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(requestDto.groupId());
                 if(onceGroupService.validateApplyOnceGroup(findUserEntity, onceGroupEntity))
                     userOnceGroupService.applyOnceGroup(findUserEntity, onceGroupEntity);
                 else throw new GongBaekException(ResponseError.BAD_REQUEST);
+            }
+        }
+    }
+
+    @Transactional
+    public void cancelMyApplication(Long userId, GroupRequest requestDto) {
+        UserEntity findUserEntity = userService.getUserById(userId);
+
+        switch (requestDto.groupType()){
+            case WEEKLY -> {
+                EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(requestDto.groupId());
+                if(everyGroupService.validateCancelEveryGroup(findUserEntity, everyGroupEntity))
+                    userEveryGroupService.cancelEveryGroup(findUserEntity, everyGroupEntity);
+                else throw new GongBaekException(ResponseError.GROUP_CANCEL_NOT_FOUND);
+            }
+            case ONCE -> {
+                OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(requestDto.groupId());
+                if(onceGroupService.validateCancelOnceGroup(findUserEntity, onceGroupEntity))
+                    userOnceGroupService.cancelOnceGroup(findUserEntity, onceGroupEntity);
+                else throw new GongBaekException(ResponseError.GROUP_CANCEL_NOT_FOUND);
             }
         }
     }

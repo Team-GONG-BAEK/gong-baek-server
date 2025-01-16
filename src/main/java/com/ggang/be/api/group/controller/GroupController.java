@@ -124,4 +124,15 @@ public class GroupController {
 
         return ResponseBuilder.ok(null);
     }
+
+    @PatchMapping("/my/groups")
+    public ResponseEntity<ApiResponse<Void>> cancelMyApplication(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody final GroupRequest requestDto
+    ){
+        Long userId = jwtService.parseTokenAndGetUserId(accessToken);
+        groupFacade.cancelMyApplication(userId, requestDto);
+
+        return ResponseBuilder.ok(null);
+    }
 }

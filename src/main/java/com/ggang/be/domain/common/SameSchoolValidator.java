@@ -9,15 +9,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SameSchoolValidator {
-
-
     public void isUserReadMySchoolEveryGroup(UserEntity userEntity, EveryGroupEntity everyGroupEntity) {
         String groupCreatorSchoolName = everyGroupEntity.getUserEntity().getSchool().getSchoolName();
         String userSchoolName = userEntity.getSchool().getSchoolName();
         if (!groupCreatorSchoolName.equals(userSchoolName))
             throw new GongBaekException(ResponseError.GROUP_ACCESS_SCHOOL_MISMATCH);
     }
-
 
     public void isUserReadMySchoolOnceGroup(UserEntity userEntity, OnceGroupEntity onceGroupEntity) {
         String groupCreatorSchoolName = onceGroupEntity.getUserEntity().getSchool().getSchoolName();
@@ -26,5 +23,4 @@ public class SameSchoolValidator {
             throw new GongBaekException(ResponseError.GROUP_ACCESS_SCHOOL_MISMATCH);
 
     }
-
 }

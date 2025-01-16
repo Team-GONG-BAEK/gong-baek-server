@@ -4,7 +4,6 @@ import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.domain.comment.CommentEntity;
-import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.group.GroupCommentVoMaker;
 import com.ggang.be.domain.group.GroupVoMaker;
@@ -126,22 +125,11 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     }
 
     @Override
-    public void isExistInOnceGroupTimeSlot(RegisterGroupServiceRequest serviceRequest) {
-
-        if(onceGroupRepository.isInTime
-            (serviceRequest.userEntity(), serviceRequest.startTime(), serviceRequest.endTime(),
-                serviceRequest.weekDate(), Status.CLOSED))
-            throw new GongBaekException(ResponseError.GROUP_ALREADY_EXIST);
-    }
-
-    @Override
     @Transactional
-    public boolean validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity){
+    public void validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity){
         validateAlreadyApplied(currentUser, onceGroupEntity);
         validateHostAccess(currentUser, onceGroupEntity);
         validateGroupFull(onceGroupEntity);
-
-        return true;
     }
 
     @Override

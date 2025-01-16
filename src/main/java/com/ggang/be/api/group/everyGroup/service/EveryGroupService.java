@@ -25,11 +25,9 @@ public interface EveryGroupService {
     Long registerEveryGroup(RegisterGroupServiceRequest serviceRequest,
                             GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
 
-    void isExistedInTime(RegisterGroupServiceRequest serviceRequest);
-
     ReadEveryGroup getActiveEveryGroups(UserEntity currentUser);
 
-    boolean validateApplyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
+    void validateApplyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
 
     boolean validateCancelEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
 }

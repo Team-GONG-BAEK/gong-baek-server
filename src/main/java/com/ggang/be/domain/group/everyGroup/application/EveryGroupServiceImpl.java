@@ -10,7 +10,7 @@ import com.ggang.be.domain.group.GroupCommentVoMaker;
 import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
-import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDetail;
+import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDto;
 import com.ggang.be.domain.group.everyGroup.dto.ReadEveryGroup;
 import com.ggang.be.domain.group.everyGroup.infra.EveryGroupRepository;
 import com.ggang.be.domain.group.everyGroup.vo.ReadEveryGroupCommentCommonVo;
@@ -38,9 +38,9 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     private final SameSchoolValidator sameSchoolValidator;
 
     @Override
-    public EveryGroupDetail getEveryGroupDetail(final long groupId, final UserEntity userEntity) {
+    public EveryGroupDto getEveryGroupDetail(final long groupId, final UserEntity userEntity) {
         EveryGroupEntity entity = findIdOrThrow(groupId);
-        return EveryGroupDetail.toDto(entity, userEntity);
+        return EveryGroupDto.toDto(entity, userEntity);
     }
 
     @Override

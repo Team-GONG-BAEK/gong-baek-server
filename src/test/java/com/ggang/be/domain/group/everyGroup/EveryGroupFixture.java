@@ -2,12 +2,11 @@ package com.ggang.be.domain.group.everyGroup;
 
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
-import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.gongbaekTImeSlot.GongbaekTimeSlotFixture;
-import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.school.SchoolEntity;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.fixture.UserEntityFixture;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 

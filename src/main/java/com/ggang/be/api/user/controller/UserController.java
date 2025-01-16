@@ -33,7 +33,7 @@ public class UserController {
     private final static int INTRODUCTION_MIN_LENGTH = 20;
     private final static int INTRODUCTION_MAX_LENGTH = 100;
 
-    @GetMapping("/user/validate/introduction")
+    @PostMapping("/user/validate/introduction")
     public ResponseEntity<ApiResponse<Void>> validateIntroduction(@RequestBody final ValidIntroductionRequest dto) {
         if(LengthValidator.rangelengthCheck(dto.introduction(), INTRODUCTION_MIN_LENGTH, INTRODUCTION_MAX_LENGTH))
             return ResponseBuilder.ok(null);

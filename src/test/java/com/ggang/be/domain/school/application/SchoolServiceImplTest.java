@@ -43,12 +43,11 @@ class SchoolServiceImplTest {
         when(schoolRepository.findContainingSearchKeyword("schoolName")).thenReturn(List.of(schoolDomain1, schoolDomain2));
 
         // when
-        List<SchoolSearchVo> schoolName = schoolServiceImpl.searchSchoolContainingKeyword(
+        List<String> schoolName = schoolServiceImpl.searchSchoolContainingKeyword(
             "schoolName");
 
         // then
         Assertions.assertThat(schoolName).hasSize(2)
-            .extracting("schoolName")
             .containsExactly("1", "2");
     }
 

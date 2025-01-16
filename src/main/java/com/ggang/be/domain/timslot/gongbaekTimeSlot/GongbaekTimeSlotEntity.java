@@ -29,8 +29,9 @@ public class GongbaekTimeSlotEntity extends BaseTimeEntity {
     private UserEntity userEntity;
 
     @Builder
-    private GongbaekTimeSlotEntity(WeekDate weekDate, double startTime, double endTime,
-        UserEntity userEntity) {
+    private GongbaekTimeSlotEntity(
+            WeekDate weekDate, double startTime, double endTime, UserEntity userEntity
+    ) {
         this.weekDate = weekDate;
         this.startTime = startTime;
         this.endTime = endTime;

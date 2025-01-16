@@ -3,7 +3,7 @@ package com.ggang.be.api.mapper;
 import com.ggang.be.api.group.dto.GroupResponse;
 import com.ggang.be.api.group.dto.NearestGroupResponse;
 import com.ggang.be.domain.constant.GroupType;
-import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDetail;
+import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDto;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupDto;
 import com.ggang.be.domain.userEveryGroup.dto.NearestEveryGroup;
 import com.ggang.be.domain.userOnceGroup.dto.NearestOnceGroup;
@@ -30,7 +30,7 @@ public record GroupResponseMapper() {
         );
     }
 
-    public static GroupResponse fromEveryGroup(EveryGroupDetail dto) {
+    public static GroupResponse fromEveryGroup(EveryGroupDto dto) {
         return new GroupResponse(
             dto.groupId(),
             GroupType.WEEKLY.toString(),
@@ -44,10 +44,10 @@ public record GroupResponseMapper() {
             dto.introduction(),
             dto.category(),
             dto.coverImg(),
-            dto.weekDay(),
+            dto.gongbaekTimeSlotEntity().getWeekDate(),
             null,
-            dto.startTime(),
-            dto.endTime()
+            dto.gongbaekTimeSlotEntity().getStartTime(),
+            dto.gongbaekTimeSlotEntity().getEndTime()
         );
     }
 

@@ -6,6 +6,7 @@ import com.ggang.be.domain.userOnceGroup.UserOnceGroupEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserOnceGroupRepository extends JpaRepository<UserOnceGroupEntity, Long> {
 
@@ -14,4 +15,6 @@ public interface UserOnceGroupRepository extends JpaRepository<UserOnceGroupEnti
     List<UserOnceGroupEntity> findByUserEntity_id(Long id);
 
     List<UserOnceGroupEntity> findAllByUserEntity(UserEntity userEntity);
+
+    Optional<UserOnceGroupEntity> findByUserEntityAndOnceGroupEntity(UserEntity userEntity, OnceGroupEntity onceGroupEntity);
 }

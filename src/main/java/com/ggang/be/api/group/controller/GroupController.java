@@ -68,8 +68,8 @@ public class GroupController {
     @GetMapping("/fill/members")
     public ResponseEntity<ApiResponse<ReadFillMembersResponse>> getGroupMembers(
         @RequestHeader("Authorization") String token, @RequestBody ReadFillMembersRequest dto) {
-        jwtService.isValidToken(token);
-        return ResponseBuilder.ok(groupFacade.getGroupUsersInfo(dto));
+        Long userId = jwtService.parseTokenAndGetUserId(token);
+        return ResponseBuilder.ok(groupFacade.getGroupUsersInfo(userId, dto));
     }
 
     @GetMapping("/my/groups")
@@ -121,6 +121,17 @@ public class GroupController {
     ) {
         Long userId = jwtService.parseTokenAndGetUserId(accessToken);
         groupFacade.applyGroup(userId, requestDto);
+
+        return ResponseBuilder.ok(null);
+    }
+
+    @PatchMapping("/my/groups")
+    public ResponseEntity<ApiResponse<Void>> cancelMyApplication(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody final GroupRequest requestDto
+    ){
+        Long userId = jwtService.parseTokenAndGetUserId(accessToken);
+        groupFacade.cancelMyApplication(userId, requestDto);
 
         return ResponseBuilder.ok(null);
     }

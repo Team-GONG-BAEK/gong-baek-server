@@ -73,8 +73,8 @@ class OnceGroupServiceImplTest {
 
         when(onceGroupRepository.findById(1L)).thenReturn(Optional.of(build));
         when(groupCommentVoMaker.makeByOnceGroup(eq(testUserEntity), eq(commentEntities), eq(build))).thenReturn(List.of(
-            GroupCommentVoFixture.createGroupCommentEveryVo(1L, 1L, LocalDateTime.now()),
-            GroupCommentVoFixture.createGroupCommentEveryVo(1L, 2L, LocalDateTime.now())
+            GroupCommentVoFixture.createGroupCommentEveryVo(1L, LocalDateTime.now()),
+            GroupCommentVoFixture.createGroupCommentEveryVo(1L, LocalDateTime.now())
         ));
 
 
@@ -103,8 +103,8 @@ class OnceGroupServiceImplTest {
 
         when(onceGroupRepository.findById(1L)).thenReturn(Optional.of(build));
         when(groupCommentVoMaker.makeByOnceGroup(eq(testUserEntity), eq(commentEntities), eq(build))).thenReturn(List.of(
-            GroupCommentVoFixture.createGroupCommentEveryVo(1L, 3L, LocalDateTime.now()),
-            GroupCommentVoFixture.createGroupCommentEveryVo(1L, 4L, LocalDateTime.now())
+            GroupCommentVoFixture.createGroupCommentEveryVo(1L,  LocalDateTime.now()),
+            GroupCommentVoFixture.createGroupCommentEveryVo(1L, LocalDateTime.now())
         ));
 
 

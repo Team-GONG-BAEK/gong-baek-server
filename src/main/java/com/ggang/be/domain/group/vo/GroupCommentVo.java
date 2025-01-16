@@ -9,7 +9,7 @@ import com.ggang.be.domain.user.UserEntity;
 import java.time.format.DateTimeFormatter;
 
 public record GroupCommentVo(
-        long groupId, GroupType groupType, long commentId,boolean isWriter,
+        long commentId,boolean isWriter,
         boolean isGroupHost, String nickname, String body, String createdAt
 ) {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
@@ -20,7 +20,7 @@ public record GroupCommentVo(
         UserEntity commentUserEntity = commentEntity.getUserEntity();
         Long creatorId = groupEntity.getUserEntity().getId();
 
-        return new GroupCommentVo(groupEntity.getId(), GroupType.WEEKLY, commentEntity.getId(),
+        return new GroupCommentVo(commentEntity.getId(),
             commentUserEntity.getId().equals(nowUserEntity.getId()),
             commentUserEntity.getId().equals(creatorId),
             commentUserEntity.getNickname(), commentEntity.getBody(),
@@ -33,7 +33,7 @@ public record GroupCommentVo(
         UserEntity commentUserEntity = commentEntity.getUserEntity();
         Long creatorId = groupEntity.getUserEntity().getId();
 
-        return new GroupCommentVo(groupEntity.getId(), GroupType.ONCE, commentEntity.getId(),
+        return new GroupCommentVo(commentEntity.getId(),
             commentUserEntity.getId().equals(nowUserEntity.getId()),
             commentUserEntity.getId().equals(creatorId),
             commentUserEntity.getNickname(), commentEntity.getBody(),

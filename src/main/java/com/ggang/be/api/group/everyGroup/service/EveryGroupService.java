@@ -30,4 +30,6 @@ public interface EveryGroupService {
     ReadEveryGroup getActiveEveryGroups(UserEntity currentUser);
 
     boolean validateApplyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
+
+    boolean validateCancelEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
 }

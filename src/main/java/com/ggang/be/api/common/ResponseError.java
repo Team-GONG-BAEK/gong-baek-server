@@ -14,6 +14,7 @@ public enum ResponseError {
     INVALID_INPUT_IMAGE_URL(4004, "잘못된 이미지 URL 입니다."),
     INVALID_INPUT_LENGTH(4005, "입력된 글자수가 허용된 범위를 벗어났습니다."),
     INVALID_INPUT_NICKNAME(4006, "닉네임은 한글로만 입력 가능합니다."),
+    GROUP_ACCESS_SCHOOL_MISMATCH(4007, "같은 학교의 모임만 조회 가능합니다."),
 
     // 401 Unauthorized
     UNAUTHORIZED_ACCESS(4010, "리소스 접근 권한이 없습니다."),

@@ -14,7 +14,6 @@ public interface OnceGroupRepository extends JpaRepository<OnceGroupEntity, Long
 
     List<OnceGroupEntity> findByParticipantUsers_UserEntity_Id(Long userId);
 
-
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END " +
         "FROM once_group o " +
         "WHERE o.userEntity = :userEntity " +

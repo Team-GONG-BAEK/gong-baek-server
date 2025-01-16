@@ -55,14 +55,19 @@ public class GroupFacade {
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
         UserEntity currentUser = userService.getUserById(userId);
 
-        return switch (groupType) {
-            case WEEKLY -> GroupResponseMapper.fromEveryGroup(
-                    everyGroupService.getEveryGroupDetail(groupId, currentUser)
-            );
-            case ONCE -> GroupResponseMapper.fromOnceGroup(
-                    onceGroupService.getOnceGroupDetail(groupId, currentUser)
-            );
-        };
+        switch (groupType) {
+            case WEEKLY -> {
+                EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(groupId);
+                sameSchoolValidator.isUserReadMySchoolEveryGroup(currentUser, everyGroupEntity);
+                return GroupResponseMapper.fromEveryGroup(everyGroupService.getEveryGroupDetail(groupId, currentUser));
+            }
+            case ONCE -> {
+                OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(groupId);
+                sameSchoolValidator.isUserReadMySchoolOnceGroup(currentUser, onceGroupEntity);
+                return  GroupResponseMapper.fromOnceGroup(onceGroupService.getOnceGroupDetail(groupId, currentUser));
+            }
+            default -> throw new GongBaekException(ResponseError.BAD_REQUEST);
+        }
     }
 
     public NearestGroupResponse getNearestGroupInfo(long userId) {
@@ -197,8 +202,10 @@ public class GroupFacade {
         List<OnceGroupVo> onceGroupResponses = getActiveOnceGroups(currentUser);
 
         List<GroupVo> allGroups = Stream.concat(
-                        everyGroupResponses.stream().map(GroupVo::fromEveryGroup),
+                        everyGroupResponses.stream().map(GroupVo::fromEveryGroup)
+                                .filter(groupVo -> isSameSchoolEveryGroup(currentUser, groupVo)),
                         onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
+                                .filter(groupVo -> isSameSchoolOnceGroup(currentUser, groupVo))
                 .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
                 .toList();
 
@@ -210,19 +217,22 @@ public class GroupFacade {
 
     public List<ActiveGroupsResponse> getLatestGroups(long userId, GroupType groupType) {
         UserEntity currentUser = userService.getUserById(userId);
-
         List<GroupVo> allGroups;
         switch (groupType) {
             case WEEKLY -> {
                 List<EveryGroupVo> everyGroupResponses = getActiveEveryGroups(currentUser);
+
                 allGroups = everyGroupResponses.stream()
                         .map(GroupVo::fromEveryGroup)
+                        .filter(groupVo -> isSameSchoolEveryGroup(currentUser, groupVo))
                         .collect(Collectors.toList());
             }
             case ONCE -> {
                 List<OnceGroupVo> onceGroupResponses = getActiveOnceGroups(currentUser);
+
                 allGroups = onceGroupResponses.stream()
                         .map(GroupVo::fromOnceGroup)
+                        .filter(groupVo -> isSameSchoolOnceGroup(currentUser, groupVo))
                         .collect(Collectors.toList());
             }
             default -> throw new GongBaekException(ResponseError.BAD_REQUEST);
@@ -234,6 +244,22 @@ public class GroupFacade {
                 .limit(5)
                 .map(ActiveGroupsResponse::fromGroupVo)
                 .collect(Collectors.toList());
+    }
+
+    private boolean isSameSchoolOnceGroup(UserEntity currentUser, GroupVo groupVo) {
+        String userSchool = currentUser.getSchool().getSchoolName();
+        OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(groupVo.groupId());
+        String groupCreatorSchool = onceGroupEntity.getUserEntity().getSchool().getSchoolName();
+
+        return userSchool.equals(groupCreatorSchool);
+    }
+
+    private boolean isSameSchoolEveryGroup(UserEntity currentUser, GroupVo groupVo) {
+        String userSchool = currentUser.getSchool().getSchoolName();
+        EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(groupVo.groupId());
+        String groupCreatorSchool = everyGroupEntity.getUserEntity().getSchool().getSchoolName();
+
+        return userSchool.equals(groupCreatorSchool);
     }
 
     private List<EveryGroupVo> getActiveEveryGroups(UserEntity currentUser) {
@@ -284,6 +310,20 @@ public class GroupFacade {
                 .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
                 .collect(Collectors.toList()
                 );
+    }
+
+    private void sameSchoolValidateByEveryList(UserEntity userEntity, List<EveryGroupVo> everyGroupResponses){
+        for (EveryGroupVo everyGroupVo : everyGroupResponses) {
+            EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(everyGroupVo.groupId());
+            sameSchoolValidator.isUserReadMySchoolEveryGroup(userEntity, everyGroupEntity);
+        }
+    }
+
+    private void sameSchoolValidateByOnceList(UserEntity userEntity, List<OnceGroupVo> onceGroupResponses){
+        for (OnceGroupVo onceGroupVo : onceGroupResponses) {
+            OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(onceGroupVo.groupId());
+            sameSchoolValidator.isUserReadMySchoolOnceGroup(userEntity, onceGroupEntity);
+        }
     }
 
     public ReadFillMembersResponse getGroupUsersInfo(Long userId, ReadFillMembersRequest dto) {

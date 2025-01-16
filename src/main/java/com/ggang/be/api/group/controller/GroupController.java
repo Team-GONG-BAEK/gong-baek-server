@@ -62,7 +62,7 @@ public class GroupController {
 
         gongbaekRequestFacade.validateRegisterRequest(userId, dto);
 
-        return ResponseBuilder.ok(groupFacade.registerGongbaek(userId, dto));
+        return ResponseBuilder.created(groupFacade.registerGongbaek(userId, dto));
     }
 
     @GetMapping("/fill/members")

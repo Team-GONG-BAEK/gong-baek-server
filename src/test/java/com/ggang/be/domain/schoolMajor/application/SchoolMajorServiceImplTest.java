@@ -58,12 +58,11 @@ class SchoolMajorServiceImplTest {
             .thenReturn(List.of(major, major2));
 
         // when
-        List<SearchSchoolMajorVo> findTestSchoolMajor = schoolMajorServiceImpl.findSchoolMajorBySchoolAndMajorName(
+        List<String> findTestSchoolMajor = schoolMajorServiceImpl.findSchoolMajorBySchoolAndMajorName(
             1L, "test");
 
         // then
         Assertions.assertThat(findTestSchoolMajor).hasSize(2)
-            .extracting("schoolMajor")
             .containsExactly("12", "123");
     }
 

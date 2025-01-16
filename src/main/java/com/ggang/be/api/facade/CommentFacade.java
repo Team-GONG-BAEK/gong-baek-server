@@ -37,20 +37,21 @@ public class CommentFacade {
 
     @Transactional
     public WriteCommentResponse writeComment(final long userId, WriteCommentRequest dto) {
-        UserEntity findUser = userService.getUserById(userId);
-        CommentEntity commentEntity = commentService.writeComment(findUser, dto);
+        UserEntity findUserEntity = userService.getUserById(userId);
+        CommentEntity commentEntity = commentService.writeComment(findUserEntity, dto);
 
-        writeByCase(dto, commentEntity);
+        writeByCase(dto, findUserEntity, commentEntity);
 
         return WriteCommentResponse.of(commentEntity.getId());
     }
 
-    private void writeByCase(WriteCommentRequest dto, CommentEntity commentEntity) {
+    private void writeByCase(WriteCommentRequest dto, UserEntity findUserEntity, CommentEntity commentEntity) {
         if (dto.groupType() == GroupType.WEEKLY) {
             EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(
                 dto.groupId());
             sameSchoolValidator.isUserReadMySchoolEveryGroup(commentEntity.getUserEntity(),
                 everyGroupEntity);
+            isUserAccessEveryGroupComment(findUserEntity, dto.isPublic(), dto.groupId());
             everyGroupService.writeCommentInGroup(commentEntity, dto.groupId());
         }
         if (dto.groupType() == GroupType.ONCE) {
@@ -58,6 +59,7 @@ public class CommentFacade {
                 dto.groupId());
             sameSchoolValidator.isUserReadMySchoolOnceGroup(commentEntity.getUserEntity(),
                 onceGroupEntity);
+            isUserAccessOnceGroupComment(findUserEntity, dto.isPublic(), dto.groupId());
             onceGroupService.writeCommentInGroup(commentEntity, dto.groupId());
         }
     }
@@ -75,31 +77,30 @@ public class CommentFacade {
             EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(
                 dto.groupId());
             sameSchoolValidator.isUserReadMySchoolEveryGroup(userEntity, everyGroupEntity);
-            isValidEveryGroupCommentAccess(userEntity, isPublic, dto);
+            isUserAccessEveryGroupComment(userEntity, isPublic, dto.groupId());
             return everyGroupService.readCommentInGroup(userEntity, isPublic, dto.groupId());
         }
         if (dto.groupType() == GroupType.ONCE) {
             OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(
                 dto.groupId());
             sameSchoolValidator.isUserReadMySchoolOnceGroup(userEntity, onceGroupEntity);
-            isValidOnceGroupCommentAccess(userEntity, isPublic, dto);
+            isUserAccessOnceGroupComment(userEntity, isPublic, dto.groupId());
             return onceGroupService.readCommentInGroup(userEntity, isPublic, dto.groupId());
         }
         throw new GongBaekException(ResponseError.BAD_REQUEST);
     }
 
-    private void isValidOnceGroupCommentAccess(UserEntity userEntity, boolean isPublic,
-        ReadCommentRequest dto) {
+    private void isUserAccessOnceGroupComment(UserEntity userEntity, boolean isPublic,
+        long groupId) {
         if (!isPublic) {
-            userOnceGroupService.isValidCommentAccess(userEntity, dto.groupId());
+            userOnceGroupService.isValidCommentAccess(userEntity, groupId);
         }
     }
 
-    private void isValidEveryGroupCommentAccess(UserEntity userEntity, boolean isPublic,
-        ReadCommentRequest dto) {
-        if (!isPublic) {
-            userEveryGroupService.isValidCommentAccess(userEntity, dto.groupId());
-        }
+    private void isUserAccessEveryGroupComment(UserEntity userEntity, boolean isPublic,
+        long groupId) {
+        if (!isPublic)
+            userEveryGroupService.isValidCommentAccess(userEntity, groupId);
     }
 
 }

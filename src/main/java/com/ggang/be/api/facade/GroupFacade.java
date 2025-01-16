@@ -11,6 +11,7 @@ import com.ggang.be.api.mapper.GroupResponseMapper;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
+import com.ggang.be.domain.common.SameSchoolValidator;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.group.dto.GroupVo;
@@ -50,6 +51,7 @@ public class GroupFacade {
     private final UserService userService;
     private final GongbaekTimeSlotService gongbaekTimeSlotService;
     private final LectureTimeSlotService lectureTimeSlotService;
+    private final SameSchoolValidator sameSchoolValidator;
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
         UserEntity currentUser = userService.getUserById(userId);
@@ -272,10 +274,13 @@ public class GroupFacade {
                 );
     }
 
-    public ReadFillMembersResponse getGroupUsersInfo(ReadFillMembersRequest dto) {
+    public ReadFillMembersResponse getGroupUsersInfo(Long userId, ReadFillMembersRequest dto) {
+        UserEntity findUserEntity = userService.getUserById(userId);
         if (dto.groupType() == GroupType.WEEKLY) {
             EveryGroupEntity findEveryGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(
                     dto.groupId());
+            sameSchoolValidator.isUserReadMySchoolEveryGroup(findUserEntity, findEveryGroupEntity);
+
             List<FillMember> everyGroupUsersInfos = userEveryGroupService.getEveryGroupUsersInfo(
                     ReadFillMembersRequest.toEveryGroupMemberInfo(findEveryGroupEntity));
             return ReadFillMembersResponse.ofEveryGroup(findEveryGroupEntity, everyGroupUsersInfos);
@@ -283,6 +288,8 @@ public class GroupFacade {
         if (dto.groupType() == GroupType.ONCE) {
             OnceGroupEntity findOnceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(
                     dto.groupId());
+            sameSchoolValidator.isUserReadMySchoolOnceGroup(findUserEntity, findOnceGroupEntity);
+
             List<FillMember> onceGroupUserInfos = userOnceGroupService.getOnceGroupUsersInfo(
                     ReadFillMembersRequest.toOnceGroupMemberInfo(findOnceGroupEntity));
             return ReadFillMembersResponse.ofOnceGroup(findOnceGroupEntity, onceGroupUserInfos);

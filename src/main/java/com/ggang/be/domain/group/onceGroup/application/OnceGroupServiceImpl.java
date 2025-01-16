@@ -112,13 +112,13 @@ public class OnceGroupServiceImpl implements OnceGroupService {
 
     @Override
     @Transactional
-    public Long registerOnceGroup(RegisterGroupServiceRequest serviceRequest,
+    public OnceGroupEntity registerOnceGroup(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
 
         OnceGroupEntity buildEntity = buildOnceGroupEntity(
             serviceRequest, gongbaekTimeSlotEntity);
 
-        return onceGroupRepository.save(buildEntity).getId();
+        return onceGroupRepository.save(buildEntity);
     }
 
     @Override
@@ -147,7 +147,6 @@ public class OnceGroupServiceImpl implements OnceGroupService {
             .category(serviceRequest.category())
             .coverImg(serviceRequest.coverImg())
             .location(serviceRequest.location())
-            .currentPeopleCount(1)
             .status(Status.RECRUITING)
             .maxPeopleCount(serviceRequest.maxPeopleCount())
             .title(serviceRequest.groupTitle())

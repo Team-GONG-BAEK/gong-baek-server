@@ -8,7 +8,6 @@ import com.ggang.be.domain.group.onceGroup.dto.ReadOnceGroup;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
-import java.util.List;
 
 public interface OnceGroupService {
     OnceGroupDto getOnceGroupDetail(final long groupId, UserEntity user);
@@ -23,7 +22,7 @@ public interface OnceGroupService {
 
     ReadCommentGroup readCommentInGroup(UserEntity userEntity, boolean isPublic, final long groupId);
 
-    Long registerOnceGroup(RegisterGroupServiceRequest serviceRequest,
+    OnceGroupEntity registerOnceGroup(RegisterGroupServiceRequest serviceRequest,
                            GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
 
     void isExistInOnceGroupTimeSlot(RegisterGroupServiceRequest serviceRequest);

@@ -13,7 +13,6 @@ import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.common.SameSchoolValidator;
 import com.ggang.be.domain.constant.GroupType;
-import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.domain.group.dto.ReadGroup;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
@@ -124,11 +123,9 @@ public class GroupFacade {
                 EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(requestDto.groupId());
                 sameSchoolValidator.isUserReadMySchoolEveryGroup(findUserEntity, everyGroupEntity);
                 everyGroupService.validateApplyEveryGroup(findUserEntity, everyGroupEntity);
-                if(checkGroupsLectureTimeSlot(
-                        findUserEntity,
-                        everyGroupEntity.getGongbaekTimeSlotEntity().getStartTime(),
-                        everyGroupEntity.getGongbaekTimeSlotEntity().getEndTime(),
-                        everyGroupEntity.getGongbaekTimeSlotEntity().getWeekDate()))
+                GroupVo groupVo = GroupVo.fromEveryGroup(EveryGroupVo.of(everyGroupEntity));
+
+                if(checkGroupsLectureTimeSlot(findUserEntity, groupVo))
                     userEveryGroupService.applyEveryGroup(findUserEntity, everyGroupEntity);
                 else throw new GongBaekException(ResponseError.TIME_SLOT_ALREADY_EXIST);
             }
@@ -136,11 +133,9 @@ public class GroupFacade {
                 OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(requestDto.groupId());
                 sameSchoolValidator.isUserReadMySchoolOnceGroup(findUserEntity, onceGroupEntity);
                 onceGroupService.validateApplyOnceGroup(findUserEntity, onceGroupEntity);
-                if(checkGroupsLectureTimeSlot(
-                        findUserEntity,
-                        onceGroupEntity.getGongbaekTimeSlotEntity().getStartTime(),
-                        onceGroupEntity.getGongbaekTimeSlotEntity().getEndTime(),
-                        onceGroupEntity.getGongbaekTimeSlotEntity().getWeekDate()))
+                GroupVo groupVo = GroupVo.fromOnceGroup(OnceGroupVo.of(onceGroupEntity));
+
+                if(checkGroupsLectureTimeSlot(findUserEntity, groupVo))
                     userOnceGroupService.applyOnceGroup(findUserEntity, onceGroupEntity);
                 else throw new GongBaekException(ResponseError.TIME_SLOT_ALREADY_EXIST);
             }
@@ -203,7 +198,7 @@ public class GroupFacade {
                 .toList();
 
         return allGroups.stream()
-                .filter(groupVo -> checkGroupsLectureTimeSlot(currentUser, groupVo.startTime(), groupVo.endTime(), groupVo.weekDate()))
+                .filter(groupVo -> checkGroupsLectureTimeSlot(currentUser, groupVo))
                 .map(ActiveGroupsResponse::fromGroupVo)
                 .collect(Collectors.toList());
     }
@@ -229,7 +224,7 @@ public class GroupFacade {
         }
 
         return allGroups.stream()
-                .filter(groupVo -> checkGroupsLectureTimeSlot(currentUser, groupVo.startTime(), groupVo.endTime(), groupVo.weekDate()))
+                .filter(groupVo -> checkGroupsLectureTimeSlot(currentUser, groupVo))
                 .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
                 .limit(5)
                 .map(ActiveGroupsResponse::fromGroupVo)
@@ -244,8 +239,8 @@ public class GroupFacade {
         return onceGroupService.getActiveOnceGroups(currentUser).groups();
     }
 
-    private boolean checkGroupsLectureTimeSlot(UserEntity findUserEntity, double startTime, double endTime, WeekDate weekDate) {
-        return lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(findUserEntity, startTime, endTime, weekDate);
+    private boolean checkGroupsLectureTimeSlot(UserEntity findUserEntity, GroupVo groupVo) {
+        return lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(findUserEntity, groupVo.startTime(), groupVo.endTime(), groupVo.weekDate());
     }
 
     private NearestGroupResponse getNearestGroupFromDates(NearestEveryGroup nearestEveryGroup, NearestOnceGroup nearestOnceGroup) {

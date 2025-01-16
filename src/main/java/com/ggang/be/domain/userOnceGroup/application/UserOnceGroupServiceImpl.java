@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @Slf4j
 public class UserOnceGroupServiceImpl implements UserOnceGroupService {
-
     private final UserOnceGroupRepository userOnceGroupRepository;
     private final GroupVoMaker groupVoMaker;
 
@@ -55,8 +54,9 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
     public NearestOnceGroup getMyNearestOnceGroup(UserEntity currentUser) {
         List<UserOnceGroupEntity> userOnceGroupEntities = getMyOnceGroup(currentUser);
 
-        OnceGroupEntity nearestGroup = getNearestGroup(
-            getGroupsByStatus(userOnceGroupEntities, true));
+        OnceGroupEntity nearestGroup = getNearestGroup(getGroupsByStatus(userOnceGroupEntities, true));
+
+        if (nearestGroup == null) return null;
 
         return NearestOnceGroup.toDto(nearestGroup);
     }
@@ -79,6 +79,17 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
     }
 
     @Override
+    @Transactional
+    public void cancelOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity){
+        UserOnceGroupEntity userOnceGroupEntity = userOnceGroupRepository.findByUserEntityAndOnceGroupEntity(currentUser, onceGroupEntity)
+                .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_CANCEL_NOT_FOUND));
+
+        userOnceGroupRepository.delete(userOnceGroupEntity);
+        onceGroupEntity.decreaseCurrentPeopleCount();
+        onceGroupEntity.getParticipantUsers().remove(userOnceGroupEntity);
+    }
+
+    @Override
     public void isValidCommentAccess(UserEntity userEntity, long groupId) {
         List<UserOnceGroupEntity> userOnceGroupEntities = userOnceGroupRepository.findAllByUserEntity(
             userEntity);
@@ -87,7 +98,6 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
             .noneMatch(ue -> ue.getOnceGroupEntity().getId() == groupId)) {
             throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
         }
-
     }
 
     private OnceGroupEntity getNearestGroup(List<OnceGroupEntity> groups) {
@@ -120,5 +130,4 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
         return (status && group.getStatus().isActive()) || (!status && group.getStatus()
             .isClosed());
     }
-
 }

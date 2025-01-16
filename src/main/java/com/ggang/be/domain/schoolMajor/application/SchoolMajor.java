@@ -7,12 +7,9 @@ import lombok.Getter;
 
 @Getter
 public class SchoolMajor {
-
-
     private Long id;
     private School school;
     private String majorName;
-
 
     public static SchoolMajor fromEntity(SchoolMajorEntity schoolMajorEntity){
         return SchoolMajor.builder()

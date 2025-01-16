@@ -22,7 +22,6 @@ import java.util.List;
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class GroupController {
-
     private final GroupFacade groupFacade;
     private final GongbaekRequestFacade gongbaekRequestFacade;
     private final JwtService jwtService;
@@ -57,7 +56,8 @@ public class GroupController {
     @PostMapping("/gongbaek")
     public ResponseEntity<ApiResponse<RegisterGongbaekResponse>> registerGongbaek(
         @RequestHeader("Authorization") String token,
-        @RequestBody final RegisterGongbaekRequest dto) {
+        @RequestBody final RegisterGongbaekRequest dto
+    ) {
         Long userId = jwtService.parseTokenAndGetUserId(token);
 
         gongbaekRequestFacade.validateRegisterRequest(userId, dto);
@@ -68,8 +68,8 @@ public class GroupController {
     @GetMapping("/fill/members")
     public ResponseEntity<ApiResponse<ReadFillMembersResponse>> getGroupMembers(
         @RequestHeader("Authorization") String token, @RequestBody ReadFillMembersRequest dto) {
-        jwtService.isValidToken(token);
-        return ResponseBuilder.ok(groupFacade.getGroupUsersInfo(dto));
+        Long userId = jwtService.parseTokenAndGetUserId(token);
+        return ResponseBuilder.ok(groupFacade.getGroupUsersInfo(userId, dto));
     }
 
     @GetMapping("/my/groups")
@@ -121,6 +121,17 @@ public class GroupController {
     ) {
         Long userId = jwtService.parseTokenAndGetUserId(accessToken);
         groupFacade.applyGroup(userId, requestDto);
+
+        return ResponseBuilder.ok(null);
+    }
+
+    @PatchMapping("/my/groups")
+    public ResponseEntity<ApiResponse<Void>> cancelMyApplication(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody final GroupRequest requestDto
+    ){
+        Long userId = jwtService.parseTokenAndGetUserId(accessToken);
+        groupFacade.cancelMyApplication(userId, requestDto);
 
         return ResponseBuilder.ok(null);
     }

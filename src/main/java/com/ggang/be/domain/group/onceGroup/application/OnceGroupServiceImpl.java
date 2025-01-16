@@ -4,6 +4,7 @@ import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.domain.comment.CommentEntity;
+import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.group.GroupCommentVoMaker;
 import com.ggang.be.domain.group.GroupVoMaker;
@@ -12,16 +13,18 @@ import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupDto;
 import com.ggang.be.domain.group.onceGroup.dto.ReadOnceGroup;
 import com.ggang.be.domain.group.onceGroup.infra.OnceGroupRepository;
+import com.ggang.be.domain.group.onceGroup.vo.ReadOnceGroupCommentCommonVo;
 import com.ggang.be.domain.group.vo.GroupCommentVo;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -101,13 +104,14 @@ public class OnceGroupServiceImpl implements OnceGroupService {
 
         List<CommentEntity> commentEntities = onceGroupEntity
                 .getComments().stream().filter(c -> c.isPublic() == isPublic).toList();
-
         int commentCount = commentEntities.size();
 
         List<GroupCommentVo> onceGroupCommentVos = groupCommentVoMaker.makeByOnceGroup(userEntity,
                 commentEntities, onceGroupEntity);
+        ReadOnceGroupCommentCommonVo vo = ReadOnceGroupCommentCommonVo.of(
+            commentCount, groupId, onceGroupEntity.getStatus());
 
-        return ReadCommentGroup.of(commentCount, onceGroupCommentVos);
+        return ReadCommentGroup.fromOnceGroup(vo, onceGroupCommentVos);
     }
 
     @Override
@@ -138,6 +142,12 @@ public class OnceGroupServiceImpl implements OnceGroupService {
         validateGroupFull(onceGroupEntity);
 
         return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean validateCancelOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity){
+        return onceGroupEntity.isApply(currentUser);
     }
 
     private OnceGroupEntity buildOnceGroupEntity(RegisterGroupServiceRequest serviceRequest,

@@ -1,14 +1,13 @@
 package com.ggang.be.global.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class LengthValidator {
-
     private final static Pattern emojiPattern = Pattern.compile("\\X");
-
 
     public static boolean rangelengthCheck(final String value, final int minLength, final int maxLength){
         Matcher matcher = emojiPattern.matcher(value);
@@ -33,7 +32,4 @@ public class LengthValidator {
         log.info("now value count is : {}", count);
         return count <= maxLength;
     }
-
-
-
 }

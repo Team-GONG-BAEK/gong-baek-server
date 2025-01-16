@@ -14,19 +14,18 @@ import com.ggang.be.api.user.dto.ValidIntroductionRequest;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.user.dto.UserSchoolDto;
 import com.ggang.be.global.jwt.JwtService;
+import com.ggang.be.global.jwt.TokenVo;
 import com.ggang.be.global.util.LengthValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
-
     private final UserService userService;
     private final SignupFacade signupFacade;
     private final JwtService jwtService;
@@ -63,4 +62,9 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(ResponseSuccess.OK, UserSchoolResponseDto.of(userSchoolDto)));
     }
 
+    @PatchMapping("/reissue/token")
+    public ResponseEntity<ApiResponse<TokenVo>> reIssueToken(
+        @RequestHeader("Authorization") String refreshToken) {
+        return ResponseBuilder.ok(jwtService.reIssueToken(refreshToken));
+    }
 }

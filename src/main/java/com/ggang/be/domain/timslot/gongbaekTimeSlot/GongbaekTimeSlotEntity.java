@@ -3,16 +3,11 @@ package com.ggang.be.domain.timslot.gongbaekTimeSlot;
 import com.ggang.be.domain.BaseTimeEntity;
 import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.user.UserEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import lombok.*;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity(name = "gongbaek_time_slot")
 @Getter
@@ -32,7 +27,6 @@ public class GongbaekTimeSlotEntity extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
-
 
     @Builder
     private GongbaekTimeSlotEntity(WeekDate weekDate, double startTime, double endTime,

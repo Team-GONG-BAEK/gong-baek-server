@@ -19,9 +19,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class LectureTimeSlotServiceImpl implements LectureTimeSlotService {
-
     private final LectureTimeSlotRepository lectureTimeSlotRepository;
-
 
     @Override
     @Transactional
@@ -41,7 +39,7 @@ public class LectureTimeSlotServiceImpl implements LectureTimeSlotService {
 
     @Override
     public boolean isActiveGroupsInLectureTimeSlot(UserEntity findUserEntity, double startTime, double endTime, WeekDate weekDate) {
-        return lectureTimeSlotRepository.isPossibleTime(startTime, endTime, findUserEntity, weekDate);
+        return !lectureTimeSlotRepository.isInTime(startTime, endTime, findUserEntity, weekDate);
     }
 
     @Override

@@ -14,5 +14,4 @@ public record TimeTableVo(WeekDate weekDay,
                 timeTableVo.endTime()
         );
     }
-
 }

@@ -3,19 +3,19 @@ package com.ggang.be.domain.user;
 import com.ggang.be.domain.BaseTimeEntity;
 import com.ggang.be.domain.constant.Gender;
 import com.ggang.be.domain.constant.Mbti;
+import com.ggang.be.domain.school.SchoolEntity;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.timslot.lectureTimeSlot.LectureTimeSlotEntity;
-import com.ggang.be.domain.school.SchoolEntity;
 import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;
 import com.ggang.be.domain.userOnceGroup.UserOnceGroupEntity;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import jakarta.persistence.*;
-
-import java.util.List;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+
+import java.util.List;
 
 @Getter
 @Entity(name = "user")
@@ -78,7 +78,6 @@ public class UserEntity extends BaseTimeEntity {
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
-
 
     @Builder
     private UserEntity(SchoolEntity school, String schoolMajorName, int profileImg, String nickname,

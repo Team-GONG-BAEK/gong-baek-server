@@ -1,7 +1,7 @@
 package com.ggang.be.domain.group.dto;
 
-import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.constant.Category;
+import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupVo;

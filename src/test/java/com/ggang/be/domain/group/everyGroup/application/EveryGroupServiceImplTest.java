@@ -72,8 +72,8 @@ class EveryGroupServiceImplTest {
 
         when(everyGroupRepository.findById(1L)).thenReturn(Optional.of(build));
         when(groupCommentVoMaker.makeByEveryGroup(eq(userEntity), eq(commentEntities), any())).thenReturn(List.of(
-            GroupCommentVoFixture.createGroupCommentEveryVo(1L, 1L, LocalDateTime.now()),
-            GroupCommentVoFixture.createGroupCommentEveryVo(1L, 2L, LocalDateTime.now())
+            GroupCommentVoFixture.createGroupCommentEveryVo(1L, LocalDateTime.now()),
+            GroupCommentVoFixture.createGroupCommentEveryVo(1L, LocalDateTime.now())
         ));
 
         // when
@@ -102,8 +102,8 @@ class EveryGroupServiceImplTest {
 
         when(everyGroupRepository.findById(1L)).thenReturn(Optional.of(build));
         when(groupCommentVoMaker.makeByEveryGroup(eq(userEntity), eq(commentEntities), eq(build))).thenReturn(List.of(
-            GroupCommentVoFixture.createGroupCommentEveryVo(1L, 3L, LocalDateTime.now()),
-            GroupCommentVoFixture.createGroupCommentEveryVo(1L, 4L, LocalDateTime.now())
+            GroupCommentVoFixture.createGroupCommentEveryVo(1L,  LocalDateTime.now()),
+            GroupCommentVoFixture.createGroupCommentEveryVo(1L,  LocalDateTime.now())
         ));
 
         // when

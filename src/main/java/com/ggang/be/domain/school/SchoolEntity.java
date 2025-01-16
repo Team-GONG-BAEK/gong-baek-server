@@ -25,6 +25,7 @@ public class SchoolEntity extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
+    // TODO : unique 제약 조건 달기!
     private String schoolName;
 
     @Column(nullable = false)

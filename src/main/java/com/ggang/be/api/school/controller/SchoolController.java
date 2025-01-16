@@ -20,7 +20,7 @@ public class SchoolController {
     private final SearchSchoolFacade searchSchoolFacade;
 
     @GetMapping("/school/search")
-    public ResponseEntity<ApiResponse<SchoolSearchResponse>> searchSchool(@RequestParam("searchKeyword") final String searchKeyword) {
+    public ResponseEntity<ApiResponse<SchoolSearchResponse>> searchSchool(@RequestParam(name="schoolName") final String searchKeyword) {
         log.info("schoolName: {}", searchKeyword);
         return ResponseEntity.ok(ApiResponse.success(ResponseSuccess.OK,
             searchSchoolFacade.searchSchool(searchKeyword)));

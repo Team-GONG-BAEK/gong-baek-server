@@ -25,11 +25,9 @@ public interface OnceGroupService {
     Long registerOnceGroup(RegisterGroupServiceRequest serviceRequest,
                            GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
 
-    void isExistInOnceGroupTimeSlot(RegisterGroupServiceRequest serviceRequest);
-
     ReadOnceGroup getActiveOnceGroups(UserEntity currentUser);
 
-    boolean validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);
+    void validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);
 
     boolean validateCancelOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);
 }

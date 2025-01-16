@@ -5,7 +5,6 @@ import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.common.SameSchoolValidator;
-import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.group.GroupCommentVoMaker;
 import com.ggang.be.domain.group.GroupVoMaker;
@@ -19,12 +18,13 @@ import com.ggang.be.domain.group.vo.GroupCommentVo;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -139,13 +139,10 @@ public class EveryGroupServiceImpl implements EveryGroupService {
 
     @Override
     @Transactional
-    public boolean validateApplyEveryGroup(UserEntity currentUser,
-        EveryGroupEntity everyGroupEntity) {
+    public void validateApplyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
         validateAlreadyApplied(currentUser, everyGroupEntity);
         validateHostAccess(currentUser, everyGroupEntity);
         validateGroupFull(everyGroupEntity);
-
-        return true;
     }
 
     @Override
@@ -168,15 +165,6 @@ public class EveryGroupServiceImpl implements EveryGroupService {
             .introduction(serviceRequest.introduction())
             .userEntity(serviceRequest.userEntity())
             .build();
-    }
-
-    @Override
-    public void isExistedInTime(RegisterGroupServiceRequest serviceRequest) {
-        if (everyGroupRepository.isInTime
-            (serviceRequest.userEntity(), serviceRequest.startTime(), serviceRequest.endTime(),
-                serviceRequest.weekDay(), Status.CLOSED)) {
-            throw new GongBaekException(ResponseError.GROUP_ALREADY_EXIST);
-        }
     }
 
     private void validateAlreadyApplied(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {

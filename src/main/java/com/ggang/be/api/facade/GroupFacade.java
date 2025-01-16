@@ -122,15 +122,27 @@ public class GroupFacade {
         switch (requestDto.groupType()){
             case WEEKLY -> {
                 EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(requestDto.groupId());
-                if(everyGroupService.validateApplyEveryGroup(findUserEntity, everyGroupEntity))
+                sameSchoolValidator.isUserReadMySchoolEveryGroup(findUserEntity, everyGroupEntity);
+                everyGroupService.validateApplyEveryGroup(findUserEntity, everyGroupEntity);
+                if(checkGroupsLectureTimeSlot(
+                        findUserEntity,
+                        everyGroupEntity.getGongbaekTimeSlotEntity().getStartTime(),
+                        everyGroupEntity.getGongbaekTimeSlotEntity().getEndTime(),
+                        everyGroupEntity.getGongbaekTimeSlotEntity().getWeekDate()))
                     userEveryGroupService.applyEveryGroup(findUserEntity, everyGroupEntity);
-                else throw new GongBaekException(ResponseError.BAD_REQUEST);
+                else throw new GongBaekException(ResponseError.TIME_SLOT_ALREADY_EXIST);
             }
             case ONCE -> {
                 OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(requestDto.groupId());
-                if(onceGroupService.validateApplyOnceGroup(findUserEntity, onceGroupEntity))
+                sameSchoolValidator.isUserReadMySchoolOnceGroup(findUserEntity, onceGroupEntity);
+                onceGroupService.validateApplyOnceGroup(findUserEntity, onceGroupEntity);
+                if(checkGroupsLectureTimeSlot(
+                        findUserEntity,
+                        onceGroupEntity.getGongbaekTimeSlotEntity().getStartTime(),
+                        onceGroupEntity.getGongbaekTimeSlotEntity().getEndTime(),
+                        onceGroupEntity.getGongbaekTimeSlotEntity().getWeekDate()))
                     userOnceGroupService.applyOnceGroup(findUserEntity, onceGroupEntity);
-                else throw new GongBaekException(ResponseError.BAD_REQUEST);
+                else throw new GongBaekException(ResponseError.TIME_SLOT_ALREADY_EXIST);
             }
         }
     }

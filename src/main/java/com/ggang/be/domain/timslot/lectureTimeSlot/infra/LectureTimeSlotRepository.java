@@ -20,18 +20,5 @@ public interface LectureTimeSlotRepository extends JpaRepository<LectureTimeSlot
         ")")
     boolean isInTime(double startTime, double endTime, UserEntity userEntity, WeekDate weekDate);
 
-    @Query("SELECT CASE WHEN COUNT(l) > 0 THEN FALSE ELSE TRUE END " +
-            "FROM lecture_time_slot l " +
-            "WHERE l.userEntity = :userEntity " +
-            "AND l.weekDate = :weekDate " +
-            "AND (" +
-            "     (l.startTime <= :startTime AND l.endTime >= :startTime) " +
-            "  OR (l.startTime <= :endTime AND l.endTime >= :endTime) " +
-            "  OR (l.startTime >= :startTime AND l.endTime <= :endTime)" +
-            "  OR (l.startTime >= :startTime AND l.endTime >= :endTime)" +
-            ")")
-    boolean isPossibleTime(double startTime, double endTime, UserEntity userEntity, WeekDate weekDate);
-
-
     List<LectureTimeSlotEntity> findAllByUserEntity(UserEntity userEntity);
 }

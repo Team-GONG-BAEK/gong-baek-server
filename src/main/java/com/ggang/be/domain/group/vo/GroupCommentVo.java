@@ -12,7 +12,7 @@ public record GroupCommentVo(
         long commentId,boolean isWriter,
         boolean isGroupHost, String nickname, String body, String createdAt
 ) {
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm");
 
     public static GroupCommentVo ofEveryGroup(
         UserEntity nowUserEntity,

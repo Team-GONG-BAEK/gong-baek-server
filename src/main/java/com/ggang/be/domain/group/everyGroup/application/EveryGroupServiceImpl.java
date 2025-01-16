@@ -128,13 +128,13 @@ public class EveryGroupServiceImpl implements EveryGroupService {
 
     @Override
     @Transactional
-    public Long registerEveryGroup(RegisterGroupServiceRequest serviceRequest,
+    public EveryGroupEntity registerEveryGroup(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
 
         EveryGroupEntity buildEntity = buildEveryGroupEntity(
             serviceRequest, gongbaekTimeSlotEntity);
 
-        return everyGroupRepository.save(buildEntity).getId();
+        return everyGroupRepository.save(buildEntity);
     }
 
     @Override
@@ -158,7 +158,6 @@ public class EveryGroupServiceImpl implements EveryGroupService {
             .coverImg(serviceRequest.coverImg())
             .location(serviceRequest.location())
             .status(Status.RECRUITING)
-            .currentPeopleCount(1)
             .maxPeopleCount(serviceRequest.maxPeopleCount())
             .gongbaekTimeSlotEntity(gongbaekTimeSlotEntity)
             .title(serviceRequest.groupTitle())

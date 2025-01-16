@@ -22,7 +22,7 @@ public interface OnceGroupService {
 
     ReadCommentGroup readCommentInGroup(UserEntity userEntity, boolean isPublic, final long groupId);
 
-    Long registerOnceGroup(RegisterGroupServiceRequest serviceRequest,
+    OnceGroupEntity registerOnceGroup(RegisterGroupServiceRequest serviceRequest,
                            GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
 
     ReadOnceGroup getActiveOnceGroups(UserEntity currentUser);

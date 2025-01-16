@@ -22,7 +22,7 @@ public interface EveryGroupService {
 
     ReadCommentGroup readCommentInGroup(UserEntity userEntity, boolean commentEntity, final long groupId);
 
-    Long registerEveryGroup(RegisterGroupServiceRequest serviceRequest,
+    EveryGroupEntity registerEveryGroup(RegisterGroupServiceRequest serviceRequest,
                             GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
 
     ReadEveryGroup getActiveEveryGroups(UserEntity currentUser);

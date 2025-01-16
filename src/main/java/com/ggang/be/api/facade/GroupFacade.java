@@ -103,12 +103,17 @@ public class GroupFacade {
                 findUserEntity, gongbaekDto);
 
         if (dto.groupType() == GroupType.WEEKLY) {
+            EveryGroupEntity everyGroupEntity = everyGroupService.registerEveryGroup(serviceRequest,
+                gongbaekTimeSlotEntity);
+            userEveryGroupService.applyEveryGroup(findUserEntity, everyGroupEntity);
             return RegisterGongbaekResponse.of(
-                    everyGroupService.registerEveryGroup(serviceRequest, gongbaekTimeSlotEntity));
+                everyGroupEntity.getId());
         }
         if (dto.groupType() == GroupType.ONCE) {
-            return RegisterGongbaekResponse.of(
-                    onceGroupService.registerOnceGroup(serviceRequest, gongbaekTimeSlotEntity));
+            OnceGroupEntity onceGroupEntity = onceGroupService.registerOnceGroup(serviceRequest,
+                gongbaekTimeSlotEntity);
+            userOnceGroupService.applyOnceGroup(findUserEntity, onceGroupEntity);
+            return RegisterGongbaekResponse.of(onceGroupEntity.getId());
         }
 
         throw new GongBaekException(ResponseError.BAD_REQUEST);

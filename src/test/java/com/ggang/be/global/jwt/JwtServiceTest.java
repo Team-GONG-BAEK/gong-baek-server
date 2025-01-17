@@ -63,6 +63,7 @@ public class JwtServiceTest {
         }
 
     @Test
+    @DisplayName("토큰 재발급 테스트")
     void reIssueToken() throws InterruptedException {
         //given
         String secret = "abcdefghijklmnopqrstuvwxyz123456abcdefghijklmnopqrstuvwxyz123456";

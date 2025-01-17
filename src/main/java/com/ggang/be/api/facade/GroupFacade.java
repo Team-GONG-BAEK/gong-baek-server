@@ -328,9 +328,11 @@ public class GroupFacade {
 
     public ReadFillMembersResponse getGroupUsersInfo(Long userId, ReadFillMembersRequest dto) {
         UserEntity findUserEntity = userService.getUserById(userId);
+
         if (dto.groupType() == GroupType.WEEKLY) {
             EveryGroupEntity findEveryGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(
                     dto.groupId());
+            userEveryGroupService.isUserInGroup(findUserEntity, findEveryGroupEntity);
             sameSchoolValidator.isUserReadMySchoolEveryGroup(findUserEntity, findEveryGroupEntity);
 
             List<FillMember> everyGroupUsersInfos = userEveryGroupService.getEveryGroupUsersInfo(
@@ -340,6 +342,8 @@ public class GroupFacade {
         if (dto.groupType() == GroupType.ONCE) {
             OnceGroupEntity findOnceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(
                     dto.groupId());
+
+            userOnceGroupService.isUserInGroup(findUserEntity, findOnceGroupEntity);
             sameSchoolValidator.isUserReadMySchoolOnceGroup(findUserEntity, findOnceGroupEntity);
 
             List<FillMember> onceGroupUserInfos = userOnceGroupService.getOnceGroupUsersInfo(

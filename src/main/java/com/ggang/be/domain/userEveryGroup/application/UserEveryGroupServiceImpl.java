@@ -65,6 +65,14 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
     }
 
     @Override
+    public void isUserInGroup(UserEntity findUserEntity, EveryGroupEntity findEveryGroupEntity) {
+        if (userEveryGroupRepository.findByUserEntityAndEveryGroupEntity(findUserEntity, findEveryGroupEntity).isEmpty()) {
+            log.error("User is not in group");
+            throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
+        }
+    }
+
+    @Override
     public ReadEveryGroup getMyAppliedGroups(UserEntity currentUser, boolean status){
         List<UserEveryGroupEntity> userEveryGroupEntities = getMyEveryGroup(currentUser);
 

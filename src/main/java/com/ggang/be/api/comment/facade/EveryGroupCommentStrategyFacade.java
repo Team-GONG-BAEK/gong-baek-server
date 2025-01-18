@@ -5,7 +5,7 @@ import com.ggang.be.api.comment.dto.ReadCommentResponse;
 import com.ggang.be.api.comment.dto.WriteCommentEntityDto;
 import com.ggang.be.api.comment.dto.WriteCommentRequest;
 import com.ggang.be.api.comment.dto.WriteCommentResponse;
-import com.ggang.be.api.comment.registry.CommentFacadeHandler;
+import com.ggang.be.api.comment.registry.CommentStrategy;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.domain.comment.CommentEntity;
@@ -13,12 +13,12 @@ import com.ggang.be.domain.common.SameSchoolValidator;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
-import com.ggang.be.global.annotation.Handler;
+import com.ggang.be.global.annotation.Strategy;
 import lombok.RequiredArgsConstructor;
 
-@Handler
+@Strategy
 @RequiredArgsConstructor
-public class EveryGroupCommentFacadeHandler implements CommentFacadeHandler {
+public class EveryGroupCommentStrategyFacade implements CommentStrategy {
 
     private final EveryGroupService everyGroupService;
     private final SameSchoolValidator sameSchoolValidator;

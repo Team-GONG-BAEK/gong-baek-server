@@ -9,13 +9,13 @@ import lombok.RequiredArgsConstructor;
 
 @Registry
 @RequiredArgsConstructor
-public class CommentRegistry {
+public class CommentStrategyRegistry {
 
-    private final List<CommentFacadeHandler> groupHandlers;
+    private final List<CommentStrategy> commentStrategies;
 
-    public CommentFacadeHandler getCommentGroupHandler(GroupType groupType) {
-        return groupHandlers.stream()
-            .filter(groupHandler -> groupHandler.supports(groupType))
+    public CommentStrategy getCommentGroupStrategy(GroupType groupType) {
+        return commentStrategies.stream()
+            .filter(strategy -> strategy.supports(groupType))
             .findFirst()
             .orElseThrow(() -> new GongBaekException(ResponseError.BAD_REQUEST));
     }

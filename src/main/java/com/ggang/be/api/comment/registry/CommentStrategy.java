@@ -8,7 +8,7 @@ import com.ggang.be.api.comment.dto.WriteCommentResponse;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.user.UserEntity;
 
-public interface CommentFacadeHandler {
+public interface CommentStrategy {
 
     ReadCommentResponse readComment(UserEntity findUserEntity, boolean isPublic,
         ReadCommentRequest dto);

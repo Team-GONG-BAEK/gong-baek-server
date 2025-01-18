@@ -24,6 +24,7 @@ public class CommentEntity extends BaseTimeEntity {
     private boolean isPublic;
 
     @Column(nullable = false)
+    @Lob
     private String body;
 
     @Builder

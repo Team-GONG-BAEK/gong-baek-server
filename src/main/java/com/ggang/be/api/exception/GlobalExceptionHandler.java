@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
         log.error("MethodArgumentNotValidException occurred", e);
         return ResponseEntity
                 .status(ResponseError.BAD_REQUEST.getHttpStatus())
-                .body(ApiResponse.error(ResponseError.INVALID_INPUT_VALUE));
+                .body(ApiResponse.error(ResponseError.BAD_REQUEST));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

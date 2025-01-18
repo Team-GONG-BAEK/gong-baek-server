@@ -1,4 +1,4 @@
-package com.ggang.be.api.group;
+package com.ggang.be.api.comment.registry;
 
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;

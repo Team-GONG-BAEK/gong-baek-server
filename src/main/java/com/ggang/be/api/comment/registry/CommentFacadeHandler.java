@@ -1,4 +1,4 @@
-package com.ggang.be.api.group;
+package com.ggang.be.api.comment.registry;
 
 import com.ggang.be.api.comment.dto.ReadCommentRequest;
 import com.ggang.be.api.comment.dto.ReadCommentResponse;

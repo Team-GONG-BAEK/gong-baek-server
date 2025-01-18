@@ -1,11 +1,11 @@
-package com.ggang.be.api.facade;
+package com.ggang.be.api.comment.facade;
 
 import com.ggang.be.api.comment.dto.ReadCommentRequest;
 import com.ggang.be.api.comment.dto.ReadCommentResponse;
 import com.ggang.be.api.comment.dto.WriteCommentEntityDto;
 import com.ggang.be.api.comment.dto.WriteCommentRequest;
 import com.ggang.be.api.comment.dto.WriteCommentResponse;
-import com.ggang.be.api.group.CommentFacadeHandler;
+import com.ggang.be.api.comment.registry.CommentFacadeHandler;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.comment.CommentEntity;

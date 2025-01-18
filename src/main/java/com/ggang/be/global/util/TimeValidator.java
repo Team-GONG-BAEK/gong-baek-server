@@ -18,11 +18,11 @@ public class TimeValidator {
     }
 
     public static void isTimeValid(double startTime, double endTime){
-        if(startTime < 9 || endTime > 18) {
+        if((startTime < 9 || startTime >= 18) && (endTime > 18 || endTime <= 9)) {
             log.error("startTime {} or endTime {} is not valid", startTime, endTime);
             throw new GongBaekException(ResponseError.BAD_REQUEST);
         }
-        if(startTime > endTime) {
+        if(startTime >= endTime) {
             log.error("startTime or endTime is not valid");
             throw new GongBaekException(ResponseError.BAD_REQUEST);
         }

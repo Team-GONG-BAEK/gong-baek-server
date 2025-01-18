@@ -14,10 +14,6 @@ public class IntroductionValidator {
 
     public void isIntroductionValid(String introduction) {
         log.info("now value is : {}", introduction);
-        if(introduction.contains("\n")) {
-            log.error("소개글에 엔터가 들어가 실패하였습니다.");
-            throw new GongBaekException(ResponseError.BAD_REQUEST);
-        }
         if(!LengthValidator.rangelengthCheck(introduction, 20, 100)) {
             log.error("소개글 길이 검증에 실패하였습니다.");
             throw new GongBaekException(ResponseError.BAD_REQUEST);

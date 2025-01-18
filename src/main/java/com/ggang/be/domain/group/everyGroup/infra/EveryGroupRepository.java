@@ -12,7 +12,7 @@ import java.util.List;
 public interface EveryGroupRepository extends JpaRepository<EveryGroupEntity, Long> {
     List<EveryGroupEntity> findByUserEntity_Id(Long userEntityUserId);
 
-    List<EveryGroupEntity> findByUserEveryGroupEntities_UserEntity_Id(Long userId);
+    List<EveryGroupEntity> findByParticipantUsers_UserEntity_Id(Long userId);
 
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END " +
         "FROM every_group o " +

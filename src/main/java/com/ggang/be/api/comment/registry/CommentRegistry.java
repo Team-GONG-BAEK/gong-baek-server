@@ -3,11 +3,11 @@ package com.ggang.be.api.comment.registry;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.domain.constant.GroupType;
+import com.ggang.be.global.annotation.Registry;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
-@Component
+@Registry
 @RequiredArgsConstructor
 public class CommentRegistry {
 

@@ -13,10 +13,10 @@ import com.ggang.be.domain.common.SameSchoolValidator;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
-import com.ggang.be.global.annotation.Facade;
+import com.ggang.be.global.annotation.Handler;
 import lombok.RequiredArgsConstructor;
 
-@Facade
+@Handler
 @RequiredArgsConstructor
 public class OnceGroupCommentFacadeHandler implements CommentFacadeHandler {
 

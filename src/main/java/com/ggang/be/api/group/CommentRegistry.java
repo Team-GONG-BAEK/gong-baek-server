@@ -13,7 +13,7 @@ public class CommentRegistry {
 
     private final List<CommentFacadeHandler> groupHandlers;
 
-    public CommentFacadeHandler getGroupHandler(GroupType groupType) {
+    public CommentFacadeHandler getCommentGroupHandler(GroupType groupType) {
         return groupHandlers.stream()
             .filter(groupHandler -> groupHandler.supports(groupType))
             .findFirst()

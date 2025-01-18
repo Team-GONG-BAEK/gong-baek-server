@@ -8,6 +8,7 @@ import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.group.GroupCommentVoMaker;
 import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
+import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupDto;
 import com.ggang.be.domain.group.onceGroup.dto.ReadOnceGroup;
@@ -135,6 +136,9 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     @Override
     @Transactional
     public boolean validateCancelOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity){
+        if(onceGroupEntity.isHost(currentUser))
+            throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
+
         return onceGroupEntity.isApply(currentUser);
     }
 

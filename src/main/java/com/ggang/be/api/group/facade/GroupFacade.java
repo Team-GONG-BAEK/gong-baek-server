@@ -1,36 +1,14 @@
 package com.ggang.be.api.group.facade;
 
-import com.ggang.be.api.common.ResponseError;
-import com.ggang.be.api.exception.GongBaekException;
-import com.ggang.be.api.group.dto.ActiveGroupsResponse;
-import com.ggang.be.api.group.dto.FillGroupFilterRequest;
-import com.ggang.be.api.group.dto.GroupRequest;
-import com.ggang.be.api.group.dto.GroupResponse;
-import com.ggang.be.api.group.dto.MyGroupResponse;
-import com.ggang.be.api.group.dto.NearestGroupResponse;
-import com.ggang.be.api.group.dto.PrepareRegisterInfo;
-import com.ggang.be.api.group.dto.ReadFillMembersRequest;
-import com.ggang.be.api.group.dto.ReadFillMembersResponse;
-import com.ggang.be.api.group.dto.RegisterGongbaekRequest;
-import com.ggang.be.api.group.dto.RegisterGongbaekResponse;
+import com.ggang.be.api.group.dto.*;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
-import com.ggang.be.api.group.registry.ApplyGroupStrategy;
-import com.ggang.be.api.group.registry.ApplyGroupStrategyRegistry;
-import com.ggang.be.api.group.registry.GroupInfoStrategy;
-import com.ggang.be.api.group.registry.GroupInfoStrategyRegistry;
-import com.ggang.be.api.group.registry.LatestGroupStrategy;
-import com.ggang.be.api.group.registry.LatestGroupStrategyRegistry;
-import com.ggang.be.api.group.registry.ReadFillMemberStrategy;
-import com.ggang.be.api.group.registry.ReadFillMemberStrategyRegistry;
-import com.ggang.be.api.group.registry.RegisterGroupStrategy;
-import com.ggang.be.api.group.registry.RegisterGroupStrategyRegistry;
+import com.ggang.be.api.group.registry.*;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
 import com.ggang.be.api.mapper.GroupResponseMapper;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
-import com.ggang.be.domain.common.SameSchoolValidator;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.dto.GroupVo;
@@ -43,14 +21,15 @@ import com.ggang.be.domain.user.dto.UserInfo;
 import com.ggang.be.domain.userEveryGroup.dto.NearestEveryGroup;
 import com.ggang.be.domain.userOnceGroup.dto.NearestOnceGroup;
 import com.ggang.be.global.annotation.Facade;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 
 
 @Facade
@@ -64,13 +43,13 @@ public class GroupFacade {
     private final UserOnceGroupService userOnceGroupService;
     private final UserService userService;
     private final LectureTimeSlotService lectureTimeSlotService;
-    private final SameSchoolValidator sameSchoolValidator;
     private final LatestGroupStrategyRegistry latestGroupStrategyRegistry;
     private final ReadFillMemberStrategyRegistry readFillMemberStrategyRegistry;
     private final GroupInfoStrategyRegistry groupInfoStrategyRegistry;
     private final ApplyGroupStrategyRegistry applyGroupStrategyRegistry;
     private final RegisterGroupStrategyRegistry registerGroupStrategyRegistry;
     private final PrepareRegisterGongbaekFacade prepareRegisterGongbaekFacade;
+    private final CancelGroupStrategyRegistry cancelGroupStrategyRegistry;
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
         UserEntity currentUser = userService.getUserById(userId);
@@ -125,7 +104,8 @@ public class GroupFacade {
         UserEntity findUserEntity = userService.getUserById(userId);
 
         ApplyGroupStrategy applyGroupStrategy = applyGroupStrategyRegistry.getApplyGroupStrategy(
-            requestDto.groupType());
+            requestDto.groupType()
+        );
 
         applyGroupStrategy.applyGroup(findUserEntity, requestDto);
     }
@@ -134,26 +114,11 @@ public class GroupFacade {
     public void cancelMyApplication(Long userId, GroupRequest requestDto) {
         UserEntity findUserEntity = userService.getUserById(userId);
 
-        switch (requestDto.groupType()) {
-            case WEEKLY -> {
-                EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(
-                    requestDto.groupId());
-                if (everyGroupService.validateCancelEveryGroup(findUserEntity, everyGroupEntity)) {
-                    userEveryGroupService.cancelEveryGroup(findUserEntity, everyGroupEntity);
-                } else {
-                    throw new GongBaekException(ResponseError.GROUP_CANCEL_NOT_FOUND);
-                }
-            }
-            case ONCE -> {
-                OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(
-                    requestDto.groupId());
-                if (onceGroupService.validateCancelOnceGroup(findUserEntity, onceGroupEntity)) {
-                    userOnceGroupService.cancelOnceGroup(findUserEntity, onceGroupEntity);
-                } else {
-                    throw new GongBaekException(ResponseError.GROUP_CANCEL_NOT_FOUND);
-                }
-            }
-        }
+        CancelGroupStrategy cancelGroupStrategy = cancelGroupStrategyRegistry.getCancelGroupStrategy(
+                requestDto.groupType()
+        );
+
+        cancelGroupStrategy.cancelGroup(findUserEntity, requestDto);
     }
 
     public List<MyGroupResponse> getMyGroups(long userId, FillGroupFilterRequest filterRequestDto) {
@@ -280,24 +245,6 @@ public class GroupFacade {
             .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
             .collect(Collectors.toList()
             );
-    }
-
-    private void sameSchoolValidateByEveryList(UserEntity userEntity,
-        List<EveryGroupVo> everyGroupResponses) {
-        for (EveryGroupVo everyGroupVo : everyGroupResponses) {
-            EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(
-                everyGroupVo.groupId());
-            sameSchoolValidator.isUserReadMySchoolEveryGroup(userEntity, everyGroupEntity);
-        }
-    }
-
-    private void sameSchoolValidateByOnceList(UserEntity userEntity,
-        List<OnceGroupVo> onceGroupResponses) {
-        for (OnceGroupVo onceGroupVo : onceGroupResponses) {
-            OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(
-                onceGroupVo.groupId());
-            sameSchoolValidator.isUserReadMySchoolOnceGroup(userEntity, onceGroupEntity);
-        }
     }
 
     public ReadFillMembersResponse getGroupUsersInfo(Long userId, ReadFillMembersRequest dto) {

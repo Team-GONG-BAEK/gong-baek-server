@@ -1,9 +1,34 @@
 package com.ggang.be.api.group.facade;
 
-import com.ggang.be.api.group.dto.*;
-import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
-import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
-import com.ggang.be.api.group.registry.*;
+import com.ggang.be.api.group.GroupVoAggregator;
+import com.ggang.be.api.group.dto.ActiveGroupsResponse;
+import com.ggang.be.api.group.dto.FillGroupFilterRequest;
+import com.ggang.be.api.group.dto.GroupRequest;
+import com.ggang.be.api.group.dto.GroupResponse;
+import com.ggang.be.api.group.dto.GroupResponsesDto;
+import com.ggang.be.api.group.dto.MyGroupResponse;
+import com.ggang.be.api.group.dto.NearestGroupResponse;
+import com.ggang.be.api.group.dto.PrepareRegisterInfo;
+import com.ggang.be.api.group.dto.ReadFillMembersRequest;
+import com.ggang.be.api.group.dto.ReadFillMembersResponse;
+import com.ggang.be.api.group.dto.RegisterGongbaekRequest;
+import com.ggang.be.api.group.dto.RegisterGongbaekResponse;
+import com.ggang.be.api.group.registry.ApplyGroupStrategy;
+import com.ggang.be.api.group.registry.ApplyGroupStrategyRegistry;
+import com.ggang.be.api.group.registry.CancelGroupStrategy;
+import com.ggang.be.api.group.registry.CancelGroupStrategyRegistry;
+import com.ggang.be.api.group.registry.GroupInfoStrategy;
+import com.ggang.be.api.group.registry.GroupInfoStrategyRegistry;
+import com.ggang.be.api.group.registry.GroupUserInfoStrategy;
+import com.ggang.be.api.group.registry.GroupUserInfoStrategyRegistry;
+import com.ggang.be.api.group.registry.LatestGroupStrategy;
+import com.ggang.be.api.group.registry.LatestGroupStrategyRegistry;
+import com.ggang.be.api.group.registry.MyGroupStrategy;
+import com.ggang.be.api.group.registry.MyGroupStrategyRegistry;
+import com.ggang.be.api.group.registry.ReadFillMemberStrategy;
+import com.ggang.be.api.group.registry.ReadFillMemberStrategyRegistry;
+import com.ggang.be.api.group.registry.RegisterGroupStrategy;
+import com.ggang.be.api.group.registry.RegisterGroupStrategyRegistry;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
 import com.ggang.be.api.mapper.GroupResponseMapper;
 import com.ggang.be.api.user.service.UserService;
@@ -12,23 +37,17 @@ import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.dto.GroupVo;
-import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
-import com.ggang.be.domain.group.everyGroup.dto.EveryGroupVo;
-import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
-import com.ggang.be.domain.group.onceGroup.dto.OnceGroupVo;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.UserInfo;
 import com.ggang.be.domain.userEveryGroup.dto.NearestEveryGroup;
 import com.ggang.be.domain.userOnceGroup.dto.NearestOnceGroup;
 import com.ggang.be.global.annotation.Facade;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Facade
@@ -36,8 +55,6 @@ import java.util.stream.Stream;
 @Slf4j
 public class GroupFacade {
 
-    private final EveryGroupService everyGroupService;
-    private final OnceGroupService onceGroupService;
     private final UserEveryGroupService userEveryGroupService;
     private final UserOnceGroupService userOnceGroupService;
     private final UserService userService;
@@ -50,6 +67,7 @@ public class GroupFacade {
     private final PrepareRegisterGongbaekFacade prepareRegisterGongbaekFacade;
     private final CancelGroupStrategyRegistry cancelGroupStrategyRegistry;
     private final GroupUserInfoStrategyRegistry groupUserInfoStrategyRegistry;
+    private final PrepareGroupResponsesFacade prepareGroupResponsesFacade;
     private final MyGroupStrategyRegistry myGroupStrategyRegistry;
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
@@ -80,9 +98,11 @@ public class GroupFacade {
     }
 
     public UserInfo getGroupUserInfo(GroupType groupType, Long groupId) {
-        GroupUserInfoStrategy groupUserInfoStrategy = groupUserInfoStrategyRegistry.getGroupUserInfo(groupType);
+        GroupUserInfoStrategy groupUserInfoStrategy = groupUserInfoStrategyRegistry.getGroupUserInfo(
+            groupType);
 
-        return UserInfo.of(userService.getUserById(groupUserInfoStrategy.getGroupUserInfo(groupId)));
+        return UserInfo.of(
+            userService.getUserById(groupUserInfoStrategy.getGroupUserInfo(groupId)));
     }
 
     @Transactional
@@ -113,7 +133,7 @@ public class GroupFacade {
         UserEntity findUserEntity = userService.getUserById(userId);
 
         CancelGroupStrategy cancelGroupStrategy = cancelGroupStrategyRegistry.getCancelGroupStrategy(
-                requestDto.groupType()
+            requestDto.groupType()
         );
 
         cancelGroupStrategy.cancelGroup(findUserEntity, requestDto);
@@ -122,32 +142,30 @@ public class GroupFacade {
     public List<MyGroupResponse> getMyGroups(long userId, FillGroupFilterRequest filterRequestDto) {
         UserEntity currentUser = userService.getUserById(userId);
 
-        MyGroupStrategy groupStrategy = myGroupStrategyRegistry.getGroupStrategy(filterRequestDto.getFillGroupCategory());
+        MyGroupStrategy groupStrategy = myGroupStrategyRegistry.getGroupStrategy(
+            filterRequestDto.getFillGroupCategory());
 
-        List<GroupVo> groupResponses = groupStrategy.getGroups(currentUser, filterRequestDto.status());
+        List<GroupVo> groupResponses = groupStrategy.getGroups(currentUser,
+            filterRequestDto.status());
 
         return groupResponses.stream()
-                .map(MyGroupResponse::fromGroupVo)
-                .collect(Collectors.toList());
+            .map(MyGroupResponse::fromGroupVo)
+            .collect(Collectors.toList());
     }
 
     public List<ActiveGroupsResponse> getFillGroups(long userId, Category category) {
         UserEntity currentUser = userService.getUserById(userId);
 
-        List<EveryGroupVo> everyGroupResponses = getActiveEveryGroups(currentUser, category);
-        List<OnceGroupVo> onceGroupResponses = getActiveOnceGroups(currentUser, category);
+        GroupResponsesDto groupResponsesDto = prepareGroupResponsesFacade.prepareGroupResponses(
+            currentUser, category);
 
-        // TODO 분기처리 하기!!!
-        List<GroupVo> allGroups = Stream.concat(
-                everyGroupResponses.stream().map(GroupVo::fromEveryGroup)
-                    .filter(groupVo -> isSameSchoolEveryGroup(currentUser, groupVo)),
-                onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
-            .filter(groupVo -> isSameSchoolOnceGroup(currentUser, groupVo))
-            .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
-            .toList();
+        List<GroupVo> groupVos = GroupVoAggregator.aggregateAndSort(
+            groupResponsesDto.everyGroupResponses(),
+            groupResponsesDto.onceGroupResponses());
 
-        return allGroups.stream()
-            .filter(groupVo -> checkGroupsLectureTimeSlot(currentUser, groupVo))
+        return groupVos.stream()
+            .filter(groupVo -> lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(currentUser,
+                groupVo))
             .map(ActiveGroupsResponse::fromGroupVo)
             .collect(Collectors.toList());
     }
@@ -159,47 +177,14 @@ public class GroupFacade {
             groupType);
 
         return latestGroupStrategy.getLatestGroups(currentUser).stream()
-            .filter(groupVo -> checkGroupsLectureTimeSlot(currentUser, groupVo))
+            .filter(groupVo -> lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(currentUser,
+                groupVo))
             .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
             .limit(5)
             .map(ActiveGroupsResponse::fromGroupVo)
             .collect(Collectors.toList());
     }
 
-    private boolean isSameSchoolOnceGroup(UserEntity currentUser, GroupVo groupVo) {
-        String userSchool = currentUser.getSchool().getSchoolName();
-        OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(
-            groupVo.groupId());
-        String groupCreatorSchool = onceGroupEntity.getUserEntity().getSchool().getSchoolName();
-
-        return userSchool.equals(groupCreatorSchool);
-    }
-
-    private boolean isSameSchoolEveryGroup(UserEntity currentUser, GroupVo groupVo) {
-        String userSchool = currentUser.getSchool().getSchoolName();
-        EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(
-            groupVo.groupId());
-        String groupCreatorSchool = everyGroupEntity.getUserEntity().getSchool().getSchoolName();
-
-        return userSchool.equals(groupCreatorSchool);
-    }
-
-    private List<EveryGroupVo> getActiveEveryGroups(UserEntity currentUser, Category category) {
-        return everyGroupService.getActiveEveryGroups(currentUser, category).groups();
-    }
-
-    private List<OnceGroupVo> getActiveOnceGroups(UserEntity currentUser, Category category) {
-        return onceGroupService.getActiveOnceGroups(currentUser, category).groups();
-    }
-
-    private boolean checkGroupsLectureTimeSlot(UserEntity findUserEntity, GroupVo groupVo) {
-        return lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(
-            findUserEntity,
-            groupVo.startTime(),
-            groupVo.endTime(),
-            groupVo.weekDate()
-        );
-    }
 
     private NearestGroupResponse getNearestGroupFromDates(NearestEveryGroup nearestEveryGroup,
         NearestOnceGroup nearestOnceGroup) {

@@ -50,6 +50,7 @@ public class GroupFacade {
     private final RegisterGroupStrategyRegistry registerGroupStrategyRegistry;
     private final PrepareRegisterGongbaekFacade prepareRegisterGongbaekFacade;
     private final CancelGroupStrategyRegistry cancelGroupStrategyRegistry;
+    private final GroupUserInfoStrategyRegistry groupUserInfoStrategyRegistry;
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
         UserEntity currentUser = userService.getUserById(userId);
@@ -79,12 +80,9 @@ public class GroupFacade {
     }
 
     public UserInfo getGroupUserInfo(GroupType groupType, Long groupId) {
-        long userId = switch (groupType) {
-            case WEEKLY -> everyGroupService.getEveryGroupRegisterUserId(groupId);
-            case ONCE -> onceGroupService.getOnceGroupRegisterUserId(groupId);
-        };
+        GroupUserInfoStrategy groupUserInfoStrategy = groupUserInfoStrategyRegistry.getGroupUserInfo(groupType);
 
-        return UserInfo.of(userService.getUserById(userId));
+        return UserInfo.of(userService.getUserById(groupUserInfoStrategy.getGroupUserInfo(groupId)));
     }
 
     @Transactional

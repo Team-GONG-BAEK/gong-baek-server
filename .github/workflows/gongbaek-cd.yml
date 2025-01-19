@@ -22,6 +22,7 @@ jobs:
 
       - name: Push yml file
         run: |
+          mkdir -p ./src/main/resources
           echo ${{ secrets.YML }} > ./src/main/resources/application-prod.yml
 
       - name: Build with Gradle

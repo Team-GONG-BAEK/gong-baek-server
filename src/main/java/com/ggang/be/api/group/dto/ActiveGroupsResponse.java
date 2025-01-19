@@ -10,7 +10,8 @@ import java.time.LocalDate;
 public record ActiveGroupsResponse(
         long groupId,
         Category category,
-        long coverImg,
+        int coverImg,
+        int profileImg,
         GroupType groupType,
         String groupTitle,
         WeekDate weekDate,
@@ -24,6 +25,7 @@ public record ActiveGroupsResponse(
                 groupVo.groupId(),
                 groupVo.category(),
                 groupVo.coverImg(),
+                groupVo.profileImg(),
                 groupVo.groupType(),
                 groupVo.groupTitle(),
                 groupVo.weekDate(),

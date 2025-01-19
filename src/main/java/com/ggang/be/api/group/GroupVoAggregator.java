@@ -1,4 +1,4 @@
-package com.ggang.be.global.util;
+package com.ggang.be.api.group;
 
 import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupVo;

@@ -1,5 +1,6 @@
 package com.ggang.be.api.group.strategy;
 
+import com.ggang.be.api.group.GroupVoAggregator;
 import com.ggang.be.api.group.registry.MyGroupStrategy;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
@@ -8,7 +9,6 @@ import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupVo;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupVo;
 import com.ggang.be.domain.user.UserEntity;
-import com.ggang.be.global.util.GroupVoAggregator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

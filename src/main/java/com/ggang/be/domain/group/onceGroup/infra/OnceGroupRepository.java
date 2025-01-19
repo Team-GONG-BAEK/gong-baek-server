@@ -27,4 +27,6 @@ public interface OnceGroupRepository extends JpaRepository<OnceGroupEntity, Long
     boolean isInTime(UserEntity userEntity, double startTime, double endTime,
         LocalDate groupDate, Status status);
 
+    @Query("select o from once_group o join fetch o.gongbaekTimeSlotEntity where o.status!=:status")
+    List<OnceGroupEntity> findAllByNotStatus(Status status);
 }

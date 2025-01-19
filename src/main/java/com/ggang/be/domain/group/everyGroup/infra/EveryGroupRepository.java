@@ -27,4 +27,6 @@ public interface EveryGroupRepository extends JpaRepository<EveryGroupEntity, Lo
     boolean isInTime(UserEntity userEntity, double startTime, double endTime,
        WeekDate weekDate, Status status);
 
+    @Query("select o from every_group o join fetch o.gongbaekTimeSlotEntity where o.status!=:status")
+    List<EveryGroupEntity> findAllByNotStatus(Status status);
 }

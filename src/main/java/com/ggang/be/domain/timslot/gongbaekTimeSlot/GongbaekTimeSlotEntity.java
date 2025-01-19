@@ -24,7 +24,7 @@ public class GongbaekTimeSlotEntity extends BaseTimeEntity {
     private double startTime;
     private double endTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 

@@ -1,4 +1,4 @@
-package com.ggang.be.api.comment.facade;
+package com.ggang.be.api.comment.strategy;
 
 import com.ggang.be.api.comment.dto.ReadCommentRequest;
 import com.ggang.be.api.comment.dto.ReadCommentResponse;
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @Strategy
 @RequiredArgsConstructor
-public class OnceGroupCommentStrategyFacade implements CommentStrategy {
+public class OnceGroupCommentStrategy implements CommentStrategy {
 
     private final OnceGroupService onceGroupService;
     private final SameSchoolValidator sameSchoolValidator;

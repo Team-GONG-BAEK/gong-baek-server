@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,6 +50,7 @@ public class GroupFacade {
     private final PrepareRegisterGongbaekFacade prepareRegisterGongbaekFacade;
     private final CancelGroupStrategyRegistry cancelGroupStrategyRegistry;
     private final GroupUserInfoStrategyRegistry groupUserInfoStrategyRegistry;
+    private final MyGroupStrategyRegistry myGroupStrategyRegistry;
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
         UserEntity currentUser = userService.getUserById(userId);
@@ -122,14 +122,13 @@ public class GroupFacade {
     public List<MyGroupResponse> getMyGroups(long userId, FillGroupFilterRequest filterRequestDto) {
         UserEntity currentUser = userService.getUserById(userId);
 
-        List<GroupVo> groupResponses = switch (filterRequestDto.getFillGroupCategory()) {
-            case REGISTER -> getGroupsRegister(currentUser, filterRequestDto.status());
-            case APPLY -> getGroupsApply(currentUser, filterRequestDto.status());
-        };
+        MyGroupStrategy groupStrategy = myGroupStrategyRegistry.getGroupStrategy(filterRequestDto.getFillGroupCategory());
+
+        List<GroupVo> groupResponses = groupStrategy.getGroups(currentUser, filterRequestDto.status());
 
         return groupResponses.stream()
-            .map(MyGroupResponse::fromGroupVo)
-            .collect(Collectors.toList());
+                .map(MyGroupResponse::fromGroupVo)
+                .collect(Collectors.toList());
     }
 
     public List<ActiveGroupsResponse> getFillGroups(long userId, Category category) {
@@ -215,34 +214,6 @@ public class GroupFacade {
         } else {
             return GroupResponseMapper.toNearestGroupResponse(nearestOnceGroup);
         }
-    }
-
-    private List<GroupVo> getGroupsRegister(UserEntity currentUser, boolean status) {
-        List<EveryGroupVo> everyGroupResponses = everyGroupService.getMyRegisteredGroups(
-            currentUser, status).groups();
-        List<OnceGroupVo> onceGroupResponses = onceGroupService.getMyRegisteredGroups(currentUser,
-            status).groups();
-
-        return Stream.concat(
-                everyGroupResponses.stream().map(GroupVo::fromEveryGroup),
-                onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
-            .sorted(Comparator.comparing(GroupVo::createdAt).reversed())
-            .collect(Collectors.toList()
-            );
-    }
-
-    private List<GroupVo> getGroupsApply(UserEntity currentUser, boolean status) {
-        List<EveryGroupVo> everyGroupResponses = userEveryGroupService.getMyAppliedGroups(
-            currentUser, status).groups();
-        List<OnceGroupVo> onceGroupResponses = userOnceGroupService.getMyAppliedGroups(currentUser,
-            status).groups();
-
-        return Stream.concat(
-                everyGroupResponses.stream().map(GroupVo::fromEveryGroup),
-                onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
-            .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
-            .collect(Collectors.toList()
-            );
     }
 
     public ReadFillMembersResponse getGroupUsersInfo(Long userId, ReadFillMembersRequest dto) {

@@ -8,6 +8,5 @@ public interface RegisterGroupStrategy {
 
     boolean support(GroupType groupType);
 
-
     RegisterGongbaekResponse registerGroup(PrepareRegisterInfo prepareRegisterInfo);
 }

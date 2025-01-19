@@ -2,6 +2,7 @@ package com.ggang.be.domain.group.everyGroup.application;
 
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
+import com.ggang.be.api.group.GroupStatusUpdater;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.common.SameSchoolValidator;
@@ -21,6 +22,7 @@ import com.ggang.be.domain.user.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -36,6 +38,7 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     private final GroupVoMaker groupVoMaker;
     private final GroupCommentVoMaker groupCommentVoMaker;
     private final SameSchoolValidator sameSchoolValidator;
+    private final GroupStatusUpdater groupStatusUpdater;
 
     @Override
     public EveryGroupDto getEveryGroupDetail(final long groupId, final UserEntity userEntity) {
@@ -150,6 +153,14 @@ public class EveryGroupServiceImpl implements EveryGroupService {
         if(everyGroupEntity.isHost(currentUser))
             throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
         return everyGroupEntity.isApply(currentUser);
+    }
+
+    @Override
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void updateStatus() {
+        List<EveryGroupEntity> everyGroupEntities = everyGroupRepository.findAllByNotStatus(
+            Status.CLOSED);
+        everyGroupEntities.forEach(groupStatusUpdater::updateEveryGroup);
     }
 
 

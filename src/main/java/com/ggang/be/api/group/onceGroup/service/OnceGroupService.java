@@ -30,4 +30,6 @@ public interface OnceGroupService {
     void validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);
 
     boolean validateCancelOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);
+
+    void updateStatus();
 }

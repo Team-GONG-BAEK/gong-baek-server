@@ -2,13 +2,13 @@ package com.ggang.be.domain.group.onceGroup.application;
 
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
+import com.ggang.be.api.group.GroupStatusUpdater;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.group.GroupCommentVoMaker;
 import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
-import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupDto;
 import com.ggang.be.domain.group.onceGroup.dto.ReadOnceGroup;
@@ -21,6 +21,7 @@ import com.ggang.be.domain.user.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     private final OnceGroupRepository onceGroupRepository;
     private final GroupVoMaker groupVoMaker;
     private final GroupCommentVoMaker groupCommentVoMaker;
+    private final GroupStatusUpdater groupStatusUpdater;
 
     @Override
     public OnceGroupDto getOnceGroupDetail(final long groupId, final UserEntity userEntity) {
@@ -140,6 +142,14 @@ public class OnceGroupServiceImpl implements OnceGroupService {
             throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
 
         return onceGroupEntity.isApply(currentUser);
+    }
+
+    @Override
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void updateStatus() {
+        List<OnceGroupEntity> onceGroupEntities = onceGroupRepository.findAllByNotStatus(Status.CLOSED);
+        onceGroupEntities
+            .forEach(groupStatusUpdater::updateOnceGroup);
     }
 
     private OnceGroupEntity buildOnceGroupEntity(RegisterGroupServiceRequest serviceRequest,

@@ -17,10 +17,12 @@ import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
 @Entity(name = "every_group")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicUpdate
 public class EveryGroupEntity extends BaseTimeEntity {
 
     @Id
@@ -116,6 +118,10 @@ public class EveryGroupEntity extends BaseTimeEntity {
             this.status = Status.RECRUITING;
         }
         else this.status = Status.RECRUITED;
+    }
+
+    public void updateStatus(Status status) {
+        this.status = status;
     }
 
     // TODO 동기화 작업 하기

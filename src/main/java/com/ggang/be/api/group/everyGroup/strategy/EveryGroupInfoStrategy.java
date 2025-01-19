@@ -20,7 +20,7 @@ public class EveryGroupInfoStrategy implements GroupInfoStrategy {
 
     @Override
     public boolean supports(GroupType groupType) {
-        return groupType == GroupType.ONCE;
+        return groupType == GroupType.WEEKLY;
     }
 
     @Override

@@ -9,7 +9,7 @@ import com.ggang.be.domain.group.dto.GroupVo;
 import java.time.LocalDate;
 
 public record MyGroupResponse(long groupId, Status status, Category category, int coverImg, GroupType groupType,
-                              String groupTitle, WeekDate weekDate, LocalDate groupDate, double startTime, double endTime, String location) {
+                              String groupTitle, WeekDate weekDay, LocalDate weekDate, double startTime, double endTime, String location) {
 
     public static MyGroupResponse fromGroupVo(GroupVo groupVo) {
         return new MyGroupResponse(

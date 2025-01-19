@@ -6,7 +6,7 @@ import com.ggang.be.api.comment.dto.WriteCommentRequest;
 import com.ggang.be.api.comment.dto.WriteCommentResponse;
 import com.ggang.be.api.common.ApiResponse;
 import com.ggang.be.api.common.ResponseBuilder;
-import com.ggang.be.api.facade.CommentFacade;
+import com.ggang.be.api.comment.facade.CommentFacade;
 import com.ggang.be.global.jwt.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

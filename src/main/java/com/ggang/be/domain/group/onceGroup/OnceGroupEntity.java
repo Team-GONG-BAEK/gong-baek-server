@@ -39,7 +39,7 @@ public class OnceGroupEntity extends BaseTimeEntity {
     @JoinColumn(name = "once_group_id")
     private List<CommentEntity> comments;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gongbaek_time_slot_id")
     private GongbaekTimeSlotEntity gongbaekTimeSlotEntity;
 

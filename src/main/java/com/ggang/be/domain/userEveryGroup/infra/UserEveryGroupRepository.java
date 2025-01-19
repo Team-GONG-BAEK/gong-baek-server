@@ -18,7 +18,7 @@ public interface UserEveryGroupRepository extends JpaRepository<UserEveryGroupEn
     @Query("select u from user_every_group u "
         + " join fetch u.userEntity"
         + " join fetch u.everyGroupEntity"
-        + " where u.userEntity = :userEntity")
+        + " where u.userEntity = :findUserEntity")
     List<UserEveryGroupEntity> findAllByUserEntity(UserEntity findUserEntity);
 
     Optional<UserEveryGroupEntity> findByUserEntityAndEveryGroupEntity(UserEntity userEntity, EveryGroupEntity everyGroupEntity);

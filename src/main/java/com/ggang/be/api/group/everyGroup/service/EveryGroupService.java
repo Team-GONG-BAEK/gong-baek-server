@@ -1,6 +1,7 @@
 package com.ggang.be.api.group.everyGroup.service;
 
 import com.ggang.be.domain.comment.CommentEntity;
+import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDto;
@@ -25,7 +26,7 @@ public interface EveryGroupService {
     EveryGroupEntity registerEveryGroup(RegisterGroupServiceRequest serviceRequest,
                             GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
 
-    ReadEveryGroup getActiveEveryGroups(UserEntity currentUser);
+    ReadEveryGroup getActiveEveryGroups(UserEntity currentUser, Category category);
 
     void validateApplyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
 

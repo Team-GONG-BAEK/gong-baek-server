@@ -8,6 +8,7 @@ import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.facade.GongbaekRequestFacade;
 import com.ggang.be.api.facade.GroupFacade;
 import com.ggang.be.api.group.dto.*;
+import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.FillGroupType;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.global.jwt.JwtService;
@@ -87,11 +88,12 @@ public class GroupController {
 
     @GetMapping("/fill/groups")
     public ResponseEntity<ApiResponse<List<ActiveGroupsResponse>>> getFillGroups(
-            @RequestHeader("Authorization") final String accessToken
+            @RequestHeader("Authorization") final String accessToken,
+            @RequestParam(value = "category", required = false) Category category
     ) {
         Long userId = jwtService.parseTokenAndGetUserId(accessToken);
 
-        return ResponseBuilder.ok(groupFacade.getFillGroups(userId));
+        return ResponseBuilder.ok(groupFacade.getFillGroups(userId, category));
     }
 
     @GetMapping("/group/latest")

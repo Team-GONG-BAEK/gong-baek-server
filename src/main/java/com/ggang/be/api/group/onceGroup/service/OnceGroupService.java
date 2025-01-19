@@ -1,6 +1,7 @@
 package com.ggang.be.api.group.onceGroup.service;
 
 import com.ggang.be.domain.comment.CommentEntity;
+import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupDto;
@@ -25,7 +26,7 @@ public interface OnceGroupService {
     OnceGroupEntity registerOnceGroup(RegisterGroupServiceRequest serviceRequest,
                            GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
 
-    ReadOnceGroup getActiveOnceGroups(UserEntity currentUser);
+    ReadOnceGroup getActiveOnceGroups(UserEntity currentUser, Category category);
 
     void validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);
 

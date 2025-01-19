@@ -6,7 +6,7 @@ import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.common.ResponseSuccess;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.facade.GongbaekRequestFacade;
-import com.ggang.be.api.facade.GroupFacade;
+import com.ggang.be.api.group.facade.GroupFacade;
 import com.ggang.be.api.group.dto.*;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.FillGroupType;

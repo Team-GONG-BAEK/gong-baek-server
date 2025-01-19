@@ -2,9 +2,9 @@ name: BUILD CHECK CI
 
 
 on:
-  workflow_run:
-    workflows: ["TEST-REPORT CI"]
-    types: [completed]
+  pull_request:
+    branches: ["main", "release/**"]
+
 
 jobs:
   build:

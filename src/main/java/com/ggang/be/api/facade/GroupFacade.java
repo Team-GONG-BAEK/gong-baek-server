@@ -3,9 +3,20 @@ package com.ggang.be.api.facade;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.gongbaekTimeSlot.service.GongbaekTimeSlotService;
-import com.ggang.be.api.group.dto.*;
+import com.ggang.be.api.group.dto.ActiveGroupsResponse;
+import com.ggang.be.api.group.dto.FillGroupFilterRequest;
+import com.ggang.be.api.group.dto.GroupRequest;
+import com.ggang.be.api.group.dto.GroupResponse;
+import com.ggang.be.api.group.dto.MyGroupResponse;
+import com.ggang.be.api.group.dto.NearestGroupResponse;
+import com.ggang.be.api.group.dto.ReadFillMembersRequest;
+import com.ggang.be.api.group.dto.ReadFillMembersResponse;
+import com.ggang.be.api.group.dto.RegisterGongbaekRequest;
+import com.ggang.be.api.group.dto.RegisterGongbaekResponse;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
+import com.ggang.be.api.group.registry.ReadFillMemberStrategy;
+import com.ggang.be.api.group.registry.ReadFillMemberStrategyRegistry;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
 import com.ggang.be.api.mapper.GroupResponseMapper;
 import com.ggang.be.api.user.service.UserService;
@@ -24,19 +35,17 @@ import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.dto.GongbaekTimeSlotRequest;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.UserInfo;
-import com.ggang.be.domain.userEveryGroup.dto.FillMember;
 import com.ggang.be.domain.userEveryGroup.dto.NearestEveryGroup;
 import com.ggang.be.domain.userOnceGroup.dto.NearestOnceGroup;
 import com.ggang.be.global.annotation.Facade;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Facade
@@ -51,6 +60,7 @@ public class GroupFacade {
     private final GongbaekTimeSlotService gongbaekTimeSlotService;
     private final LectureTimeSlotService lectureTimeSlotService;
     private final SameSchoolValidator sameSchoolValidator;
+    private final ReadFillMemberStrategyRegistry readFillMemberStrategyRegistry;
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
         UserEntity currentUser = userService.getUserById(userId);
@@ -331,27 +341,14 @@ public class GroupFacade {
     public ReadFillMembersResponse getGroupUsersInfo(Long userId, ReadFillMembersRequest dto) {
         UserEntity findUserEntity = userService.getUserById(userId);
 
-        if (dto.groupType() == GroupType.WEEKLY) {
-            EveryGroupEntity findEveryGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(
-                    dto.groupId());
-            userEveryGroupService.isUserInGroup(findUserEntity, findEveryGroupEntity);
-            sameSchoolValidator.isUserReadMySchoolEveryGroup(findUserEntity, findEveryGroupEntity);
+        log.info("find strategy");
 
-            List<FillMember> everyGroupUsersInfos = userEveryGroupService.getEveryGroupUsersInfo(
-                    ReadFillMembersRequest.toEveryGroupMemberInfo(findEveryGroupEntity));
-            return ReadFillMembersResponse.ofEveryGroup(findEveryGroupEntity, everyGroupUsersInfos);
-        }
-        if (dto.groupType() == GroupType.ONCE) {
-            OnceGroupEntity findOnceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(
-                    dto.groupId());
+        ReadFillMemberStrategy strategy = readFillMemberStrategyRegistry.getStrategy(
+            dto.groupType());
 
-            userOnceGroupService.isUserInGroup(findUserEntity, findOnceGroupEntity);
-            sameSchoolValidator.isUserReadMySchoolOnceGroup(findUserEntity, findOnceGroupEntity);
+        log.info("finish strategy");
 
-            List<FillMember> onceGroupUserInfos = userOnceGroupService.getOnceGroupUsersInfo(
-                    ReadFillMembersRequest.toOnceGroupMemberInfo(findOnceGroupEntity));
-            return ReadFillMembersResponse.ofOnceGroup(findOnceGroupEntity, onceGroupUserInfos);
-        }
-        throw new GongBaekException(ResponseError.BAD_REQUEST);
+        return strategy.getGroupUsersInfo(findUserEntity, dto);
     }
+
 }

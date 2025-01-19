@@ -28,8 +28,9 @@ jobs:
       - name: Push yml file
         run: |
           mkdir -p ./src/main/resources
-          ls -l
-          echo ${{ secrets.PROD_CONFIG }} > ./src/main/resources/application-prod.yml
+          ls ./src/main/resources
+          cd ./src/main/resources/
+          echo ${{ secrets.PROD_CONFIG }} > application-prod.yml
           echo "hello is yml file push success?"
           cat ./src/main/resources/application-prod.yml
 

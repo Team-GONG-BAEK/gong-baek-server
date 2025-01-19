@@ -2,7 +2,7 @@ name: TEST-REPORT CI
 
 on:
   pull_request:
-    branches: [ "main"]
+    branches: [ "main", "release/**" ]
 
 permissions:
   checks: write

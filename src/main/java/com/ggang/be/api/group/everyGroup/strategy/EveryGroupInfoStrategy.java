@@ -8,10 +8,10 @@ import com.ggang.be.domain.common.SameSchoolValidator;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
+import com.ggang.be.global.annotation.Strategy;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
-@Component
+@Strategy
 @RequiredArgsConstructor
 public class EveryGroupInfoStrategy implements GroupInfoStrategy {
 

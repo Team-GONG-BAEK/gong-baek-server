@@ -3,12 +3,12 @@ package com.ggang.be.api.group.registry;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.domain.constant.GroupType;
+import com.ggang.be.global.annotation.Registry;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
+@Registry
 @RequiredArgsConstructor
 public class GroupInfoStrategyRegistry {
 

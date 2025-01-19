@@ -7,13 +7,13 @@ import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupVo;
 import com.ggang.be.domain.user.UserEntity;
+import com.ggang.be.global.annotation.Strategy;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@Strategy
 @RequiredArgsConstructor
 public class OnceLatestGroupStrategy implements LatestGroupStrategy {
 

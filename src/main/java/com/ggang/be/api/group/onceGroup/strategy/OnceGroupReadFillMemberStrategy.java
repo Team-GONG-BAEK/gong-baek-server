@@ -1,9 +1,9 @@
 package com.ggang.be.api.group.onceGroup.strategy;
 
-import com.ggang.be.api.group.registry.ReadFillMemberStrategy;
 import com.ggang.be.api.group.dto.ReadFillMembersRequest;
 import com.ggang.be.api.group.dto.ReadFillMembersResponse;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
+import com.ggang.be.api.group.registry.ReadFillMemberStrategy;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.common.SameSchoolValidator;
 import com.ggang.be.domain.constant.GroupType;
@@ -11,9 +11,9 @@ import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userEveryGroup.dto.FillMember;
 import com.ggang.be.global.annotation.Strategy;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 
 @Strategy
 @RequiredArgsConstructor

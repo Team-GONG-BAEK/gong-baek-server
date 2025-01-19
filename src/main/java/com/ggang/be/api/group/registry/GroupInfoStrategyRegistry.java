@@ -10,11 +10,11 @@ import java.util.List;
 
 @Registry
 @RequiredArgsConstructor
-public class LatestGroupStrategyRegistry {
+public class GroupInfoStrategyRegistry {
 
-    private final List<LatestGroupStrategy> groupStrategies;
+    private final List<GroupInfoStrategy> groupStrategies;
 
-    public LatestGroupStrategy getGroupStrategy(GroupType groupType) {
+    public GroupInfoStrategy getGroupInfo(GroupType groupType) {
         return groupStrategies.stream()
                 .filter(strategy -> strategy.supports(groupType))
                 .findFirst()

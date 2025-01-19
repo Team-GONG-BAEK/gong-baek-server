@@ -10,7 +10,7 @@ import com.ggang.be.domain.group.onceGroup.dto.OnceGroupVo;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public record GroupVo(long groupId, Status status, Category category, int coverImg, GroupType groupType,
+public record GroupVo(long groupId, Status status, Category category, int coverImg, int profileImg, GroupType groupType,
                       String groupTitle, WeekDate weekDate, LocalDate groupDate, double startTime, double endTime, String location, LocalDateTime createdAt) {
 
     public static GroupVo fromEveryGroup(EveryGroupVo everyGroupVo) {
@@ -19,6 +19,7 @@ public record GroupVo(long groupId, Status status, Category category, int coverI
                 everyGroupVo.status(),
                 everyGroupVo.category(),
                 everyGroupVo.coverImg(),
+                everyGroupVo.profileImg(),
                 GroupType.WEEKLY,
                 everyGroupVo.groupTitle(),
                 everyGroupVo.weekDate(),
@@ -36,6 +37,7 @@ public record GroupVo(long groupId, Status status, Category category, int coverI
                 onceGroupVo.status(),
                 onceGroupVo.category(),
                 onceGroupVo.coverImg(),
+                onceGroupVo.profileImg(),
                 GroupType.ONCE,
                 onceGroupVo.groupTitle(),
                 WeekDate.fromDayOfWeek(onceGroupVo.dateTime().getDayOfWeek()),

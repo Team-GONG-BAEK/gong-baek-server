@@ -1,4 +1,4 @@
-package com.ggang.be.api.facade;
+package com.ggang.be.api.group.facade;
 
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
@@ -15,6 +15,8 @@ import com.ggang.be.api.group.dto.RegisterGongbaekRequest;
 import com.ggang.be.api.group.dto.RegisterGongbaekResponse;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
+import com.ggang.be.api.group.registry.LatestGroupStrategy;
+import com.ggang.be.api.group.registry.LatestGroupStrategyRegistry;
 import com.ggang.be.api.group.registry.ReadFillMemberStrategy;
 import com.ggang.be.api.group.registry.ReadFillMemberStrategyRegistry;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
@@ -60,6 +62,7 @@ public class GroupFacade {
     private final GongbaekTimeSlotService gongbaekTimeSlotService;
     private final LectureTimeSlotService lectureTimeSlotService;
     private final SameSchoolValidator sameSchoolValidator;
+    private final LatestGroupStrategyRegistry latestGroupStrategyRegistry;
     private final ReadFillMemberStrategyRegistry readFillMemberStrategyRegistry;
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
@@ -213,6 +216,7 @@ public class GroupFacade {
         List<EveryGroupVo> everyGroupResponses = getActiveEveryGroups(currentUser, category);
         List<OnceGroupVo> onceGroupResponses = getActiveOnceGroups(currentUser, category);
 
+        // TODO 분기처리 하기!!!
         List<GroupVo> allGroups = Stream.concat(
                         everyGroupResponses.stream().map(GroupVo::fromEveryGroup)
                                 .filter(groupVo -> isSameSchoolEveryGroup(currentUser, groupVo)),
@@ -229,28 +233,10 @@ public class GroupFacade {
 
     public List<ActiveGroupsResponse> getLatestGroups(long userId, GroupType groupType) {
         UserEntity currentUser = userService.getUserById(userId);
-        List<GroupVo> allGroups;
-        switch (groupType) {
-            case WEEKLY -> {
-                List<EveryGroupVo> everyGroupResponses = getActiveEveryGroups(currentUser, null);
 
-                allGroups = everyGroupResponses.stream()
-                        .map(GroupVo::fromEveryGroup)
-                        .filter(groupVo -> isSameSchoolEveryGroup(currentUser, groupVo))
-                        .collect(Collectors.toList());
-            }
-            case ONCE -> {
-                List<OnceGroupVo> onceGroupResponses = getActiveOnceGroups(currentUser, null);
+        LatestGroupStrategy latestGroupStrategy = latestGroupStrategyRegistry.getGroupStrategy(groupType);
 
-                allGroups = onceGroupResponses.stream()
-                        .map(GroupVo::fromOnceGroup)
-                        .filter(groupVo -> isSameSchoolOnceGroup(currentUser, groupVo))
-                        .collect(Collectors.toList());
-            }
-            default -> throw new GongBaekException(ResponseError.BAD_REQUEST);
-        }
-
-        return allGroups.stream()
+        return latestGroupStrategy.getLatestGroups(currentUser).stream()
                 .filter(groupVo -> checkGroupsLectureTimeSlot(currentUser, groupVo))
                 .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
                 .limit(5)
@@ -283,7 +269,12 @@ public class GroupFacade {
     }
 
     private boolean checkGroupsLectureTimeSlot(UserEntity findUserEntity, GroupVo groupVo) {
-        return lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(findUserEntity, groupVo.startTime(), groupVo.endTime(), groupVo.weekDate());
+        return lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(
+                findUserEntity,
+                groupVo.startTime(),
+                groupVo.endTime(),
+                groupVo.weekDate()
+        );
     }
 
     private NearestGroupResponse getNearestGroupFromDates(NearestEveryGroup nearestEveryGroup, NearestOnceGroup nearestOnceGroup) {

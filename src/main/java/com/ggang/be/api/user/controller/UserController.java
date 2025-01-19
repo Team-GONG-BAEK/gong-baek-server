@@ -52,7 +52,7 @@ public class UserController {
         return ResponseBuilder.created(signupFacade.signup(request));
     }
   
-    @GetMapping("/user/school")
+    @GetMapping("/user/home/profile")
     public ResponseEntity<ApiResponse<UserSchoolResponseDto>> getGroupInfo(
             @RequestHeader("Authorization") final String accessToken
     ) {

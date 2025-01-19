@@ -7,6 +7,12 @@ import com.ggang.be.api.group.dto.*;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.api.group.registry.*;
+import com.ggang.be.api.group.registry.ApplyGroupStrategy;
+import com.ggang.be.api.group.registry.ApplyGroupStrategyRegistry;
+import com.ggang.be.api.group.registry.LatestGroupStrategy;
+import com.ggang.be.api.group.registry.LatestGroupStrategyRegistry;
+import com.ggang.be.api.group.registry.ReadFillMemberStrategy;
+import com.ggang.be.api.group.registry.ReadFillMemberStrategyRegistry;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
 import com.ggang.be.api.mapper.GroupResponseMapper;
 import com.ggang.be.api.user.service.UserService;
@@ -31,7 +37,6 @@ import com.ggang.be.global.annotation.Facade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -54,6 +59,7 @@ public class GroupFacade {
     private final LatestGroupStrategyRegistry latestGroupStrategyRegistry;
     private final ReadFillMemberStrategyRegistry readFillMemberStrategyRegistry;
     private final GroupInfoStrategyRegistry groupInfoStrategyRegistry;
+    private final ApplyGroupStrategyRegistry applyGroupStrategyRegistry;
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
         UserEntity currentUser = userService.getUserById(userId);
@@ -121,28 +127,10 @@ public class GroupFacade {
     public void applyGroup(Long userId, GroupRequest requestDto) {
         UserEntity findUserEntity = userService.getUserById(userId);
 
-        switch (requestDto.groupType()){
-            case WEEKLY -> {
-                EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(requestDto.groupId());
-                sameSchoolValidator.isUserReadMySchoolEveryGroup(findUserEntity, everyGroupEntity);
-                everyGroupService.validateApplyEveryGroup(findUserEntity, everyGroupEntity);
-                GroupVo groupVo = GroupVo.fromEveryGroup(EveryGroupVo.of(everyGroupEntity));
+        ApplyGroupStrategy applyGroupStrategy = applyGroupStrategyRegistry.getApplyGroupStrategy(
+            requestDto.groupType());
 
-                if(checkGroupsLectureTimeSlot(findUserEntity, groupVo))
-                    userEveryGroupService.applyEveryGroup(findUserEntity, everyGroupEntity);
-                else throw new GongBaekException(ResponseError.TIME_SLOT_ALREADY_EXIST);
-            }
-            case ONCE -> {
-                OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(requestDto.groupId());
-                sameSchoolValidator.isUserReadMySchoolOnceGroup(findUserEntity, onceGroupEntity);
-                onceGroupService.validateApplyOnceGroup(findUserEntity, onceGroupEntity);
-                GroupVo groupVo = GroupVo.fromOnceGroup(OnceGroupVo.of(onceGroupEntity));
-
-                if(checkGroupsLectureTimeSlot(findUserEntity, groupVo))
-                    userOnceGroupService.applyOnceGroup(findUserEntity, onceGroupEntity);
-                else throw new GongBaekException(ResponseError.TIME_SLOT_ALREADY_EXIST);
-            }
-        }
+        applyGroupStrategy.applyGroup(findUserEntity, requestDto);
     }
 
     @Transactional

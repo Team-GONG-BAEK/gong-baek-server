@@ -14,14 +14,13 @@ import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;
 import com.ggang.be.domain.userEveryGroup.dto.FillMember;
 import com.ggang.be.domain.userEveryGroup.dto.NearestEveryGroup;
 import com.ggang.be.domain.userEveryGroup.infra.UserEveryGroupRepository;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -59,9 +58,9 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
         UserEveryGroupEntity userEveryGroupEntity
                 = userEveryGroupRepository.findByUserEntityAndEveryGroupEntity(currentUser, everyGroupEntity)
                 .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_CANCEL_NOT_FOUND));
-
         userEveryGroupRepository.delete(userEveryGroupEntity);
         everyGroupEntity.decreaseCurrentPeopleCount();
+        everyGroupEntity.getParticipantUsers().remove(userEveryGroupEntity);
     }
 
     @Override

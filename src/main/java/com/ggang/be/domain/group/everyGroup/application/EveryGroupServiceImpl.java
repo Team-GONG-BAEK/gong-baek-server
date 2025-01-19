@@ -147,8 +147,11 @@ public class EveryGroupServiceImpl implements EveryGroupService {
 
     @Override
     public boolean validateCancelEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
+        if(everyGroupEntity.isHost(currentUser))
+            throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
         return everyGroupEntity.isApply(currentUser);
     }
+
 
     private EveryGroupEntity buildEveryGroupEntity(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {

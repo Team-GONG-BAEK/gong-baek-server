@@ -33,7 +33,7 @@ public class EveryGroupEntity extends BaseTimeEntity {
     private UserEntity userEntity;
 
     @OneToMany(mappedBy = "everyGroupEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UserEveryGroupEntity> userEveryGroupEntities = new LinkedHashSet<>();
+    private Set<UserEveryGroupEntity> participantUsers = new LinkedHashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "every_group_id")
@@ -93,7 +93,7 @@ public class EveryGroupEntity extends BaseTimeEntity {
     }
 
     public boolean isApply(UserEntity currentUser) {
-        return this.userEveryGroupEntities.stream()
+        return this.participantUsers.stream()
                 .anyMatch(participant -> participant.getUserEntity().getId().equals(currentUser.getId()));
     }
 

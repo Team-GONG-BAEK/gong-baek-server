@@ -21,4 +21,6 @@ public interface UserEveryGroupService {
     void applyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
 
     void cancelEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
+
+    void isUserInGroup(UserEntity findUserEntity, EveryGroupEntity findEveryGroupEntity);
 }

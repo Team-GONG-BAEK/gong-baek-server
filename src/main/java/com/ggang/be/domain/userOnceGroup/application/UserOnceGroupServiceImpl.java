@@ -100,6 +100,14 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
         }
     }
 
+    @Override
+    public void isUserInGroup(UserEntity findUserEntity, OnceGroupEntity findOnceGroupEntity) {
+        if (userOnceGroupRepository.findByUserEntityAndOnceGroupEntity(findUserEntity, findOnceGroupEntity).isEmpty()) {
+            log.error("User is not in group");
+            throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
+        }
+    }
+
     private OnceGroupEntity getNearestGroup(List<OnceGroupEntity> groups) {
         return groups.stream()
             .min(Comparator.comparing(OnceGroupEntity::getGroupDate))

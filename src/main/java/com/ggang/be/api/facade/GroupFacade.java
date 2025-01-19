@@ -14,7 +14,6 @@ import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.common.SameSchoolValidator;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.dto.GroupVo;
-import com.ggang.be.domain.group.dto.ReadGroup;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupVo;
@@ -184,7 +183,7 @@ public class GroupFacade {
         return RegisterGongbaekRequest.toGongbaekTimeSlotRequest(findUserEntity, dto);
     }
 
-    public ReadGroup getMyGroups(long userId, FillGroupFilterRequest filterRequestDto) {
+    public List<MyGroupResponse> getMyGroups(long userId, FillGroupFilterRequest filterRequestDto) {
         UserEntity currentUser = userService.getUserById(userId);
 
         List<GroupVo> groupResponses = switch (filterRequestDto.getFillGroupCategory()) {
@@ -192,7 +191,9 @@ public class GroupFacade {
             case APPLY -> getGroupsApply(currentUser, filterRequestDto.status());
         };
 
-        return ReadGroup.of(groupResponses);
+        return groupResponses.stream()
+                .map(MyGroupResponse::fromGroupVo)
+                .collect(Collectors.toList());
     }
 
     public List<ActiveGroupsResponse> getFillGroups(long userId) {
@@ -328,9 +329,11 @@ public class GroupFacade {
 
     public ReadFillMembersResponse getGroupUsersInfo(Long userId, ReadFillMembersRequest dto) {
         UserEntity findUserEntity = userService.getUserById(userId);
+
         if (dto.groupType() == GroupType.WEEKLY) {
             EveryGroupEntity findEveryGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(
                     dto.groupId());
+            userEveryGroupService.isUserInGroup(findUserEntity, findEveryGroupEntity);
             sameSchoolValidator.isUserReadMySchoolEveryGroup(findUserEntity, findEveryGroupEntity);
 
             List<FillMember> everyGroupUsersInfos = userEveryGroupService.getEveryGroupUsersInfo(
@@ -340,6 +343,8 @@ public class GroupFacade {
         if (dto.groupType() == GroupType.ONCE) {
             OnceGroupEntity findOnceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(
                     dto.groupId());
+
+            userOnceGroupService.isUserInGroup(findUserEntity, findOnceGroupEntity);
             sameSchoolValidator.isUserReadMySchoolOnceGroup(findUserEntity, findOnceGroupEntity);
 
             List<FillMember> onceGroupUserInfos = userOnceGroupService.getOnceGroupUsersInfo(

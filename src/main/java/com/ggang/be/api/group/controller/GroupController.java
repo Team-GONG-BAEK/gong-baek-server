@@ -10,7 +10,6 @@ import com.ggang.be.api.facade.GroupFacade;
 import com.ggang.be.api.group.dto.*;
 import com.ggang.be.domain.constant.FillGroupType;
 import com.ggang.be.domain.constant.GroupType;
-import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.global.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -73,7 +72,7 @@ public class GroupController {
     }
 
     @GetMapping("/my/groups")
-    public ResponseEntity<ApiResponse<List<GroupVo>>> getMyGroups(
+    public ResponseEntity<ApiResponse<List<MyGroupResponse>>> getMyGroups(
             @RequestHeader("Authorization") final String accessToken,
             @RequestBody final FillGroupFilterRequest groupFilterRequest
     ) {
@@ -83,7 +82,7 @@ public class GroupController {
             throw new GongBaekException(ResponseError.BAD_REQUEST);
         }
 
-        return ResponseBuilder.ok(groupFacade.getMyGroups(userId, groupFilterRequest).groups());
+        return ResponseBuilder.ok(groupFacade.getMyGroups(userId, groupFilterRequest));
     }
 
     @GetMapping("/fill/groups")

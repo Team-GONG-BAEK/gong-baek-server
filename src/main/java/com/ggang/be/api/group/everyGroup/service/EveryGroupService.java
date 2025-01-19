@@ -30,4 +30,6 @@ public interface EveryGroupService {
     void validateApplyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
 
     boolean validateCancelEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
+
+    void updateStatus();
 }

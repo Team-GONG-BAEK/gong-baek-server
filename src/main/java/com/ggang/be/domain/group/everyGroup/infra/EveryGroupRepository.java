@@ -4,7 +4,9 @@ import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -12,7 +14,7 @@ import java.util.List;
 public interface EveryGroupRepository extends JpaRepository<EveryGroupEntity, Long> {
     List<EveryGroupEntity> findByUserEntity_Id(Long userEntityUserId);
 
-    List<EveryGroupEntity> findByUserEveryGroupEntities_UserEntity_Id(Long userId);
+    List<EveryGroupEntity> findByParticipantUsers_UserEntity_Id(Long userId);
 
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END " +
         "FROM every_group o " +
@@ -27,4 +29,7 @@ public interface EveryGroupRepository extends JpaRepository<EveryGroupEntity, Lo
     boolean isInTime(UserEntity userEntity, double startTime, double endTime,
        WeekDate weekDate, Status status);
 
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select o from every_group o join fetch o.gongbaekTimeSlotEntity where o.status!=:status")
+    List<EveryGroupEntity> findAllByNotStatus(Status status);
 }

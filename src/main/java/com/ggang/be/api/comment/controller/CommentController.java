@@ -6,8 +6,9 @@ import com.ggang.be.api.comment.dto.WriteCommentRequest;
 import com.ggang.be.api.comment.dto.WriteCommentResponse;
 import com.ggang.be.api.common.ApiResponse;
 import com.ggang.be.api.common.ResponseBuilder;
-import com.ggang.be.api.facade.CommentFacade;
+import com.ggang.be.api.comment.facade.CommentFacade;
 import com.ggang.be.global.jwt.JwtService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class CommentController {
     private final JwtService jwtService;
 
     @PostMapping("/comment")
-    public ResponseEntity<ApiResponse<WriteCommentResponse>> writeComment(@RequestHeader("Authorization") final String token, @RequestBody final WriteCommentRequest dto){
+    public ResponseEntity<ApiResponse<WriteCommentResponse>> writeComment(@RequestHeader("Authorization") final String token, @RequestBody @Valid final WriteCommentRequest dto){
         Long userId = jwtService.parseTokenAndGetUserId(token);
         return ResponseBuilder.created(commentFacade.writeComment(userId, dto));
     }

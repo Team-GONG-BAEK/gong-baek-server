@@ -3,7 +3,9 @@ package com.ggang.be.domain.group.onceGroup.infra;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
@@ -27,4 +29,7 @@ public interface OnceGroupRepository extends JpaRepository<OnceGroupEntity, Long
     boolean isInTime(UserEntity userEntity, double startTime, double endTime,
         LocalDate groupDate, Status status);
 
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select o from once_group o join fetch o.gongbaekTimeSlotEntity where o.status!=:status")
+    List<OnceGroupEntity> findAllByNotStatus(Status status);
 }

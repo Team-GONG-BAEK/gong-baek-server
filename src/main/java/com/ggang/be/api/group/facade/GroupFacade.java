@@ -3,22 +3,10 @@ package com.ggang.be.api.group.facade;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.gongbaekTimeSlot.service.GongbaekTimeSlotService;
-import com.ggang.be.api.group.dto.ActiveGroupsResponse;
-import com.ggang.be.api.group.dto.FillGroupFilterRequest;
-import com.ggang.be.api.group.dto.GroupRequest;
-import com.ggang.be.api.group.dto.GroupResponse;
-import com.ggang.be.api.group.dto.MyGroupResponse;
-import com.ggang.be.api.group.dto.NearestGroupResponse;
-import com.ggang.be.api.group.dto.ReadFillMembersRequest;
-import com.ggang.be.api.group.dto.ReadFillMembersResponse;
-import com.ggang.be.api.group.dto.RegisterGongbaekRequest;
-import com.ggang.be.api.group.dto.RegisterGongbaekResponse;
+import com.ggang.be.api.group.dto.*;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
-import com.ggang.be.api.group.registry.LatestGroupStrategy;
-import com.ggang.be.api.group.registry.LatestGroupStrategyRegistry;
-import com.ggang.be.api.group.registry.ReadFillMemberStrategy;
-import com.ggang.be.api.group.registry.ReadFillMemberStrategyRegistry;
+import com.ggang.be.api.group.registry.*;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
 import com.ggang.be.api.mapper.GroupResponseMapper;
 import com.ggang.be.api.user.service.UserService;
@@ -40,14 +28,15 @@ import com.ggang.be.domain.user.dto.UserInfo;
 import com.ggang.be.domain.userEveryGroup.dto.NearestEveryGroup;
 import com.ggang.be.domain.userOnceGroup.dto.NearestOnceGroup;
 import com.ggang.be.global.annotation.Facade;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 
 
 @Facade
@@ -64,23 +53,14 @@ public class GroupFacade {
     private final SameSchoolValidator sameSchoolValidator;
     private final LatestGroupStrategyRegistry latestGroupStrategyRegistry;
     private final ReadFillMemberStrategyRegistry readFillMemberStrategyRegistry;
+    private final GroupInfoStrategyRegistry groupInfoStrategyRegistry;
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
         UserEntity currentUser = userService.getUserById(userId);
 
-        switch (groupType) {
-            case WEEKLY -> {
-                EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(groupId);
-                sameSchoolValidator.isUserReadMySchoolEveryGroup(currentUser, everyGroupEntity);
-                return GroupResponseMapper.fromEveryGroup(everyGroupService.getEveryGroupDetail(groupId, currentUser));
-            }
-            case ONCE -> {
-                OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(groupId);
-                sameSchoolValidator.isUserReadMySchoolOnceGroup(currentUser, onceGroupEntity);
-                return  GroupResponseMapper.fromOnceGroup(onceGroupService.getOnceGroupDetail(groupId, currentUser));
-            }
-            default -> throw new GongBaekException(ResponseError.BAD_REQUEST);
-        }
+        GroupInfoStrategy groupInfoStrategy = groupInfoStrategyRegistry.getGroupInfo(groupType);
+
+        return groupInfoStrategy.getGroupInfo(groupId, currentUser);
     }
 
     public NearestGroupResponse getNearestGroupInfo(long userId) {

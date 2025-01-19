@@ -20,9 +20,18 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Debug Secrets
+        run: |
+          echo "Secrets YML value:"
+          echo "${{ secrets.PROD_CONFIG }}"
+
       - name: Push yml file
         run: |
-          echo ${{ secrets.YML }} > ./src/main/resources/application-prod.yml
+          mkdir -p ./src/main/resources
+          cat <<EOF > ./src/main/resources/application-prod.yml
+          ${{ secrets.PROD_CONFIG }}
+          EOF
+          echo "YML file successfully created"
 
       - name: Build with Gradle
         run: ./gradlew -x test clean build
@@ -47,4 +56,5 @@ jobs:
               script: |
                 docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
                 docker pull ${{ secrets.DOCKER_USERNAME }}/ggang:latest
+                ./deploy.sh
                 echo "now finished deploy: $(date '+%Y-%m-%d %H:%M:%S')" > deploy_success_date.txt         

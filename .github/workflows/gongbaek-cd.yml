@@ -20,11 +20,17 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Debug Secrets
+        run: |
+          echo "Secrets YML value:"
+          echo "${{ secrets.PROD_CONFIG }}"
+
       - name: Push yml file
         run: |
           mkdir -p ./src/main/resources
           ls -l
-          echo ${{ secrets.YML }} > ./src/main/resources/application-prod.yml
+          echo ${{ secrets.PROD_CONFIG }} > ./src/main/resources/application-prod.yml
+          echo "hello is yml file push success?"
           cat ./src/main/resources/application-prod.yml
 
       - name: Build with Gradle

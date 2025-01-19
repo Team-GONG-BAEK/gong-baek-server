@@ -5,6 +5,7 @@ import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.group.GroupStatusUpdater;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.domain.comment.CommentEntity;
+import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.group.GroupCommentVoMaker;
 import com.ggang.be.domain.group.GroupVoMaker;
@@ -58,8 +59,10 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     }
 
     @Override
-    public ReadOnceGroup getActiveOnceGroups(UserEntity currentUser) {
-        List<OnceGroupEntity> onceGroupEntities = onceGroupRepository.findAll();
+    public ReadOnceGroup getActiveOnceGroups(UserEntity currentUser, Category category) {
+        List<OnceGroupEntity> onceGroupEntities;
+        if(category == null) onceGroupEntities = onceGroupRepository.findAll();
+        else onceGroupEntities = onceGroupRepository.findAllByCategory(category);
 
         return ReadOnceGroup.of(groupVoMaker.makeOnceGroup(getRecruitingGroups(onceGroupEntities)));
     }

@@ -12,6 +12,7 @@ import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.common.SameSchoolValidator;
+import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
@@ -196,11 +197,11 @@ public class GroupFacade {
                 .collect(Collectors.toList());
     }
 
-    public List<ActiveGroupsResponse> getFillGroups(long userId) {
+    public List<ActiveGroupsResponse> getFillGroups(long userId, Category category) {
         UserEntity currentUser = userService.getUserById(userId);
 
-        List<EveryGroupVo> everyGroupResponses = getActiveEveryGroups(currentUser);
-        List<OnceGroupVo> onceGroupResponses = getActiveOnceGroups(currentUser);
+        List<EveryGroupVo> everyGroupResponses = getActiveEveryGroups(currentUser, category);
+        List<OnceGroupVo> onceGroupResponses = getActiveOnceGroups(currentUser, category);
 
         List<GroupVo> allGroups = Stream.concat(
                         everyGroupResponses.stream().map(GroupVo::fromEveryGroup)
@@ -221,7 +222,7 @@ public class GroupFacade {
         List<GroupVo> allGroups;
         switch (groupType) {
             case WEEKLY -> {
-                List<EveryGroupVo> everyGroupResponses = getActiveEveryGroups(currentUser);
+                List<EveryGroupVo> everyGroupResponses = getActiveEveryGroups(currentUser, null);
 
                 allGroups = everyGroupResponses.stream()
                         .map(GroupVo::fromEveryGroup)
@@ -229,7 +230,7 @@ public class GroupFacade {
                         .collect(Collectors.toList());
             }
             case ONCE -> {
-                List<OnceGroupVo> onceGroupResponses = getActiveOnceGroups(currentUser);
+                List<OnceGroupVo> onceGroupResponses = getActiveOnceGroups(currentUser, null);
 
                 allGroups = onceGroupResponses.stream()
                         .map(GroupVo::fromOnceGroup)
@@ -263,12 +264,12 @@ public class GroupFacade {
         return userSchool.equals(groupCreatorSchool);
     }
 
-    private List<EveryGroupVo> getActiveEveryGroups(UserEntity currentUser) {
-        return everyGroupService.getActiveEveryGroups(currentUser).groups();
+    private List<EveryGroupVo> getActiveEveryGroups(UserEntity currentUser, Category category) {
+        return everyGroupService.getActiveEveryGroups(currentUser, category).groups();
     }
 
-    private List<OnceGroupVo> getActiveOnceGroups(UserEntity currentUser) {
-        return onceGroupService.getActiveOnceGroups(currentUser).groups();
+    private List<OnceGroupVo> getActiveOnceGroups(UserEntity currentUser, Category category) {
+        return onceGroupService.getActiveOnceGroups(currentUser, category).groups();
     }
 
     private boolean checkGroupsLectureTimeSlot(UserEntity findUserEntity, GroupVo groupVo) {

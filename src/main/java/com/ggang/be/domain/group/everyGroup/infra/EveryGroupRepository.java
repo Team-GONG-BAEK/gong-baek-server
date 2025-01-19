@@ -1,5 +1,6 @@
 package com.ggang.be.domain.group.everyGroup.infra;
 
+import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
@@ -32,4 +33,6 @@ public interface EveryGroupRepository extends JpaRepository<EveryGroupEntity, Lo
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select o from every_group o join fetch o.gongbaekTimeSlotEntity where o.status!=:status")
     List<EveryGroupEntity> findAllByNotStatus(Status status);
+
+    List<EveryGroupEntity> findAllByCategory(Category category);
 }

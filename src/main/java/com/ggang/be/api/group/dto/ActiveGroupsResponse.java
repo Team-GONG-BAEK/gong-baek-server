@@ -1,5 +1,6 @@
 package com.ggang.be.api.group.dto;
 
+import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.group.dto.GroupVo;
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 
 public record ActiveGroupsResponse(
         long groupId,
+        Category category,
         long coverImg,
         GroupType groupType,
         String groupTitle,
@@ -20,6 +22,7 @@ public record ActiveGroupsResponse(
     public static ActiveGroupsResponse fromGroupVo(GroupVo groupVo) {
         return new ActiveGroupsResponse(
                 groupVo.groupId(),
+                groupVo.category(),
                 groupVo.coverImg(),
                 groupVo.groupType(),
                 groupVo.groupTitle(),

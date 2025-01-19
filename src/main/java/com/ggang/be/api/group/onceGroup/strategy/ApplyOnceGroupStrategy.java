@@ -45,9 +45,7 @@ public class ApplyOnceGroupStrategy implements ApplyGroupStrategy {
     private boolean checkGroupsLectureTimeSlot(UserEntity findUserEntity, GroupVo groupVo) {
         return lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(
             findUserEntity,
-            groupVo.startTime(),
-            groupVo.endTime(),
-            groupVo.weekDate()
+            groupVo
         );
     }
 

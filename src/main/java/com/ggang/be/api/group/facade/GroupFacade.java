@@ -1,8 +1,5 @@
 package com.ggang.be.api.group.facade;
 
-import com.ggang.be.api.common.ResponseError;
-import com.ggang.be.api.exception.GongBaekException;
-import com.ggang.be.api.gongbaekTimeSlot.service.GongbaekTimeSlotService;
 import com.ggang.be.api.group.dto.*;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
@@ -15,13 +12,10 @@ import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.dto.GroupVo;
-import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupVo;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupVo;
-import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
-import com.ggang.be.domain.timslot.gongbaekTimeSlot.dto.GongbaekTimeSlotRequest;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.UserInfo;
 import com.ggang.be.domain.userEveryGroup.dto.NearestEveryGroup;
@@ -42,17 +36,19 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @Slf4j
 public class GroupFacade {
+
     private final EveryGroupService everyGroupService;
     private final OnceGroupService onceGroupService;
     private final UserEveryGroupService userEveryGroupService;
     private final UserOnceGroupService userOnceGroupService;
     private final UserService userService;
-    private final GongbaekTimeSlotService gongbaekTimeSlotService;
     private final LectureTimeSlotService lectureTimeSlotService;
     private final LatestGroupStrategyRegistry latestGroupStrategyRegistry;
     private final ReadFillMemberStrategyRegistry readFillMemberStrategyRegistry;
     private final GroupInfoStrategyRegistry groupInfoStrategyRegistry;
     private final ApplyGroupStrategyRegistry applyGroupStrategyRegistry;
+    private final RegisterGroupStrategyRegistry registerGroupStrategyRegistry;
+    private final PrepareRegisterGongbaekFacade prepareRegisterGongbaekFacade;
     private final CancelGroupStrategyRegistry cancelGroupStrategyRegistry;
     private final GroupUserInfoStrategyRegistry groupUserInfoStrategyRegistry;
 
@@ -66,7 +62,8 @@ public class GroupFacade {
 
     public NearestGroupResponse getNearestGroupInfo(long userId) {
         UserEntity currentUser = userService.getUserById(userId);
-        NearestEveryGroup nearestEveryGroup = userEveryGroupService.getMyNearestEveryGroup(currentUser);
+        NearestEveryGroup nearestEveryGroup = userEveryGroupService.getMyNearestEveryGroup(
+            currentUser);
         NearestOnceGroup nearestOnceGroup = userOnceGroupService.getMyNearestOnceGroup(currentUser);
 
         if (nearestEveryGroup == null && nearestOnceGroup == null) {
@@ -90,29 +87,14 @@ public class GroupFacade {
 
     @Transactional
     public RegisterGongbaekResponse registerGongbaek(Long userId, RegisterGongbaekRequest dto) {
-        UserEntity findUserEntity = userService.getUserById(userId);
 
-        GongbaekTimeSlotRequest gongbaekDto = convertDtoToGongbaekDto(dto, findUserEntity);
-        RegisterGroupServiceRequest serviceRequest = convertDtoToServiceDto(dto, findUserEntity);
+        PrepareRegisterInfo prepareRegisterInfo = prepareRegisterGongbaekFacade.prepareInfo(userId,
+            dto);
 
-        GongbaekTimeSlotEntity gongbaekTimeSlotEntity = gongbaekTimeSlotService.registerGongbaekTimeSlot(
-                findUserEntity, gongbaekDto);
+        RegisterGroupStrategy registerGroupStrategy = registerGroupStrategyRegistry.getRegisterGroupStrategy(
+            dto.groupType());
 
-        if (dto.groupType() == GroupType.WEEKLY) {
-            EveryGroupEntity everyGroupEntity = everyGroupService.registerEveryGroup(serviceRequest,
-                gongbaekTimeSlotEntity);
-            userEveryGroupService.applyEveryGroup(findUserEntity, everyGroupEntity);
-            return RegisterGongbaekResponse.of(
-                everyGroupEntity.getId());
-        }
-        if (dto.groupType() == GroupType.ONCE) {
-            OnceGroupEntity onceGroupEntity = onceGroupService.registerOnceGroup(serviceRequest,
-                gongbaekTimeSlotEntity);
-            userOnceGroupService.applyOnceGroup(findUserEntity, onceGroupEntity);
-            return RegisterGongbaekResponse.of(onceGroupEntity.getId());
-        }
-
-        throw new GongBaekException(ResponseError.BAD_REQUEST);
+        return registerGroupStrategy.registerGroup(prepareRegisterInfo);
     }
 
     @Transactional
@@ -137,18 +119,6 @@ public class GroupFacade {
         cancelGroupStrategy.cancelGroup(findUserEntity, requestDto);
     }
 
-    private RegisterGroupServiceRequest convertDtoToServiceDto(
-            RegisterGongbaekRequest dto, UserEntity findUserEntity
-    ) {
-        return RegisterGongbaekRequest.toServiceRequest(findUserEntity, dto);
-    }
-
-    private GongbaekTimeSlotRequest convertDtoToGongbaekDto(
-            RegisterGongbaekRequest dto, UserEntity findUserEntity
-    ) {
-        return RegisterGongbaekRequest.toGongbaekTimeSlotRequest(findUserEntity, dto);
-    }
-
     public List<MyGroupResponse> getMyGroups(long userId, FillGroupFilterRequest filterRequestDto) {
         UserEntity currentUser = userService.getUserById(userId);
 
@@ -158,8 +128,8 @@ public class GroupFacade {
         };
 
         return groupResponses.stream()
-                .map(MyGroupResponse::fromGroupVo)
-                .collect(Collectors.toList());
+            .map(MyGroupResponse::fromGroupVo)
+            .collect(Collectors.toList());
     }
 
     public List<ActiveGroupsResponse> getFillGroups(long userId, Category category) {
@@ -170,35 +140,37 @@ public class GroupFacade {
 
         // TODO 분기처리 하기!!!
         List<GroupVo> allGroups = Stream.concat(
-                        everyGroupResponses.stream().map(GroupVo::fromEveryGroup)
-                                .filter(groupVo -> isSameSchoolEveryGroup(currentUser, groupVo)),
-                        onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
-                                .filter(groupVo -> isSameSchoolOnceGroup(currentUser, groupVo))
-                .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
-                .toList();
+                everyGroupResponses.stream().map(GroupVo::fromEveryGroup)
+                    .filter(groupVo -> isSameSchoolEveryGroup(currentUser, groupVo)),
+                onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
+            .filter(groupVo -> isSameSchoolOnceGroup(currentUser, groupVo))
+            .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
+            .toList();
 
         return allGroups.stream()
-                .filter(groupVo -> checkGroupsLectureTimeSlot(currentUser, groupVo))
-                .map(ActiveGroupsResponse::fromGroupVo)
-                .collect(Collectors.toList());
+            .filter(groupVo -> checkGroupsLectureTimeSlot(currentUser, groupVo))
+            .map(ActiveGroupsResponse::fromGroupVo)
+            .collect(Collectors.toList());
     }
 
     public List<ActiveGroupsResponse> getLatestGroups(long userId, GroupType groupType) {
         UserEntity currentUser = userService.getUserById(userId);
 
-        LatestGroupStrategy latestGroupStrategy = latestGroupStrategyRegistry.getGroupStrategy(groupType);
+        LatestGroupStrategy latestGroupStrategy = latestGroupStrategyRegistry.getGroupStrategy(
+            groupType);
 
         return latestGroupStrategy.getLatestGroups(currentUser).stream()
-                .filter(groupVo -> checkGroupsLectureTimeSlot(currentUser, groupVo))
-                .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
-                .limit(5)
-                .map(ActiveGroupsResponse::fromGroupVo)
-                .collect(Collectors.toList());
+            .filter(groupVo -> checkGroupsLectureTimeSlot(currentUser, groupVo))
+            .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
+            .limit(5)
+            .map(ActiveGroupsResponse::fromGroupVo)
+            .collect(Collectors.toList());
     }
 
     private boolean isSameSchoolOnceGroup(UserEntity currentUser, GroupVo groupVo) {
         String userSchool = currentUser.getSchool().getSchoolName();
-        OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(groupVo.groupId());
+        OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(
+            groupVo.groupId());
         String groupCreatorSchool = onceGroupEntity.getUserEntity().getSchool().getSchoolName();
 
         return userSchool.equals(groupCreatorSchool);
@@ -206,7 +178,8 @@ public class GroupFacade {
 
     private boolean isSameSchoolEveryGroup(UserEntity currentUser, GroupVo groupVo) {
         String userSchool = currentUser.getSchool().getSchoolName();
-        EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(groupVo.groupId());
+        EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(
+            groupVo.groupId());
         String groupCreatorSchool = everyGroupEntity.getUserEntity().getSchool().getSchoolName();
 
         return userSchool.equals(groupCreatorSchool);
@@ -222,14 +195,15 @@ public class GroupFacade {
 
     private boolean checkGroupsLectureTimeSlot(UserEntity findUserEntity, GroupVo groupVo) {
         return lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(
-                findUserEntity,
-                groupVo.startTime(),
-                groupVo.endTime(),
-                groupVo.weekDate()
+            findUserEntity,
+            groupVo.startTime(),
+            groupVo.endTime(),
+            groupVo.weekDate()
         );
     }
 
-    private NearestGroupResponse getNearestGroupFromDates(NearestEveryGroup nearestEveryGroup, NearestOnceGroup nearestOnceGroup) {
+    private NearestGroupResponse getNearestGroupFromDates(NearestEveryGroup nearestEveryGroup,
+        NearestOnceGroup nearestOnceGroup) {
         LocalDate everyGroupDate = nearestEveryGroup.weekDate();
         LocalDate onceGroupDate = nearestOnceGroup.weekDate();
 
@@ -243,28 +217,32 @@ public class GroupFacade {
         }
     }
 
-    private List<GroupVo> getGroupsRegister (UserEntity currentUser, boolean status) {
-        List<EveryGroupVo> everyGroupResponses = everyGroupService.getMyRegisteredGroups(currentUser, status).groups();
-        List<OnceGroupVo> onceGroupResponses = onceGroupService.getMyRegisteredGroups(currentUser, status).groups();
+    private List<GroupVo> getGroupsRegister(UserEntity currentUser, boolean status) {
+        List<EveryGroupVo> everyGroupResponses = everyGroupService.getMyRegisteredGroups(
+            currentUser, status).groups();
+        List<OnceGroupVo> onceGroupResponses = onceGroupService.getMyRegisteredGroups(currentUser,
+            status).groups();
 
         return Stream.concat(
-                        everyGroupResponses.stream().map(GroupVo::fromEveryGroup),
-                        onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
-                .sorted(Comparator.comparing(GroupVo::createdAt).reversed())
-                .collect(Collectors.toList()
-                );
+                everyGroupResponses.stream().map(GroupVo::fromEveryGroup),
+                onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
+            .sorted(Comparator.comparing(GroupVo::createdAt).reversed())
+            .collect(Collectors.toList()
+            );
     }
 
-    private List<GroupVo> getGroupsApply (UserEntity currentUser, boolean status) {
-        List<EveryGroupVo> everyGroupResponses = userEveryGroupService.getMyAppliedGroups(currentUser, status).groups();
-        List<OnceGroupVo> onceGroupResponses = userOnceGroupService.getMyAppliedGroups(currentUser, status).groups();
+    private List<GroupVo> getGroupsApply(UserEntity currentUser, boolean status) {
+        List<EveryGroupVo> everyGroupResponses = userEveryGroupService.getMyAppliedGroups(
+            currentUser, status).groups();
+        List<OnceGroupVo> onceGroupResponses = userOnceGroupService.getMyAppliedGroups(currentUser,
+            status).groups();
 
         return Stream.concat(
-                        everyGroupResponses.stream().map(GroupVo::fromEveryGroup),
-                        onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
-                .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
-                .collect(Collectors.toList()
-                );
+                everyGroupResponses.stream().map(GroupVo::fromEveryGroup),
+                onceGroupResponses.stream().map(GroupVo::fromOnceGroup))
+            .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
+            .collect(Collectors.toList()
+            );
     }
 
     public ReadFillMembersResponse getGroupUsersInfo(Long userId, ReadFillMembersRequest dto) {

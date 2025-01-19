@@ -56,4 +56,5 @@ jobs:
               script: |
                 docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
                 docker pull ${{ secrets.DOCKER_USERNAME }}/ggang:latest
+                ./deploy.sh
                 echo "now finished deploy: $(date '+%Y-%m-%d %H:%M:%S')" > deploy_success_date.txt         

@@ -6,8 +6,8 @@ import com.ggang.be.api.gongbaekTimeSlot.service.GongbaekTimeSlotService;
 import com.ggang.be.api.group.dto.*;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
-import com.ggang.be.api.group.registry.GroupStrategyRegistry;
 import com.ggang.be.api.group.registry.LatestGroupStrategy;
+import com.ggang.be.api.group.registry.LatestGroupStrategyRegistry;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
 import com.ggang.be.api.mapper.GroupResponseMapper;
 import com.ggang.be.api.user.service.UserService;
@@ -53,7 +53,7 @@ public class GroupFacade {
     private final GongbaekTimeSlotService gongbaekTimeSlotService;
     private final LectureTimeSlotService lectureTimeSlotService;
     private final SameSchoolValidator sameSchoolValidator;
-    private final GroupStrategyRegistry groupStrategyRegistry;
+    private final LatestGroupStrategyRegistry latestGroupStrategyRegistry;
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
         UserEntity currentUser = userService.getUserById(userId);
@@ -224,7 +224,7 @@ public class GroupFacade {
     public List<ActiveGroupsResponse> getLatestGroups(long userId, GroupType groupType) {
         UserEntity currentUser = userService.getUserById(userId);
 
-        LatestGroupStrategy latestGroupStrategy = groupStrategyRegistry.getGroupStrategy(groupType);
+        LatestGroupStrategy latestGroupStrategy = latestGroupStrategyRegistry.getGroupStrategy(groupType);
 
         return latestGroupStrategy.getLatestGroups(currentUser).stream()
                 .filter(groupVo -> checkGroupsLectureTimeSlot(currentUser, groupVo))

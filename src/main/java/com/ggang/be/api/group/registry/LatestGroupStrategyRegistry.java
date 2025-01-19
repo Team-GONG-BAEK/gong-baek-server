@@ -10,7 +10,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class GroupStrategyRegistry {
+public class LatestGroupStrategyRegistry {
 
     private final List<LatestGroupStrategy> groupStrategies;
 

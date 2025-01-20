@@ -5,8 +5,7 @@ import com.ggang.be.api.group.dto.NearestGroupResponse;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDto;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupDto;
-import com.ggang.be.domain.userEveryGroup.dto.NearestEveryGroup;
-import com.ggang.be.domain.userOnceGroup.dto.NearestOnceGroup;
+import com.ggang.be.domain.group.vo.NearestGroup;
 
 public record GroupResponseMapper() {
     public static GroupResponse fromOnceGroup(OnceGroupDto dto) {
@@ -51,35 +50,21 @@ public record GroupResponseMapper() {
         );
     }
 
-    public static NearestGroupResponse toNearestGroupResponse(NearestEveryGroup nearestEveryGroup) {
-        return new NearestGroupResponse(
-                nearestEveryGroup.groupId(),
-                nearestEveryGroup.category(),
-                GroupType.WEEKLY,
-                nearestEveryGroup.groupTitle(),
-                nearestEveryGroup.weekDay(),
-                nearestEveryGroup.weekDate().toString(),
-                nearestEveryGroup.currentPeopleCount(),
-                nearestEveryGroup.maxPeopleCount(),
-                nearestEveryGroup.startTime(),
-                nearestEveryGroup.endTime(),
-                nearestEveryGroup.location()
-        );
-    }
 
-    public static NearestGroupResponse toNearestGroupResponse(NearestOnceGroup nearestOnceGroup) {
+    public static NearestGroupResponse toNearestGroupResponse(
+        NearestGroup nearestGroup) {
         return new NearestGroupResponse(
-                nearestOnceGroup.groupId(),
-                nearestOnceGroup.category(),
-                GroupType.ONCE,
-                nearestOnceGroup.groupTitle(),
-                nearestOnceGroup.weekDay(),
-                nearestOnceGroup.weekDate().toString(),
-                nearestOnceGroup.currentPeopleCount(),
-                nearestOnceGroup.maxPeopleCount(),
-                nearestOnceGroup.startTime(),
-                nearestOnceGroup.endTime(),
-                nearestOnceGroup.location()
+            nearestGroup.groupId(),
+            nearestGroup.category(),
+            nearestGroup.groupType(),
+            nearestGroup.groupTitle(),
+            nearestGroup.weekDay(),
+            nearestGroup.weekDate().toString(),
+            nearestGroup.currentPeopleCount(),
+            nearestGroup.maxPeopleCount(),
+            nearestGroup.startTime(),
+            nearestGroup.endTime(),
+            nearestGroup.location()
         );
     }
 }

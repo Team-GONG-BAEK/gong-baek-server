@@ -3,6 +3,7 @@ package com.ggang.be.domain.userEveryGroup.application;
 
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
+import com.ggang.be.domain.group.vo.NearestGroup;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.group.GroupVoMaker;
@@ -12,7 +13,6 @@ import com.ggang.be.domain.group.everyGroup.dto.ReadEveryGroup;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;
 import com.ggang.be.domain.userEveryGroup.dto.FillMember;
-import com.ggang.be.domain.userEveryGroup.dto.NearestEveryGroup;
 import com.ggang.be.domain.userEveryGroup.infra.UserEveryGroupRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -84,14 +84,14 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
     }
 
     @Override
-    public NearestEveryGroup getMyNearestEveryGroup(UserEntity currentUser){
+    public NearestGroup getMyNearestGroup(UserEntity currentUser){
         List<UserEveryGroupEntity> userEveryGroupEntities = getMyEveryGroup(currentUser);
 
         EveryGroupEntity nearestGroup = getNearestGroup(getGroupsByStatus(userEveryGroupEntities, true));
 
         if (nearestGroup == null) return null;
 
-        return NearestEveryGroup.toDto(nearestGroup);
+        return NearestGroup.fromEveryEntity(nearestGroup);
     }
 
     @Override

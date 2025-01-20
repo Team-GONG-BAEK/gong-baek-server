@@ -11,10 +11,11 @@ import com.ggang.be.domain.group.onceGroup.dto.OnceGroupVo;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.global.annotation.Facade;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Facade
+@Component
 @RequiredArgsConstructor
 public class ActiveCombinedGroupVoPreparer {
 

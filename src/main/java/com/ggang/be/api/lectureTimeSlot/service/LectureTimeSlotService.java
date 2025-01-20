@@ -1,6 +1,7 @@
 package com.ggang.be.api.lectureTimeSlot.service;
 
 import com.ggang.be.domain.constant.WeekDate;
+import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.domain.timslot.lectureTimeSlot.LectureTimeSlotEntity;
 import com.ggang.be.domain.timslot.lectureTimeSlot.dto.LectureTimeSlotRequest;
 import com.ggang.be.domain.timslot.lectureTimeSlot.vo.LectureTimeSlotVo;
@@ -13,7 +14,7 @@ public interface LectureTimeSlotService {
 
     void isExistInLectureTImeSlot(UserEntity findUserEntity, LectureTimeSlotRequest dto);
 
-    boolean isActiveGroupsInLectureTimeSlot(UserEntity findUserEntity, double startTime, double endTime, WeekDate weekDate);
+    boolean isActiveGroupsInLectureTimeSlot(UserEntity findUserEntity, GroupVo groupVo);
 
     List<LectureTimeSlotEntity> readUserTime(UserEntity userById);
 }

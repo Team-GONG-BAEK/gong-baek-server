@@ -1,5 +1,6 @@
 package com.ggang.be.domain.group.onceGroup.infra;
 
+import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
@@ -13,8 +14,6 @@ import java.util.List;
 
 public interface OnceGroupRepository extends JpaRepository<OnceGroupEntity, Long> {
     List<OnceGroupEntity> findByUserEntity_Id(Long userEntityUserId);
-
-    List<OnceGroupEntity> findByParticipantUsers_UserEntity_Id(Long userId);
 
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END " +
         "FROM once_group o " +
@@ -32,4 +31,6 @@ public interface OnceGroupRepository extends JpaRepository<OnceGroupEntity, Long
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select o from once_group o join fetch o.gongbaekTimeSlotEntity where o.status!=:status")
     List<OnceGroupEntity> findAllByNotStatus(Status status);
+
+    List<OnceGroupEntity> findAllByCategory(Category category);
 }

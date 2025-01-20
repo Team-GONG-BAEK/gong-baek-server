@@ -1,5 +1,6 @@
 package com.ggang.be.domain.group.everyGroup.infra;
 
+import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
@@ -13,8 +14,6 @@ import java.util.List;
 
 public interface EveryGroupRepository extends JpaRepository<EveryGroupEntity, Long> {
     List<EveryGroupEntity> findByUserEntity_Id(Long userEntityUserId);
-
-    List<EveryGroupEntity> findByParticipantUsers_UserEntity_Id(Long userId);
 
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END " +
         "FROM every_group o " +
@@ -32,4 +31,6 @@ public interface EveryGroupRepository extends JpaRepository<EveryGroupEntity, Lo
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select o from every_group o join fetch o.gongbaekTimeSlotEntity where o.status!=:status")
     List<EveryGroupEntity> findAllByNotStatus(Status status);
+
+    List<EveryGroupEntity> findAllByCategory(Category category);
 }

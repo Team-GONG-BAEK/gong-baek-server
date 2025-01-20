@@ -27,10 +27,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserSchoolDto getUserSchoolById(Long userId) {
+        String nickname = userRepository.findNicknameById(userId)
+                .orElseThrow(() -> new GongBaekException(ResponseError.USER_NOT_FOUND));
         String schoolName = userRepository.findSchoolNameById(userId)
                 .orElseThrow(() -> new GongBaekException(ResponseError.USER_NOT_FOUND));
 
-        return new UserSchoolDto(schoolName);
+        return new UserSchoolDto(nickname, schoolName);
     }
   
     @Override

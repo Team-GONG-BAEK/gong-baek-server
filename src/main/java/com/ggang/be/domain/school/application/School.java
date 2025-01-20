@@ -7,9 +7,9 @@ import lombok.Getter;
 
 @Getter
 public class School {
-    private Long id;
-    private String schoolName;
-    private String schoolDomain;
+    private final Long id;
+    private final String schoolName;
+    private final String schoolDomain;
 
     public static School fromEntity(SchoolEntity schoolEntity){
         return School.builder()

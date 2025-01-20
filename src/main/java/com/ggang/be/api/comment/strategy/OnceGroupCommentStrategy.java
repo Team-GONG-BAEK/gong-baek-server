@@ -1,10 +1,6 @@
-package com.ggang.be.api.comment.facade;
+package com.ggang.be.api.comment.strategy;
 
-import com.ggang.be.api.comment.dto.ReadCommentRequest;
-import com.ggang.be.api.comment.dto.ReadCommentResponse;
-import com.ggang.be.api.comment.dto.WriteCommentEntityDto;
-import com.ggang.be.api.comment.dto.WriteCommentRequest;
-import com.ggang.be.api.comment.dto.WriteCommentResponse;
+import com.ggang.be.api.comment.dto.*;
 import com.ggang.be.api.comment.registry.CommentStrategy;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
@@ -18,12 +14,11 @@ import lombok.RequiredArgsConstructor;
 
 @Strategy
 @RequiredArgsConstructor
-public class OnceGroupCommentStrategyFacade implements CommentStrategy {
+public class OnceGroupCommentStrategy implements CommentStrategy {
 
     private final OnceGroupService onceGroupService;
     private final SameSchoolValidator sameSchoolValidator;
     private final UserOnceGroupService userOnceGroupService;
-
 
     @Override
     public boolean supports(GroupType groupType) {
@@ -31,16 +26,15 @@ public class OnceGroupCommentStrategyFacade implements CommentStrategy {
     }
 
     @Override
-    public WriteCommentResponse writeComment(long userId, WriteCommentRequest dto,
-        WriteCommentEntityDto entityDto) {
+    public WriteCommentResponse writeComment(
+            long userId, WriteCommentRequest dto, WriteCommentEntityDto entityDto
+    ) {
 
         UserEntity findUserEntity = entityDto.userEntity();
         CommentEntity commentEntity = entityDto.commentEntity();
-        OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(
-            dto.groupId());
+        OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(dto.groupId());
 
-        sameSchoolValidator.isUserReadMySchoolOnceGroup(commentEntity.getUserEntity(),
-            onceGroupEntity);
+        sameSchoolValidator.isUserReadMySchoolOnceGroup(commentEntity.getUserEntity(), onceGroupEntity);
         isUserAccessOnceGroupComment(findUserEntity, dto.isPublic(), dto.groupId());
         onceGroupService.writeCommentInGroup(commentEntity, dto.groupId());
 
@@ -48,20 +42,17 @@ public class OnceGroupCommentStrategyFacade implements CommentStrategy {
     }
 
     @Override
-    public ReadCommentResponse readComment(UserEntity findUserEntity, boolean isPublic,
-        ReadCommentRequest dto) {
-        OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(
-            dto.groupId());
+    public ReadCommentResponse readComment(
+            UserEntity findUserEntity, boolean isPublic, ReadCommentRequest dto
+    ) {
+        OnceGroupEntity onceGroupEntity = onceGroupService.findOnceGroupEntityByGroupId(dto.groupId());
         sameSchoolValidator.isUserReadMySchoolOnceGroup(findUserEntity, onceGroupEntity);
         isUserAccessOnceGroupComment(findUserEntity, isPublic, dto.groupId());
+
         return ReadCommentResponse.of(onceGroupService.readCommentInGroup(findUserEntity, isPublic, dto.groupId()));
     }
 
-    private void isUserAccessOnceGroupComment(UserEntity userEntity, boolean isPublic,
-        long groupId) {
-        if (!isPublic) {
-            userOnceGroupService.isValidCommentAccess(userEntity, groupId);
-        }
+    private void isUserAccessOnceGroupComment(UserEntity userEntity, boolean isPublic, long groupId) {
+        if (!isPublic) userOnceGroupService.isValidCommentAccess(userEntity, groupId);
     }
-
 }

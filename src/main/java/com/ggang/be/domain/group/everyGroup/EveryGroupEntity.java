@@ -12,12 +12,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
 @Entity(name = "every_group")
@@ -123,6 +123,4 @@ public class EveryGroupEntity extends BaseTimeEntity {
     public void updateStatus(Status status) {
         this.status = status;
     }
-
-    // TODO 동기화 작업 하기
 }

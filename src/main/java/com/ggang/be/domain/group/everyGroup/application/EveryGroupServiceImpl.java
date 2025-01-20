@@ -5,7 +5,7 @@ import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.group.GroupStatusUpdater;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.domain.comment.CommentEntity;
-import com.ggang.be.domain.common.SameSchoolValidator;
+import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.group.GroupCommentVoMaker;
 import com.ggang.be.domain.group.GroupVoMaker;
@@ -37,7 +37,6 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     private final EveryGroupRepository everyGroupRepository;
     private final GroupVoMaker groupVoMaker;
     private final GroupCommentVoMaker groupCommentVoMaker;
-    private final SameSchoolValidator sameSchoolValidator;
     private final GroupStatusUpdater groupStatusUpdater;
 
     @Override
@@ -62,8 +61,10 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     }
 
     @Override
-    public ReadEveryGroup getActiveEveryGroups(UserEntity currentUser) {
-        List<EveryGroupEntity> everyGroupEntities = everyGroupRepository.findAll();
+    public ReadEveryGroup getActiveEveryGroups(UserEntity currentUser, Category category) {
+        List<EveryGroupEntity> everyGroupEntities;
+        if(category == null) everyGroupEntities = everyGroupRepository.findAll();
+        else everyGroupEntities = everyGroupRepository.findAllByCategory(category);
 
         return ReadEveryGroup.of(
             groupVoMaker.makeEveryGroup(getRecruitingGroups(everyGroupEntities)));

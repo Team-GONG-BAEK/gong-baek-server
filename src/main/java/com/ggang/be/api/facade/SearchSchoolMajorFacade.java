@@ -5,8 +5,9 @@ import com.ggang.be.api.schoolMajor.dto.SearchedSchoolMajorResponse;
 import com.ggang.be.api.schoolMajor.service.SchoolMajorService;
 import com.ggang.be.domain.school.application.School;
 import com.ggang.be.global.annotation.Facade;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @Facade
 @RequiredArgsConstructor

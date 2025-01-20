@@ -40,6 +40,4 @@ public class OnceGroupReadFillMemberStrategy implements ReadFillMemberStrategy {
             ReadFillMembersRequest.toOnceGroupMemberInfo(findOnceGroupEntity));
         return ReadFillMembersResponse.ofOnceGroup(findOnceGroupEntity, everyGroupUsersInfos);
     }
-
-
 }

@@ -1,8 +1,8 @@
 package com.ggang.be.api.group.facade;
 
-import com.ggang.be.api.group.ActivceCombinedGroupVoPreparer;
 import com.ggang.be.api.group.CombinedNearestGroupVo;
 import com.ggang.be.api.group.CombinedNearestGroupVoPreparer;
+import com.ggang.be.api.group.ActiveCombinedGroupVoPreparer;
 import com.ggang.be.api.group.GroupVoAggregator;
 import com.ggang.be.api.group.dto.*;
 import com.ggang.be.api.group.registry.*;
@@ -37,14 +37,13 @@ public class GroupFacade {
     private final PrepareRegisterGongbaekFacade prepareRegisterGongbaekFacade;
     private final CancelGroupStrategyRegistry cancelGroupStrategyRegistry;
     private final GroupUserInfoStrategyRegistry groupUserInfoStrategyRegistry;
-    private final ActivceCombinedGroupVoPreparer activceCombinedGroupVoPreparer;
+    private final ActiveCombinedGroupVoPreparer activeCombinedGroupVoPreparer;
     private final MyGroupStrategyRegistry myGroupStrategyRegistry;
     private final NearestGroupResponseStrategyRegistry nearestGroupResponseStrategyRegistry;
     private final CombinedNearestGroupVoPreparer combinedNearestGroupVoPreparer;
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
         UserEntity currentUser = userService.getUserById(userId);
-
         GroupInfoStrategy groupInfoStrategy = groupInfoStrategyRegistry.getGroupInfo(groupType);
 
         return groupInfoStrategy.getGroupInfo(groupId, currentUser);
@@ -66,21 +65,20 @@ public class GroupFacade {
     }
 
     public UserInfo getGroupUserInfo(GroupType groupType, Long groupId) {
-        GroupUserInfoStrategy groupUserInfoStrategy = groupUserInfoStrategyRegistry.getGroupUserInfo(
-            groupType);
+        GroupUserInfoStrategy groupUserInfoStrategy
+                = groupUserInfoStrategyRegistry.getGroupUserInfo(groupType);
 
         return UserInfo.of(
             userService.getUserById(groupUserInfoStrategy.getGroupUserInfo(groupId)));
     }
 
     @Transactional
-    public RegisterGongbaekResponse registerGongbaek(Long userId, RegisterGongbaekRequest dto) {
+    public RegisterGroupResponse registerGroup(Long userId, RegisterGongbaekRequest dto) {
 
-        PrepareRegisterInfo prepareRegisterInfo = prepareRegisterGongbaekFacade.prepareInfo(userId,
-            dto);
+        PrepareRegisterInfo prepareRegisterInfo = prepareRegisterGongbaekFacade.prepareInfo(userId, dto);
 
-        RegisterGroupStrategy registerGroupStrategy = registerGroupStrategyRegistry.getRegisterGroupStrategy(
-            dto.groupType());
+        RegisterGroupStrategy registerGroupStrategy
+                = registerGroupStrategyRegistry.getRegisterGroupStrategy(dto.groupType());
 
         return registerGroupStrategy.registerGroup(prepareRegisterInfo);
     }
@@ -121,7 +119,7 @@ public class GroupFacade {
 
     public List<ActiveGroupsResponse> getFillGroups(long userId, Category category) {
         UserEntity currentUser = userService.getUserById(userId);
-        CombinedGroupVos preparedGroupVo = activceCombinedGroupVoPreparer.prepareGroupVos(
+        CombinedGroupVos preparedGroupVo = activeCombinedGroupVoPreparer.prepareGroupVos(
             currentUser, category);
 
         List<GroupVo> groupVos = GroupVoAggregator.aggregateAndSort(

@@ -37,11 +37,9 @@ public class SignupFacade {
 
         duplicateUserCheck(request);
 
-        SchoolEntity schoolEntityByName = schoolService.findSchoolEntityByName(
-            request.schoolName());
+        SchoolEntity schoolEntityByName = schoolService.findSchoolEntityByName(request.schoolName());
 
-        SaveUserSignUp saveUserSignUp = SignupRequest.toSaveUserSignUp(request,
-            schoolEntityByName);
+        SaveUserSignUp saveUserSignUp = SignupRequest.toSaveUserSignUp(request, schoolEntityByName);
 
         UserEntity userEntity = userService.saveUserBySignup(saveUserSignUp);
 
@@ -57,7 +55,7 @@ public class SignupFacade {
     private void duplicateUserCheck(SignupRequest request) {
         try{
             duplicateCheckNickname(request.nickname());
-        }catch (GongBaekException e){
+        } catch (GongBaekException e) {
             throw new GongBaekException(ResponseError.USERNAME_ALREADY_EXISTS);
         }
     }

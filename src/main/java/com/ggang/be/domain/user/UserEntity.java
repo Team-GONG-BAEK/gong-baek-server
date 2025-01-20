@@ -20,9 +20,7 @@ import java.util.List;
 @Getter
 @Entity(name = "user")
 @DynamicUpdate
-@Table(indexes = {
-    @Index(name="user_nickname_index", columnList = "nickname")
-})
+@Table(indexes = @Index(name = "user_nickname_index", columnList = "nickname"))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity extends BaseTimeEntity {
 

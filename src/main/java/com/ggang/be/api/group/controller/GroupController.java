@@ -5,9 +5,9 @@ import com.ggang.be.api.common.ResponseBuilder;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.common.ResponseSuccess;
 import com.ggang.be.api.exception.GongBaekException;
-import com.ggang.be.api.facade.GongbaekRequestFacade;
-import com.ggang.be.api.group.facade.GroupFacade;
+import com.ggang.be.api.facade.GroupRequestFacade;
 import com.ggang.be.api.group.dto.*;
+import com.ggang.be.api.group.facade.GroupFacade;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.FillGroupType;
 import com.ggang.be.domain.constant.GroupType;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GroupController {
     private final GroupFacade groupFacade;
-    private final GongbaekRequestFacade gongbaekRequestFacade;
+    private final GroupRequestFacade groupRequestFacade;
     private final JwtService jwtService;
 
     @GetMapping("/fill/info")
@@ -46,28 +46,29 @@ public class GroupController {
     ){
         jwtService.isValidToken(accessToken);
 
-        GroupUserInfoResponseDto groupUserInfoResponseDto
-                = GroupUserInfoResponseDto.of(groupFacade.getGroupUserInfo(
-                        groupRequestDto.groupType(), groupRequestDto.groupId()));
+        GroupUserInfoResponseDto groupUserInfoResponseDto = GroupUserInfoResponseDto.of(
+                groupFacade.getGroupUserInfo(groupRequestDto.groupType(), groupRequestDto.groupId()));
+
         return ResponseEntity.ok(ApiResponse.success(ResponseSuccess.OK, groupUserInfoResponseDto));
     }
 
     // TODO : 테스트 코드 작성 진행해야함!
     @PostMapping("/gongbaek")
-    public ResponseEntity<ApiResponse<RegisterGongbaekResponse>> registerGongbaek(
-        @RequestHeader("Authorization") String token,
-        @RequestBody final RegisterGongbaekRequest dto
+    public ResponseEntity<ApiResponse<RegisterGroupResponse>> registerGongbaek(
+            @RequestHeader("Authorization") String token,
+            @RequestBody final RegisterGongbaekRequest dto
     ) {
         Long userId = jwtService.parseTokenAndGetUserId(token);
+        groupRequestFacade.validateRegisterRequest(userId, dto);
 
-        gongbaekRequestFacade.validateRegisterRequest(userId, dto);
-
-        return ResponseBuilder.created(groupFacade.registerGongbaek(userId, dto));
+        return ResponseBuilder.created(groupFacade.registerGroup(userId, dto));
     }
 
     @GetMapping("/fill/members")
     public ResponseEntity<ApiResponse<ReadFillMembersResponse>> getGroupMembers(
-        @RequestHeader("Authorization") String token, @RequestBody ReadFillMembersRequest dto) {
+            @RequestHeader("Authorization") String token,
+            @RequestBody ReadFillMembersRequest dto
+    ) {
         Long userId = jwtService.parseTokenAndGetUserId(token);
         return ResponseBuilder.ok(groupFacade.getGroupUsersInfo(userId, dto));
     }

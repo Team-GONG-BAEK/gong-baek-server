@@ -10,13 +10,14 @@ import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupVo;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.global.annotation.Facade;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
-public class ActivceCombinedGroupVoPreparer {
+public class ActiveCombinedGroupVoPreparer {
 
     private final EveryGroupService everyGroupService;
     private final OnceGroupService onceGroupService;

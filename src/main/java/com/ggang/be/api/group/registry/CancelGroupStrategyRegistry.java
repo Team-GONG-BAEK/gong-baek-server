@@ -19,5 +19,4 @@ public class CancelGroupStrategyRegistry {
                 .findFirst()
                 .orElseThrow(() -> new GongBaekException(ResponseError.BAD_REQUEST));
     }
-
 }

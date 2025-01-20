@@ -7,7 +7,7 @@ import com.ggang.be.domain.user.UserEntity;
 import java.util.List;
 
 public interface MyGroupStrategy {
-    boolean supports(FillGroupType category);
+    boolean support(FillGroupType category);
 
     List<GroupVo> getGroups(UserEntity userEntity, boolean status);
 }

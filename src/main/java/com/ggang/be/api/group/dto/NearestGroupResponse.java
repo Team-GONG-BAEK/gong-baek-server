@@ -1,7 +1,7 @@
 package com.ggang.be.api.group.dto;
 
-import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.constant.Category;
+import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.constant.WeekDate;
 
 public record NearestGroupResponse(

@@ -19,7 +19,7 @@ public class OnceGroupInfoStrategy implements GroupInfoStrategy {
     private final SameSchoolValidator sameSchoolValidator;
 
     @Override
-    public boolean supports(GroupType groupType) {
+    public boolean support(GroupType groupType) {
         return groupType == GroupType.ONCE;
     }
 

@@ -1,7 +1,7 @@
 package com.ggang.be.api.group.everyGroup.strategy;
 
 import com.ggang.be.api.group.dto.PrepareRegisterInfo;
-import com.ggang.be.api.group.dto.RegisterGongbaekResponse;
+import com.ggang.be.api.group.dto.RegisterGroupResponse;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.registry.RegisterGroupStrategy;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
@@ -20,25 +20,21 @@ public class RegisterEveryGroupStrategy implements RegisterGroupStrategy {
     private final EveryGroupService everyGroupService;
     private final UserEveryGroupService userEveryGroupService;
 
-
     @Override
     public boolean support(GroupType groupType) {
         return groupType.equals(GroupType.WEEKLY);
     }
 
     @Override
-    public RegisterGongbaekResponse registerGroup(PrepareRegisterInfo prepareRegisterInfo) {
+    public RegisterGroupResponse registerGroup(PrepareRegisterInfo prepareRegisterInfo) {
         UserEntity findUserEntity = prepareRegisterInfo.findUserEntity();
         RegisterGroupServiceRequest serviceRequest = prepareRegisterInfo.request();
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity = prepareRegisterInfo.gongbaekTimeSlotEntity();
 
-
-        EveryGroupEntity everyGroupEntity = everyGroupService.registerEveryGroup(serviceRequest,
-            gongbaekTimeSlotEntity);
+        EveryGroupEntity everyGroupEntity
+                = everyGroupService.registerEveryGroup(serviceRequest, gongbaekTimeSlotEntity);
         userEveryGroupService.applyEveryGroup(findUserEntity, everyGroupEntity);
-        return RegisterGongbaekResponse.of(
+        return RegisterGroupResponse.of(
             everyGroupEntity.getId());
     }
-
-
 }

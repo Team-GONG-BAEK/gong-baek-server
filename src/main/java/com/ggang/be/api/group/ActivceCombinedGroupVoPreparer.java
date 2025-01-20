@@ -12,8 +12,9 @@ import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.global.annotation.Facade;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
-@Facade
+@Component
 @RequiredArgsConstructor
 public class ActivceCombinedGroupVoPreparer {
 

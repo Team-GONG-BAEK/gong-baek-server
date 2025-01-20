@@ -6,11 +6,10 @@ import com.ggang.be.api.group.dto.*;
 import com.ggang.be.api.group.registry.*;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
 import com.ggang.be.api.user.service.UserService;
-import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
-import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.dto.GroupVo;
+import com.ggang.be.domain.group.vo.NearestGroup;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.UserInfo;
 import com.ggang.be.global.annotation.Facade;
@@ -26,8 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class GroupFacade {
 
-    private final UserEveryGroupService userEveryGroupService;
-    private final UserOnceGroupService userOnceGroupService;
     private final UserService userService;
     private final LectureTimeSlotService lectureTimeSlotService;
     private final LatestGroupStrategyRegistry latestGroupStrategyRegistry;
@@ -40,7 +37,8 @@ public class GroupFacade {
     private final GroupUserInfoStrategyRegistry groupUserInfoStrategyRegistry;
     private final ActivceCombinedGroupVoPreparer activceCombinedGroupVoPreparer;
     private final MyGroupStrategyRegistry myGroupStrategyRegistry;
-    private final FindNearestGroupResponseStrategyRegistry findNearestGroupResponseStrategyRegistry;
+    private final NearestGroupResponseStrategyRegistry nearestGroupResponseStrategyRegistry;
+    private final CombinedNearestGroupVoPreparer combinedNearestGroupVoPreparer;
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
         UserEntity currentUser = userService.getUserById(userId);
@@ -52,14 +50,14 @@ public class GroupFacade {
 
     public NearestGroupResponse getNearestGroupInfo(long userId) {
         UserEntity currentUser = userService.getUserById(userId);
-        // 준비과정 어떤 친구들이 올 지
-        NearestGroup nearestEveryGroup = userEveryGroupService.getMyNearestGroup(
-            currentUser);
-       NearestGroup nearestOnceGroup = userOnceGroupService.getMyNearestGroup(currentUser);
 
-        NearestGroupResponseStrategy strategy = findNearestGroupResponseStrategyRegistry.getStrategy(
+        CombinedNearestGroupVo prepare = combinedNearestGroupVoPreparer.prepare(currentUser);
+
+        NearestGroup nearestEveryGroup = prepare.nearestEveryGroup();
+        NearestGroup nearestOnceGroup = prepare.nearestOnceGroup();
+
+        NearestGroupResponseStrategy strategy = nearestGroupResponseStrategyRegistry.getStrategy(
             nearestEveryGroup, nearestOnceGroup);
-
 
         return strategy.getNearestGroupResponse(nearestEveryGroup, nearestOnceGroup);
 

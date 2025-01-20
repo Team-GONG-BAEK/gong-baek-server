@@ -1,6 +1,6 @@
 package com.ggang.be.api.userEveryGroup.service;
 
-import com.ggang.be.api.group.facade.NearestGroup;
+import com.ggang.be.domain.group.vo.NearestGroup;
 import com.ggang.be.domain.group.dto.ReadEveryGroupMember;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.ReadEveryGroup;

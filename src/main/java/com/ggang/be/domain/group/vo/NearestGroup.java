@@ -1,4 +1,4 @@
-package com.ggang.be.api.group.facade;
+package com.ggang.be.domain.group.vo;
 
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.GroupType;

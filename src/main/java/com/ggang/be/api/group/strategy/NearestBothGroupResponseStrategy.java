@@ -1,6 +1,8 @@
-package com.ggang.be.api.group.facade;
+package com.ggang.be.api.group.strategy;
 
 import com.ggang.be.api.group.dto.NearestGroupResponse;
+import com.ggang.be.domain.group.vo.NearestGroup;
+import com.ggang.be.api.group.registry.NearestGroupResponseStrategy;
 import com.ggang.be.api.mapper.GroupResponseMapper;
 import com.ggang.be.global.annotation.Strategy;
 import java.time.LocalDate;

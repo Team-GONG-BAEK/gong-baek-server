@@ -1,6 +1,7 @@
-package com.ggang.be.api.group.facade;
+package com.ggang.be.api.group.registry;
 
 import com.ggang.be.api.group.dto.NearestGroupResponse;
+import com.ggang.be.domain.group.vo.NearestGroup;
 
 public interface NearestGroupResponseStrategy {
 

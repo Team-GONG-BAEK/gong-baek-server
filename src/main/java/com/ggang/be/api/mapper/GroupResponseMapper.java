@@ -5,6 +5,7 @@ import com.ggang.be.api.group.dto.NearestGroupResponse;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDto;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupDto;
+import com.ggang.be.domain.group.vo.NearestGroup;
 
 public record GroupResponseMapper() {
     public static GroupResponse fromOnceGroup(OnceGroupDto dto) {
@@ -51,7 +52,7 @@ public record GroupResponseMapper() {
 
 
     public static NearestGroupResponse toNearestGroupResponse(
-        com.ggang.be.api.group.facade.NearestGroup nearestGroup) {
+        NearestGroup nearestGroup) {
         return new NearestGroupResponse(
             nearestGroup.groupId(),
             nearestGroup.category(),

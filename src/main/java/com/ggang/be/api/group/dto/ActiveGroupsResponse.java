@@ -15,7 +15,7 @@ public record ActiveGroupsResponse(
         GroupType groupType,
         String groupTitle,
         WeekDate weekDate,
-        LocalDate gropuDate,
+        LocalDate groupDate,
         double startTime,
         double endTime,
         String location

@@ -20,7 +20,7 @@ public class EveryLatestGroupStrategy implements LatestGroupStrategy {
     private final EveryGroupService everyGroupService;
 
     @Override
-    public boolean supports(GroupType groupType) {
+    public boolean support(GroupType groupType) {
         return groupType == GroupType.WEEKLY;
     }
 

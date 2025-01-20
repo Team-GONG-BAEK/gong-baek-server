@@ -3,7 +3,7 @@ package com.ggang.be.api.group.registry;
 import com.ggang.be.domain.constant.GroupType;
 
 public interface GroupUserInfoStrategy {
-    boolean supports(GroupType groupType);
+    boolean support(GroupType groupType);
 
     long getGroupUserInfo(long groupId);
 }

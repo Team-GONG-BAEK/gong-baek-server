@@ -16,7 +16,7 @@ public class MyGroupStrategyRegistry {
 
     public MyGroupStrategy getGroupStrategy(FillGroupType category) {
         return groupStrategies.stream()
-                .filter(strategy -> strategy.supports(category))
+                .filter(strategy -> strategy.support(category))
                 .findFirst()
                 .orElseThrow(() -> new GongBaekException(ResponseError.BAD_REQUEST));
     }

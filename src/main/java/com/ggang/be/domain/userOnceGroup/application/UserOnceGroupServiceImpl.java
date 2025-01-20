@@ -62,11 +62,6 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
     }
 
     @Override
-    public List<UserOnceGroupEntity> readUserTIme(UserEntity findUserEntity) {
-        return userOnceGroupRepository.findAllByUserEntity(findUserEntity);
-    }
-
-    @Override
     @Transactional
     public void applyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity){
         UserOnceGroupEntity userOnceGroupEntity = UserOnceGroupEntity.builder()

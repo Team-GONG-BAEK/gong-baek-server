@@ -1,10 +1,6 @@
 package com.ggang.be.api.comment.strategy;
 
-import com.ggang.be.api.comment.dto.ReadCommentRequest;
-import com.ggang.be.api.comment.dto.ReadCommentResponse;
-import com.ggang.be.api.comment.dto.WriteCommentEntityDto;
-import com.ggang.be.api.comment.dto.WriteCommentRequest;
-import com.ggang.be.api.comment.dto.WriteCommentResponse;
+import com.ggang.be.api.comment.dto.*;
 import com.ggang.be.api.comment.registry.CommentStrategy;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
@@ -25,29 +21,25 @@ public class EveryGroupCommentStrategy implements CommentStrategy {
     private final UserEveryGroupService userEveryGroupService;
 
     @Override
-    public WriteCommentResponse writeComment(long userId, WriteCommentRequest dto,
-        WriteCommentEntityDto from) {
-
+    public WriteCommentResponse writeComment(long userId, WriteCommentRequest dto, WriteCommentEntityDto from) {
         CommentEntity commentEntity = from.commentEntity();
         UserEntity findUserEntity = from.userEntity();
 
-        EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(
-            dto.groupId());
+        EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(dto.groupId());
 
-        sameSchoolValidator.isUserReadMySchoolEveryGroup(findUserEntity,
-            everyGroupEntity);
+        sameSchoolValidator.isUserReadMySchoolEveryGroup(findUserEntity, everyGroupEntity);
         isUserAccessEveryGroupComment(findUserEntity, dto.isPublic(), dto.groupId());
         everyGroupService.writeCommentInGroup(commentEntity, dto.groupId());
+
         return WriteCommentResponse.of(commentEntity.getId());
     }
 
     @Override
-    public ReadCommentResponse readComment(UserEntity findUserEntity, boolean isPublic,
-        ReadCommentRequest dto) {
-        EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(
-            dto.groupId());
+    public ReadCommentResponse readComment(UserEntity findUserEntity, boolean isPublic, ReadCommentRequest dto) {
+        EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(dto.groupId());
         sameSchoolValidator.isUserReadMySchoolEveryGroup(findUserEntity, everyGroupEntity);
         isUserAccessEveryGroupComment(findUserEntity, isPublic, dto.groupId());
+
         return ReadCommentResponse.of(everyGroupService.readCommentInGroup(findUserEntity, isPublic, dto.groupId()));
     }
 
@@ -56,9 +48,7 @@ public class EveryGroupCommentStrategy implements CommentStrategy {
         return groupType.equals(GroupType.WEEKLY);
     }
 
-    private void isUserAccessEveryGroupComment(UserEntity userEntity, boolean isPublic,
-        long groupId) {
-        if (!isPublic)
-            userEveryGroupService.isValidCommentAccess(userEntity, groupId);
+    private void isUserAccessEveryGroupComment(UserEntity userEntity, boolean isPublic, long groupId) {
+        if (!isPublic) userEveryGroupService.isValidCommentAccess(userEntity, groupId);
     }
 }

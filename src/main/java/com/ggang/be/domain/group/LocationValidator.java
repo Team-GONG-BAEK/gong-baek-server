@@ -3,9 +3,10 @@ package com.ggang.be.domain.group;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.global.util.LengthValidator;
-import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.regex.Pattern;
 
 @Component
 @Slf4j

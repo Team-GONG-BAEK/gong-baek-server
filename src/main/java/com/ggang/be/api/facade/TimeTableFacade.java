@@ -20,9 +20,8 @@ public class TimeTableFacade {
 
     public ReadInvalidTimeResponse readMyInvalidTime(final long userId) {
         UserEntity findUserEntity = userService.getUserById(userId);
-        List<LectureTimeSlotEntity> lectureTimeSlotEntities = lectureTimeSlotService.readUserTime(
-            findUserEntity);
-        return ReadInvalidTimeResponse.fromVo(
-                voMaker.convertToCommonResponse(lectureTimeSlotEntities));
+        List<LectureTimeSlotEntity> lectureTimeSlotEntities = lectureTimeSlotService.readUserTime(findUserEntity);
+
+        return ReadInvalidTimeResponse.fromVo(voMaker.convertToCommonResponse(lectureTimeSlotEntities));
     }
 }

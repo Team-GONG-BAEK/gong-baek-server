@@ -1,7 +1,7 @@
 package com.ggang.be.api.group.onceGroup.strategy;
 
 import com.ggang.be.api.group.dto.PrepareRegisterInfo;
-import com.ggang.be.api.group.dto.RegisterGongbaekResponse;
+import com.ggang.be.api.group.dto.RegisterGroupResponse;
 import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.api.group.registry.RegisterGroupStrategy;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
@@ -26,7 +26,7 @@ public class RegisterOnceGroupStrategy implements RegisterGroupStrategy {
     }
 
     @Override
-    public RegisterGongbaekResponse registerGroup(PrepareRegisterInfo prepareRegisterInfo) {
+    public RegisterGroupResponse registerGroup(PrepareRegisterInfo prepareRegisterInfo) {
         UserEntity findUserEntity = prepareRegisterInfo.findUserEntity();
         RegisterGroupServiceRequest serviceRequest = prepareRegisterInfo.request();
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity = prepareRegisterInfo.gongbaekTimeSlotEntity();
@@ -34,8 +34,6 @@ public class RegisterOnceGroupStrategy implements RegisterGroupStrategy {
         OnceGroupEntity onceGroupEntity = onceGroupService.registerOnceGroup(serviceRequest,
             gongbaekTimeSlotEntity);
         userOnceGroupService.applyOnceGroup(findUserEntity, onceGroupEntity);
-        return RegisterGongbaekResponse.of(onceGroupEntity.getId());
+        return RegisterGroupResponse.of(onceGroupEntity.getId());
     }
-
-
 }

@@ -7,7 +7,7 @@ import com.ggang.be.domain.user.UserEntity;
 import java.util.List;
 
 public interface LatestGroupStrategy {
-    boolean supports(GroupType groupType);
+    boolean support(GroupType groupType);
 
     List<GroupVo> getLatestGroups(UserEntity userEntity);
 }

@@ -20,7 +20,7 @@ public class OnceLatestGroupStrategy implements LatestGroupStrategy {
     private final OnceGroupService onceGroupService;
 
     @Override
-    public boolean supports(GroupType groupType) {
+    public boolean support(GroupType groupType) {
         return groupType == GroupType.ONCE;
     }
 

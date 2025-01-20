@@ -1,6 +1,5 @@
 package com.ggang.be.api.lectureTimeSlot.service;
 
-import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.domain.timslot.lectureTimeSlot.LectureTimeSlotEntity;
 import com.ggang.be.domain.timslot.lectureTimeSlot.dto.LectureTimeSlotRequest;

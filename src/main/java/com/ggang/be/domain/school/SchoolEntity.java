@@ -13,9 +13,7 @@ import java.util.List;
 
 @Entity(name = "school")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(indexes = {
-    @Index(name="school_name_idx", columnList = "schoolName")
-})
+@Table(indexes = @Index(name = "school_name_idx", columnList = "schoolName"))
 @Getter
 public class SchoolEntity extends BaseTimeEntity {
 

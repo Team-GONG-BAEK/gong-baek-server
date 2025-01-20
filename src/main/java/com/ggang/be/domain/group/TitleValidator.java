@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class TitleValidator {
 
-
     public void isGroupTitleValid(final String title) {
         log.info("now value is : {}", title);
         if(title.contains("\n")) {

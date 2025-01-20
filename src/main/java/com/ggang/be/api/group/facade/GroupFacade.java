@@ -1,9 +1,8 @@
 package com.ggang.be.api.group.facade;
 
-import com.ggang.be.api.group.ActiveGroupResponseAggregator;
+import com.ggang.be.api.group.ActivceCombinedGroupVoPreparer;
+import com.ggang.be.api.group.GroupVoAggregator;
 import com.ggang.be.api.group.dto.*;
-import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
-import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.api.group.registry.*;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
 import com.ggang.be.api.mapper.GroupResponseMapper;
@@ -43,8 +42,7 @@ public class GroupFacade {
     private final PrepareRegisterGongbaekFacade prepareRegisterGongbaekFacade;
     private final CancelGroupStrategyRegistry cancelGroupStrategyRegistry;
     private final GroupUserInfoStrategyRegistry groupUserInfoStrategyRegistry;
-    private final PrepareGroupResponsesFacade prepareGroupResponsesFacade;
-    private final ActiveGroupResponseAggregator activeGroupResponseAggregator;
+    private final ActivceCombinedGroupVoPreparer activceCombinedGroupVoPreparer;
     private final MyGroupStrategyRegistry myGroupStrategyRegistry;
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
@@ -130,12 +128,13 @@ public class GroupFacade {
 
     public List<ActiveGroupsResponse> getFillGroups(long userId, Category category) {
         UserEntity currentUser = userService.getUserById(userId);
-        GroupResponsesDto groupResponsesDto = prepareGroupResponsesFacade.prepareGroupResponses(
+        CombinedGroupVos preparedGroupVo = activceCombinedGroupVoPreparer.prepareGroupVos(
             currentUser, category);
 
-
-        List<GroupVo> groupVos = activeGroupResponseAggregator.aggregateActiveGroupResponses(
-            groupResponsesDto, currentUser);
+        List<GroupVo> groupVos = GroupVoAggregator.aggregateAndSort(
+            preparedGroupVo.everyGroupVos(),
+            preparedGroupVo.onceGroupVos()
+        );
 
         return groupVos.stream()
             .filter(groupVo -> lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(currentUser,

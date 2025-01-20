@@ -2,6 +2,7 @@ package com.ggang.be.domain.userOnceGroup.application;
 
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
+import com.ggang.be.api.group.facade.NearestGroup;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.ReadOnceGroupMember;
@@ -10,7 +11,6 @@ import com.ggang.be.domain.group.onceGroup.dto.ReadOnceGroup;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userEveryGroup.dto.FillMember;
 import com.ggang.be.domain.userOnceGroup.UserOnceGroupEntity;
-import com.ggang.be.domain.userOnceGroup.dto.NearestOnceGroup;
 import com.ggang.be.domain.userOnceGroup.infra.UserOnceGroupRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,14 +51,14 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
     }
 
     @Override
-    public NearestOnceGroup getMyNearestOnceGroup(UserEntity currentUser) {
+    public NearestGroup getMyNearestGroup(UserEntity currentUser) {
         List<UserOnceGroupEntity> userOnceGroupEntities = getMyOnceGroup(currentUser);
 
         OnceGroupEntity nearestGroup = getNearestGroup(getGroupsByStatus(userOnceGroupEntities, true));
 
         if (nearestGroup == null) return null;
 
-        return NearestOnceGroup.toDto(nearestGroup);
+        return NearestGroup.fromOnceEntity(nearestGroup);
     }
 
     @Override

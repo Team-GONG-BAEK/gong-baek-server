@@ -1,4 +1,4 @@
-package com.ggang.be.api.group.facade;
+package com.ggang.be.api.group;
 
 import com.ggang.be.domain.group.vo.NearestGroup;
 
@@ -7,5 +7,4 @@ public record CombinedNearestGroupVo(NearestGroup nearestEveryGroup, NearestGrou
     public static CombinedNearestGroupVo of(NearestGroup nearestEveryGroup, NearestGroup nearestOnceGroup) {
         return new CombinedNearestGroupVo(nearestEveryGroup, nearestOnceGroup);
     }
-
 }

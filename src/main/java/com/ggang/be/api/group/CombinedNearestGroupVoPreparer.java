@@ -1,4 +1,4 @@
-package com.ggang.be.api.group.facade;
+package com.ggang.be.api.group;
 
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;

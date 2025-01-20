@@ -1,6 +1,8 @@
 package com.ggang.be.api.group.facade;
 
 import com.ggang.be.api.group.ActivceCombinedGroupVoPreparer;
+import com.ggang.be.api.group.CombinedNearestGroupVo;
+import com.ggang.be.api.group.CombinedNearestGroupVoPreparer;
 import com.ggang.be.api.group.GroupVoAggregator;
 import com.ggang.be.api.group.dto.*;
 import com.ggang.be.api.group.registry.*;

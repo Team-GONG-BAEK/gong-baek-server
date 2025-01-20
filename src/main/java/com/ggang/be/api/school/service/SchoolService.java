@@ -10,5 +10,5 @@ public interface SchoolService {
 
     School findSchoolByName(String schoolName);
 
-    SchoolEntity findSchoolEntityByName(String s);
+    SchoolEntity findSchoolEntityByName(String schoolName);
 }

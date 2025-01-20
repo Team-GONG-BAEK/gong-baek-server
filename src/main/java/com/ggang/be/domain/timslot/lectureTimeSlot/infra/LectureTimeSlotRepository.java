@@ -3,9 +3,10 @@ package com.ggang.be.domain.timslot.lectureTimeSlot.infra;
 import com.ggang.be.domain.constant.WeekDate;
 import com.ggang.be.domain.timslot.lectureTimeSlot.LectureTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface LectureTimeSlotRepository extends JpaRepository<LectureTimeSlotEntity, Long> {
 

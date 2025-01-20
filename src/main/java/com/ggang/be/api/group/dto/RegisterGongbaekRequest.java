@@ -13,77 +13,78 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public record RegisterGongbaekRequest(
-    GroupType groupType,
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    LocalDate weekDate,
-    WeekDate weekDay,
-    double startTime,
-    double endTime,
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    LocalDate dueDate,
-    Category category,
-    int coverImg,
-    String location,
-    int maxPeopleCount,
-    String groupTitle,
-    String introduction
+        GroupType groupType,
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
+        LocalDate weekDate,
+        WeekDate weekDay,
+        double startTime,
+        double endTime,
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
+        LocalDate dueDate,
+        Category category,
+        int coverImg,
+        String location,
+        int maxPeopleCount,
+        String groupTitle,
+        String introduction
 ) {
-    public static LectureTimeSlotRequest toLectureTimeSlotRequest(UserEntity userEntity,
-        RegisterGongbaekRequest request) {
+    public static LectureTimeSlotRequest toLectureTimeSlotRequest(
+            UserEntity userEntity, RegisterGongbaekRequest request
+    ) {
         if (Objects.isNull(request.weekDay))
             return LectureTimeSlotRequest.of(
-                userEntity,
-                request.startTime(),
-                request.endTime(),
-                WeekDate.fromDayOfWeek(request.weekDate().getDayOfWeek())
+                    userEntity,
+                    request.startTime(),
+                    request.endTime(),
+                    WeekDate.fromDayOfWeek(request.weekDate().getDayOfWeek())
             );
         else
             return LectureTimeSlotRequest.of(
-                userEntity,
-                request.startTime(),
-                request.endTime(),
-                request.weekDay()
+                    userEntity,
+                    request.startTime(),
+                    request.endTime(),
+                    request.weekDay()
             );
     }
 
-    public static GongbaekTimeSlotRequest toGongbaekTimeSlotRequest(UserEntity userEntity,
-        RegisterGongbaekRequest request) {
+    public static GongbaekTimeSlotRequest toGongbaekTimeSlotRequest(
+            UserEntity userEntity, RegisterGongbaekRequest request
+    ) {
 
         if (Objects.isNull(request.weekDay)) {
             return new GongbaekTimeSlotRequest(
-                userEntity,
-                request.startTime(),
-                request.endTime(),
-                WeekDate.fromDayOfWeek(request.weekDate().getDayOfWeek())
+                    userEntity,
+                    request.startTime(),
+                    request.endTime(),
+                    WeekDate.fromDayOfWeek(request.weekDate().getDayOfWeek())
             );
         } else {
             return new GongbaekTimeSlotRequest(
-                userEntity,
-                request.startTime(),
-                request.endTime(),
-                request.weekDay
+                    userEntity,
+                    request.startTime(),
+                    request.endTime(),
+                    request.weekDay
             );
         }
-
-
     }
 
-    public static RegisterGroupServiceRequest toServiceRequest(UserEntity userEntity,
-        RegisterGongbaekRequest request) {
+    public static RegisterGroupServiceRequest toServiceRequest(
+            UserEntity userEntity, RegisterGongbaekRequest request
+    ) {
         return new RegisterGroupServiceRequest(
-            userEntity,
-            request.groupType(),
-            request.weekDate(),
-            request.weekDay(),
-            request.startTime(),
-            request.endTime(),
-            request.dueDate(),
-            request.category(),
-            request.coverImg(),
-            request.location(),
-            request.maxPeopleCount(),
-            request.groupTitle(),
-            request.introduction()
+                userEntity,
+                request.groupType(),
+                request.weekDate(),
+                request.weekDay(),
+                request.startTime(),
+                request.endTime(),
+                request.dueDate(),
+                request.category(),
+                request.coverImg(),
+                request.location(),
+                request.maxPeopleCount(),
+                request.groupTitle(),
+                request.introduction()
         );
     }
 }

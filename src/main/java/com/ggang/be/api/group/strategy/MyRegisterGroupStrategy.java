@@ -22,7 +22,7 @@ public class MyRegisterGroupStrategy implements MyGroupStrategy {
     private final OnceGroupService onceGroupService;
 
     @Override
-    public boolean supports(FillGroupType category) {
+    public boolean support(FillGroupType category) {
         return category == FillGroupType.REGISTER;
     }
 

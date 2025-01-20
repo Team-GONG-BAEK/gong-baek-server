@@ -19,14 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 @Facade
 @RequiredArgsConstructor
 @Slf4j
-public class GongbaekRequestFacade {
+public class GroupRequestFacade {
     private final LectureTimeSlotService  lectureTimeSlotService;
     private final UserService userService;
     private final LocationValidator locationValidator;
     private final TitleValidator titleValidator;
     private final IntroductionValidator introductionValidator;
-
-
 
     public void validateRegisterRequest(Long userId, RegisterGongbaekRequest dto) {
         TimeValidator.isTimeValid(dto.startTime(), dto.endTime());
@@ -38,9 +36,7 @@ public class GongbaekRequestFacade {
         isValidCoverImg(dto);
         isValidMaxPeople(dto);
 
-
         UserEntity findUserEntity = userService.getUserById(userId);
-
         checkLectureTimeSlot(dto, findUserEntity);
     }
 
@@ -51,14 +47,12 @@ public class GongbaekRequestFacade {
         }
     }
 
-
     private void isValidCoverImg(RegisterGongbaekRequest dto) {
         if(dto.coverImg()<1 || dto.coverImg()>6) {
             log.error("그룹 coverImg 검증에 실패하였습니다.");
             throw new GongBaekException(ResponseError.BAD_REQUEST);
         }
     }
-
 
     private void isDateValid(RegisterGongbaekRequest dto) {
         if(dto.groupType() == GroupType.ONCE) {

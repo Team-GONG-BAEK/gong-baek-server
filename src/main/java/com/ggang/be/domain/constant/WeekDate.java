@@ -4,19 +4,13 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 public enum WeekDate {
-    MON("Monday"),
-    TUE("Tuesday"),
-    WED("Wednesday"),
-    THU("Thursday"),
-    FRI("Friday"),
-    SAT("Saturday"),
-    SUN("Sunday");
-
-    private final String fullName;
-
-    WeekDate(String fullName) {
-        this.fullName = fullName;
-    }
+    MON,
+    TUE,
+    WED,
+    THU,
+    FRI,
+    SAT,
+    SUN;
 
     public static WeekDate fromDayOfWeek(DayOfWeek dayOfWeek) {
         return switch (dayOfWeek) {

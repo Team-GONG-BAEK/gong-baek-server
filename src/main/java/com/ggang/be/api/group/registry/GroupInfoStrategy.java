@@ -5,7 +5,7 @@ import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.user.UserEntity;
 
 public interface GroupInfoStrategy {
-    boolean supports(GroupType groupType);
+    boolean support(GroupType groupType);
 
     GroupResponse getGroupInfo(Long groupId, UserEntity userEntity);
 }

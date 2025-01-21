@@ -8,7 +8,8 @@ import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 
 import java.time.LocalDateTime;
 
-public record EveryGroupVo(long groupId, Status status, Category category, int coverImg, int profileImg, GroupType groupType,
+public record EveryGroupVo(long groupId, Status status, Category category, int coverImg, int profileImg,
+                           String nickname, GroupType groupType,
                            String groupTitle, WeekDate weekDate, double startTime, double endTime, String location, LocalDateTime createdAt) {
     public static EveryGroupVo of(EveryGroupEntity everyGroupEntity) {
         return new EveryGroupVo(
@@ -17,6 +18,7 @@ public record EveryGroupVo(long groupId, Status status, Category category, int c
                 everyGroupEntity.getCategory(),
                 everyGroupEntity.getCoverImg(),
                 everyGroupEntity.getUserEntity().getProfileImg(),
+                everyGroupEntity.getUserEntity().getNickname(),
                 GroupType.WEEKLY,
                 everyGroupEntity.getTitle(),
                 everyGroupEntity.getGongbaekTimeSlotEntity().getWeekDate(),

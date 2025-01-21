@@ -14,7 +14,6 @@ public record RegisterGroupServiceRequest(
     WeekDate weekDay,
     double startTime,
     double endTime,
-    LocalDate dueDate,
     Category category,
     int coverImg,
     String location,

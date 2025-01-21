@@ -19,6 +19,8 @@ import com.ggang.be.domain.group.vo.GroupCommentVo;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
+import java.time.LocalDate;
+import java.time.Month;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -167,9 +169,13 @@ public class EveryGroupServiceImpl implements EveryGroupService {
 
     private EveryGroupEntity buildEveryGroupEntity(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
+
+        LocalDate nowDate = LocalDate.now();
+        int month = nowDate.getMonth().getValue();
+
         return EveryGroupEntity.builder()
-            .dueDate(serviceRequest.dueDate())
             .category(serviceRequest.category())
+            .dueDate(dueDateExtracter(month, nowDate))
             .coverImg(serviceRequest.coverImg())
             .location(serviceRequest.location())
             .status(Status.RECRUITING)
@@ -179,6 +185,12 @@ public class EveryGroupServiceImpl implements EveryGroupService {
             .introduction(serviceRequest.introduction())
             .userEntity(serviceRequest.userEntity())
             .build();
+    }
+
+    private LocalDate dueDateExtracter(int month, LocalDate nowDate) {
+        if(month < 7)
+            return  LocalDate.of(nowDate.getYear(), Month.JUNE, 30);
+        return LocalDate.of(nowDate.getYear(), Month.DECEMBER, 31);
     }
 
     private void validateAlreadyApplied(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {

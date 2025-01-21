@@ -57,9 +57,7 @@ public class GroupRequestFacade {
     private void isDateValid(RegisterGongbaekRequest dto) {
         if(dto.groupType() == GroupType.ONCE) {
             TimeValidator.isDateBeforeNow(dto.weekDate());
-            TimeValidator.isSameDate(dto.dueDate(), dto.weekDate());
         }
-        TimeValidator.isDateBeforeNow(dto.dueDate());
     }
 
     private void isWeekDateRight(RegisterGongbaekRequest dto) {

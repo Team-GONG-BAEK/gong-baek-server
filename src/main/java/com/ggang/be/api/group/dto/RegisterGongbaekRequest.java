@@ -19,8 +19,6 @@ public record RegisterGongbaekRequest(
         WeekDate weekDay,
         double startTime,
         double endTime,
-        @DateTimeFormat(pattern = "yyyy-MM-dd")
-        LocalDate dueDate,
         Category category,
         int coverImg,
         String location,
@@ -78,7 +76,6 @@ public record RegisterGongbaekRequest(
                 request.weekDay(),
                 request.startTime(),
                 request.endTime(),
-                request.dueDate(),
                 request.category(),
                 request.coverImg(),
                 request.location(),

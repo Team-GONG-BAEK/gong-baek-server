@@ -98,7 +98,7 @@ public class GroupController {
     }
 
     @GetMapping("/group/latest")
-    public ResponseEntity<ApiResponse<List<ActiveGroupsResponse>>> getLatestGroups(
+    public ResponseEntity<ApiResponse<List<LatestResponse>>> getLatestGroups(
             @RequestHeader("Authorization") final String accessToken,
             @RequestParam("groupType") final GroupType groupType
     ) {

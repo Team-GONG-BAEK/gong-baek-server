@@ -1,8 +1,8 @@
 package com.ggang.be.api.group.facade;
 
+import com.ggang.be.api.group.ActiveCombinedGroupVoPreparer;
 import com.ggang.be.api.group.CombinedNearestGroupVo;
 import com.ggang.be.api.group.CombinedNearestGroupVoPreparer;
-import com.ggang.be.api.group.ActiveCombinedGroupVoPreparer;
 import com.ggang.be.api.group.GroupVoAggregator;
 import com.ggang.be.api.group.dto.*;
 import com.ggang.be.api.group.registry.*;
@@ -15,11 +15,12 @@ import com.ggang.be.domain.group.vo.NearestGroup;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.UserInfo;
 import com.ggang.be.global.annotation.Facade;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Facade
@@ -134,7 +135,7 @@ public class GroupFacade {
             .collect(Collectors.toList());
     }
 
-    public List<ActiveGroupsResponse> getLatestGroups(long userId, GroupType groupType) {
+    public List<LatestResponse> getLatestGroups(long userId, GroupType groupType) {
         UserEntity currentUser = userService.getUserById(userId);
 
         LatestGroupStrategy latestGroupStrategy = latestGroupStrategyRegistry.getGroupStrategy(
@@ -143,8 +144,7 @@ public class GroupFacade {
         return latestGroupStrategy.getLatestGroups(currentUser).stream()
             .filter(groupVo -> lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(currentUser, groupVo))
             .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
-            .limit(5)
-            .map(ActiveGroupsResponse::fromGroupVo)
+            .limit(5).map(LatestResponse::fromGroupVo)
             .collect(Collectors.toList());
     }
 

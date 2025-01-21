@@ -9,7 +9,8 @@ import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public record OnceGroupVo(long groupId, Status status, Category category, int coverImg, int profileImg, GroupType groupType,
+public record OnceGroupVo(long groupId, Status status, Category category, int coverImg, int profileImg, String nickname,
+                          GroupType groupType,
                           String groupTitle, LocalDate dateTime, double startTime, double endTime, String location,
                           LocalDateTime createdAt, GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
     public static OnceGroupVo of(OnceGroupEntity onceGroupEntity) {
@@ -19,6 +20,7 @@ public record OnceGroupVo(long groupId, Status status, Category category, int co
                 onceGroupEntity.getCategory(),
                 onceGroupEntity.getCoverImg(),
                 onceGroupEntity.getUserEntity().getProfileImg(),
+                onceGroupEntity.getUserEntity().getNickname(),
                 GroupType.ONCE,
                 onceGroupEntity.getTitle(),
                 onceGroupEntity.getGroupDate(),

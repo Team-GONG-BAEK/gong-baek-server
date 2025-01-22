@@ -1,9 +1,9 @@
 package com.ggang.be.api.user.vo;
 
-import com.ggang.be.domain.constant.WeekDate;
+import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.timslot.lectureTimeSlot.vo.LectureTimeSlotVo;
 
-public record TimeTableVo(WeekDate weekDay,
+public record TimeTableVo(WeekDay weekDay,
                           Double startTime,
                           Double endTime) {
 

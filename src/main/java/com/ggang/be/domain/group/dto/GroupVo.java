@@ -3,7 +3,7 @@ package com.ggang.be.domain.group.dto;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.constant.Status;
-import com.ggang.be.domain.constant.WeekDate;
+import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupVo;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupVo;
 
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 public record GroupVo(long groupId, Status status, Category category, int coverImg, int profileImg, String nickname,
                       GroupType groupType,
-                      String groupTitle, WeekDate weekDate, LocalDate groupDate, double startTime, double endTime, String location, LocalDateTime createdAt) {
+                      String groupTitle, WeekDay weekDay, LocalDate weekDate, double startTime, double endTime, String location, LocalDateTime createdAt) {
 
     public static GroupVo fromEveryGroup(EveryGroupVo everyGroupVo) {
         return new GroupVo(
@@ -24,7 +24,7 @@ public record GroupVo(long groupId, Status status, Category category, int coverI
                 everyGroupVo.nickname(),
                 GroupType.WEEKLY,
                 everyGroupVo.groupTitle(),
-                everyGroupVo.weekDate(),
+                everyGroupVo.weekDay(),
                 null,
                 everyGroupVo.startTime(),
                 everyGroupVo.endTime(),
@@ -43,7 +43,7 @@ public record GroupVo(long groupId, Status status, Category category, int coverI
                 onceGroupVo.nickname(),
                 GroupType.ONCE,
                 onceGroupVo.groupTitle(),
-                WeekDate.fromDayOfWeek(onceGroupVo.dateTime().getDayOfWeek()),
+                WeekDay.fromDayOfWeek(onceGroupVo.dateTime().getDayOfWeek()),
                 onceGroupVo.dateTime(),
                 onceGroupVo.startTime(),
                 onceGroupVo.endTime(),

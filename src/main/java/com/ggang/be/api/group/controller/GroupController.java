@@ -81,7 +81,7 @@ public class GroupController {
     }
 
     @GetMapping("/my/groups")
-    public ResponseEntity<ApiResponse<List<MyGroupResponse>>> getMyGroups(
+    public ResponseEntity<ApiResponse<FinalMyGroupResponse>> getMyGroups(
             @RequestHeader("Authorization") final String accessToken,
             @RequestParam(value = "category") FillGroupType category,
             @RequestParam(value = "status") boolean status
@@ -92,7 +92,11 @@ public class GroupController {
             throw new GongBaekException(ResponseError.BAD_REQUEST);
         }
 
-        return ResponseBuilder.ok(groupFacade.getMyGroups(userId, category, status));
+        FinalMyGroupResponse finalResponse = new FinalMyGroupResponse(
+                groupFacade.getMyGroups(userId, category, status)
+        );
+
+        return ResponseBuilder.ok(finalResponse);
     }
 
     @GetMapping("/fill/groups")

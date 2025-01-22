@@ -5,7 +5,7 @@ import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.domain.group.vo.NearestGroup;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
-import com.ggang.be.domain.constant.WeekDate;
+import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.ReadEveryGroupMember;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
@@ -105,7 +105,7 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
 
     private EveryGroupEntity getNearestGroup(List<EveryGroupEntity> groups) {
         return groups.stream()
-                .min(Comparator.comparing(group -> WeekDate.getNextMeetingDate(group.getGongbaekTimeSlotEntity().getWeekDate())))
+                .min(Comparator.comparing(group -> WeekDay.getNextMeetingDate(group.getGongbaekTimeSlotEntity().getWeekDay())))
                 .orElse(null);
     }
 

@@ -3,7 +3,7 @@ package com.ggang.be.api.group.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
-import com.ggang.be.domain.constant.WeekDate;
+import com.ggang.be.domain.constant.WeekDay;
 
 public record GroupResponse(
         long groupId,
@@ -18,7 +18,7 @@ public record GroupResponse(
         String introduction,
         Category category,
         int coverImg,
-        WeekDate weekDay,
+        WeekDay weekDay,
         String weekDate,
         double startTime,
         double endTime

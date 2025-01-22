@@ -24,7 +24,7 @@ public class GongbaekTimeSlotServiceImpl implements GongbaekTimeSlotService {
             .userEntity(userEntity)
             .startTime(dto.startTime())
             .endTime(dto.endTime())
-            .weekDate(dto.weekDay())
+            .weekDay(dto.weekDay())
             .build();
 
         return gongbaekTimeSlotRepository.save(buildEntity);

@@ -43,7 +43,7 @@ public record GroupResponseMapper() {
             dto.introduction(),
             dto.category(),
             dto.coverImg(),
-            dto.gongbaekTimeSlotEntity().getWeekDate(),
+            dto.gongbaekTimeSlotEntity().getWeekDay(),
             null,
             dto.gongbaekTimeSlotEntity().getStartTime(),
             dto.gongbaekTimeSlotEntity().getEndTime()

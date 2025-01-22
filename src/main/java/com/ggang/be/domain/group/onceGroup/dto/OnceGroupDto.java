@@ -2,7 +2,7 @@ package com.ggang.be.domain.group.onceGroup.dto;
 
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
-import com.ggang.be.domain.constant.WeekDate;
+import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
@@ -19,7 +19,7 @@ public record OnceGroupDto(
     String introduction,
     Category category,
     int coverImg,
-    WeekDate weekDay,
+    WeekDay weekDay,
     String weekDate,
     GongbaekTimeSlotEntity gongbaekTimeSlotEntity
 ) {
@@ -37,12 +37,12 @@ public record OnceGroupDto(
             entity.getIntroduction(),
             entity.getCategory(),
             entity.getCoverImg(),
-            WeekDate.fromDayOfWeek(entity.getGroupDate().getDayOfWeek()),
+            WeekDay.fromDayOfWeek(entity.getGroupDate().getDayOfWeek()),
             entity.getGroupDate().toString(),
             GongbaekTimeSlotEntity.builder()
                 .startTime(entity.getGongbaekTimeSlotEntity().getStartTime())
                 .endTime(entity.getGongbaekTimeSlotEntity().getEndTime())
-                .weekDate(WeekDate.fromDayOfWeek(entity.getGroupDate().getDayOfWeek()))
+                .weekDay(WeekDay.fromDayOfWeek(entity.getGroupDate().getDayOfWeek()))
                 .userEntity(currentUser)
                 .build()
         );

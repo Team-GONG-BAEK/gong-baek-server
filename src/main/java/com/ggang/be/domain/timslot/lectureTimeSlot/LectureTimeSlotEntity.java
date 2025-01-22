@@ -2,7 +2,7 @@ package com.ggang.be.domain.timslot.lectureTimeSlot;
 
 
 import com.ggang.be.domain.BaseTimeEntity;
-import com.ggang.be.domain.constant.WeekDate;
+import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -20,7 +20,7 @@ public class LectureTimeSlotEntity extends BaseTimeEntity {
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private WeekDate weekDate;
+    private WeekDay weekDay;
 
     private double startTime;
     private double endTime;
@@ -30,9 +30,9 @@ public class LectureTimeSlotEntity extends BaseTimeEntity {
     private UserEntity userEntity;
 
     @Builder
-    private LectureTimeSlotEntity(WeekDate weekDate, double startTime, double endTime,
+    private LectureTimeSlotEntity(WeekDay weekDay, double startTime, double endTime,
         UserEntity userEntity) {
-        this.weekDate = weekDate;
+        this.weekDay = weekDay;
         this.startTime = startTime;
         this.endTime = endTime;
         this.userEntity = userEntity;

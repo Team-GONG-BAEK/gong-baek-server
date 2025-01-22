@@ -2,7 +2,7 @@ package com.ggang.be.domain.group.vo;
 
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.GroupType;
-import com.ggang.be.domain.constant.WeekDate;
+import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import java.time.LocalDate;
@@ -11,7 +11,7 @@ public record NearestGroup(long groupId,
                            Category category,
                            GroupType groupType,
                            String groupTitle,
-                           WeekDate weekDay,
+                           WeekDay weekDay,
                            LocalDate weekDate,
                            int currentPeopleCount,
                            int maxPeopleCount,
@@ -25,8 +25,8 @@ public record NearestGroup(long groupId,
             entity.getCategory(),
             GroupType.WEEKLY,
             entity.getTitle(),
-            entity.getGongbaekTimeSlotEntity().getWeekDate(),
-            WeekDate.getNextMeetingDate(entity.getGongbaekTimeSlotEntity().getWeekDate()),
+            entity.getGongbaekTimeSlotEntity().getWeekDay(),
+            WeekDay.getNextMeetingDate(entity.getGongbaekTimeSlotEntity().getWeekDay()),
             entity.getCurrentPeopleCount(),
             entity.getMaxPeopleCount(),
             entity.getGongbaekTimeSlotEntity().getStartTime(),
@@ -41,7 +41,7 @@ public record NearestGroup(long groupId,
             entity.getCategory(),
             GroupType.ONCE,
             entity.getTitle(),
-            WeekDate.fromDayOfWeek(entity.getGroupDate().getDayOfWeek()),
+            WeekDay.fromDayOfWeek(entity.getGroupDate().getDayOfWeek()),
             entity.getGroupDate(),
             entity.getCurrentPeopleCount(),
             entity.getMaxPeopleCount(),

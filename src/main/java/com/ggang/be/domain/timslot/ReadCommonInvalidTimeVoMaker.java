@@ -12,7 +12,7 @@ public class ReadCommonInvalidTimeVoMaker {
         List<LectureTimeSlotEntity> lectureTimeSlotEntities) {
         AtomicInteger atomicInteger = new AtomicInteger(0);
         return lectureTimeSlotEntities.stream()
-            .sorted(Comparator.comparing(LectureTimeSlotEntity::getWeekDate))
+            .sorted(Comparator.comparing(LectureTimeSlotEntity::getWeekDay))
             .map(entity -> makeReadCommonInvalidTimeVo(entity, atomicInteger))
             .sorted(Comparator.comparing(ReadCommonInvalidTimeVo::idx)).toList();
     }

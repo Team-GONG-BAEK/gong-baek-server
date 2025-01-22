@@ -67,9 +67,12 @@ public class GroupController {
     @GetMapping("/fill/members")
     public ResponseEntity<ApiResponse<ReadFillMembersResponse>> getGroupMembers(
             @RequestHeader("Authorization") String token,
-            @RequestBody ReadFillMembersRequest dto
+            @RequestParam("groupId") long groupId,
+            @RequestParam("groupType") GroupType groupType
     ) {
         Long userId = jwtService.parseTokenAndGetUserId(token);
+        ReadFillMembersRequest dto = new ReadFillMembersRequest(groupId, groupType);
+
         return ResponseBuilder.ok(groupFacade.getGroupUsersInfo(userId, dto));
     }
 

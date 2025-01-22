@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 
 import com.ggang.be.domain.constant.Gender;
 import com.ggang.be.domain.constant.Mbti;
-import com.ggang.be.domain.constant.WeekDate;
+import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.lectureTimeSlot.fixture.LectureTimeSlotFixture;
 import com.ggang.be.domain.timslot.lectureTimeSlot.LectureTimeSlotEntity;
 import com.ggang.be.domain.timslot.lectureTimeSlot.application.LectureTimeSlotServiceImpl;
@@ -53,9 +53,9 @@ class LectureTimeSlotServiceImplTest {
             .build();
 
         List<LectureTimeSlotVo> lectureTimeSlotVos = List.of(
-            new LectureTimeSlotVo(WeekDate.MON, 9.0, 10.5),
-            new LectureTimeSlotVo(WeekDate.WED, 14.0, 15.5),
-            new LectureTimeSlotVo(WeekDate.FRI, 16.0, 17.0)
+            new LectureTimeSlotVo(WeekDay.MON, 9.0, 10.5),
+            new LectureTimeSlotVo(WeekDay.WED, 14.0, 15.5),
+            new LectureTimeSlotVo(WeekDay.FRI, 16.0, 17.0)
         );
 
         List<LectureTimeSlotEntity> list = lectureTimeSlotVos.stream()

@@ -2,7 +2,7 @@ package com.ggang.be.domain.group.everyGroup.infra;
 
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
-import com.ggang.be.domain.constant.WeekDate;
+import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.user.UserEntity;
 import jakarta.persistence.LockModeType;
@@ -18,7 +18,7 @@ public interface EveryGroupRepository extends JpaRepository<EveryGroupEntity, Lo
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END " +
         "FROM every_group o " +
         "WHERE o.userEntity = :userEntity " +
-        "AND o.gongbaekTimeSlotEntity.weekDate = :weekDate " +
+        "AND o.gongbaekTimeSlotEntity.weekDay = :weekDay " +
         "AND o.status != :status " +
         "AND (" +
         "     (o.gongbaekTimeSlotEntity.startTime <= :startTime AND o.gongbaekTimeSlotEntity.endTime > :startTime) " +
@@ -26,7 +26,7 @@ public interface EveryGroupRepository extends JpaRepository<EveryGroupEntity, Lo
         "  OR (o.gongbaekTimeSlotEntity.startTime > :startTime AND o.gongbaekTimeSlotEntity.endTime < :endTime)" +
         ")")
     boolean isInTime(UserEntity userEntity, double startTime, double endTime,
-       WeekDate weekDate, Status status);
+       WeekDay weekDay, Status status);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select o from every_group o join fetch o.gongbaekTimeSlotEntity where o.status!=:status")

@@ -9,6 +9,7 @@ import com.ggang.be.api.group.registry.*;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.constant.Category;
+import com.ggang.be.domain.constant.FillGroupType;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.domain.group.vo.NearestGroup;
@@ -106,12 +107,12 @@ public class GroupFacade {
         cancelGroupStrategy.cancelGroup(findUserEntity, requestDto);
     }
 
-    public List<MyGroupResponse> getMyGroups(long userId, FillGroupFilterRequest filterRequestDto) {
+    public List<MyGroupResponse> getMyGroups(long userId, FillGroupType category, boolean status) {
         UserEntity currentUser = userService.getUserById(userId);
 
-        MyGroupStrategy groupStrategy = myGroupStrategyRegistry.getGroupStrategy(filterRequestDto.getFillGroupCategory());
+        MyGroupStrategy groupStrategy = myGroupStrategyRegistry.getGroupStrategy(category);
 
-        List<GroupVo> groupResponses = groupStrategy.getGroups(currentUser, filterRequestDto.status());
+        List<GroupVo> groupResponses = groupStrategy.getGroups(currentUser, status);
 
         return groupResponses.stream()
                 .map(MyGroupResponse::fromGroupVo)

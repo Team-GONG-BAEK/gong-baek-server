@@ -76,15 +76,16 @@ public class GroupController {
     @GetMapping("/my/groups")
     public ResponseEntity<ApiResponse<List<MyGroupResponse>>> getMyGroups(
             @RequestHeader("Authorization") final String accessToken,
-            @RequestBody final FillGroupFilterRequest groupFilterRequest
+            @RequestParam(value = "category") FillGroupType category,
+            @RequestParam(value = "status") boolean status
     ) {
         Long userId = jwtService.parseTokenAndGetUserId(accessToken);
 
-        if (!FillGroupType.isValidCategory(groupFilterRequest.category())) {
+        if (!FillGroupType.isValidCategory(category)) {
             throw new GongBaekException(ResponseError.BAD_REQUEST);
         }
 
-        return ResponseBuilder.ok(groupFacade.getMyGroups(userId, groupFilterRequest));
+        return ResponseBuilder.ok(groupFacade.getMyGroups(userId, category, status));
     }
 
     @GetMapping("/fill/groups")

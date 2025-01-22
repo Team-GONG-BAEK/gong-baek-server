@@ -14,8 +14,8 @@ public record ActiveGroupsResponse(
         int profileImg,
         GroupType groupType,
         String groupTitle,
-        WeekDate weekDate,
-        LocalDate groupDate,
+        WeekDate weekDay,
+        LocalDate weekDate,
         double startTime,
         double endTime,
         String location

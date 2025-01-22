@@ -9,7 +9,7 @@ public class GongbaekTimeSlotFixture {
         return GongbaekTimeSlotEntity.builder()
             .startTime(10)
             .endTime(12)
-            .weekDate(WeekDay.MON)
+            .weekDay(WeekDay.MON)
             .build();
     }
 

@@ -8,7 +8,7 @@ public class LectureTimeSlotFixture {
 
     public static LectureTimeSlotEntity makeLectureTimeSlotEntity() {
         return LectureTimeSlotEntity.builder()
-            .weekDate(WeekDay.MON)
+            .weekDay(WeekDay.MON)
             .startTime(9.0)
             .endTime(10.0)
             .userEntity(UserEntityFixture.create())

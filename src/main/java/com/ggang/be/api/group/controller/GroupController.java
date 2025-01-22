@@ -42,9 +42,11 @@ public class GroupController {
     @GetMapping("/fill/user/info")
     public ResponseEntity<ApiResponse<GroupUserInfoResponseDto>> getGroupUserInfo(
             @RequestHeader("Authorization") final String accessToken,
-            @RequestBody final GroupRequest groupRequestDto
+            @RequestParam("groupId") long groupId,
+            @RequestParam("groupType") GroupType groupType
     ){
         jwtService.isValidToken(accessToken);
+        GroupRequest groupRequestDto = new GroupRequest(groupId, groupType);
 
         GroupUserInfoResponseDto groupUserInfoResponseDto = GroupUserInfoResponseDto.of(
                 groupFacade.getGroupUserInfo(groupRequestDto.groupType(), groupRequestDto.groupId()));

@@ -5,7 +5,7 @@ import com.ggang.be.domain.timslot.lectureTimeSlot.LectureTimeSlotEntity;
 
 public record ReadCommonInvalidTimeVo(
     int idx,
-    WeekDate weekDate,
+    WeekDate weekDay,
     double startTime,
     double endTime
 ) {

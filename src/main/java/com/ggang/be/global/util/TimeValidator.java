@@ -9,9 +9,9 @@ import java.time.LocalDate;
 
 @Slf4j
 public class TimeValidator {
-    public static  void isWeekDateRight(WeekDate writeWeekDate, LocalDate writeDate) {
+    public static  void isWeekDateRight(WeekDate writeWeekDay, LocalDate writeDate) {
         WeekDate realWeekDate = WeekDate.fromDayOfWeek(writeDate.getDayOfWeek());
-        if(!realWeekDate.equals(writeWeekDate)) {
+        if(!realWeekDate.equals(writeWeekDay)) {
             log.error("weekDate and weekDay is not same");
             throw new GongBaekException(ResponseError.BAD_REQUEST);
         }

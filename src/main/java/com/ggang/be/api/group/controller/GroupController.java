@@ -149,4 +149,15 @@ public class GroupController {
 
         return ResponseBuilder.ok(null);
     }
+
+    @DeleteMapping("/my/groups")
+    public ResponseEntity<ApiResponse<Void>> deleteMyGroup(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody final GroupRequest requestDto
+    ) {
+        Long userId = jwtService.parseTokenAndGetUserId(accessToken);
+        groupFacade.deleteMyGroup(userId, requestDto);
+
+        return ResponseBuilder.ok(null);
+    }
 }

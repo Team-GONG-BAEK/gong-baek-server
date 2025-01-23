@@ -38,6 +38,7 @@ public class GroupFacade {
     private final RegisterGroupStrategyRegistry registerGroupStrategyRegistry;
     private final PrepareRegisterGongbaekFacade prepareRegisterGongbaekFacade;
     private final CancelGroupStrategyRegistry cancelGroupStrategyRegistry;
+    private final DeleteGroupStrategyRegistry deleteGroupStrategyRegistry;
     private final GroupUserInfoStrategyRegistry groupUserInfoStrategyRegistry;
     private final ActiveCombinedGroupVoPreparer activeCombinedGroupVoPreparer;
     private final MyGroupStrategyRegistry myGroupStrategyRegistry;
@@ -105,6 +106,17 @@ public class GroupFacade {
         );
 
         cancelGroupStrategy.cancelGroup(findUserEntity, requestDto);
+    }
+
+    @Transactional
+    public void deleteMyGroup(Long userId, GroupRequest requestDto) {
+        UserEntity findUserEntity = userService.getUserById(userId);
+
+        DeleteGroupStrategy deleteGroupStrategy = deleteGroupStrategyRegistry.getDeleteGroupStrategy(
+                requestDto.groupType()
+        );
+
+        deleteGroupStrategy.deleteGroup(findUserEntity, requestDto);
     }
 
     public List<MyGroupResponse> getMyGroups(long userId, FillGroupType category, boolean status) {

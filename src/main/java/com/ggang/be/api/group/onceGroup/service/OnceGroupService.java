@@ -26,6 +26,8 @@ public interface OnceGroupService {
     OnceGroupEntity registerOnceGroup(RegisterGroupServiceRequest serviceRequest,
                            GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
 
+    void deleteOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);
+
     ReadOnceGroup getActiveOnceGroups(UserEntity currentUser, Category category);
 
     void validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);

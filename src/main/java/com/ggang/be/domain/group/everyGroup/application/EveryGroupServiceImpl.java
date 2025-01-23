@@ -19,14 +19,14 @@ import com.ggang.be.domain.group.vo.GroupCommentVo;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
-import java.time.LocalDate;
-import java.time.Month;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -145,6 +145,13 @@ public class EveryGroupServiceImpl implements EveryGroupService {
 
     @Override
     @Transactional
+    public void deleteEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
+        validateDeleteEveryGroup(currentUser, everyGroupEntity);
+        everyGroupRepository.delete(everyGroupEntity);
+    }
+
+    @Override
+    @Transactional
     public void validateApplyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
         validateAlreadyApplied(currentUser, everyGroupEntity);
         validateHostAccess(currentUser, everyGroupEntity);
@@ -166,6 +173,10 @@ public class EveryGroupServiceImpl implements EveryGroupService {
         everyGroupEntities.forEach(groupStatusUpdater::updateEveryGroup);
     }
 
+    private void validateDeleteEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
+        if (!everyGroupEntity.isHost(currentUser))
+            throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
+    }
 
     private EveryGroupEntity buildEveryGroupEntity(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
@@ -175,7 +186,7 @@ public class EveryGroupServiceImpl implements EveryGroupService {
 
         return EveryGroupEntity.builder()
             .category(serviceRequest.category())
-            .dueDate(dueDateExtracter(month, nowDate))
+            .dueDate(dueDateExtractor(month, nowDate))
             .coverImg(serviceRequest.coverImg())
             .location(serviceRequest.location())
             .status(Status.RECRUITING)
@@ -187,7 +198,7 @@ public class EveryGroupServiceImpl implements EveryGroupService {
             .build();
     }
 
-    private LocalDate dueDateExtracter(int month, LocalDate nowDate) {
+    private LocalDate dueDateExtractor(int month, LocalDate nowDate) {
         if(month < 7)
             return  LocalDate.of(nowDate.getYear(), Month.JUNE, 30);
         return LocalDate.of(nowDate.getYear(), Month.DECEMBER, 31);

@@ -16,12 +16,11 @@ import java.util.List;
 public class TimeTableFacade {
     private final LectureTimeSlotService lectureTimeSlotService;
     private final UserService userService;
-    private final ReadCommonInvalidTimeVoMaker voMaker;
 
     public ReadInvalidTimeResponse readMyInvalidTime(final long userId) {
         UserEntity findUserEntity = userService.getUserById(userId);
         List<LectureTimeSlotEntity> lectureTimeSlotEntities = lectureTimeSlotService.readUserTime(findUserEntity);
 
-        return ReadInvalidTimeResponse.fromVo(voMaker.convertToCommonResponse(lectureTimeSlotEntities));
+        return ReadInvalidTimeResponse.fromVo(ReadCommonInvalidTimeVoMaker.convertToCommonResponse(lectureTimeSlotEntities));
     }
 }

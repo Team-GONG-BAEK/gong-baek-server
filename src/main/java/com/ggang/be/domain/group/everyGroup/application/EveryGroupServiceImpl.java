@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -143,6 +145,13 @@ public class EveryGroupServiceImpl implements EveryGroupService {
 
     @Override
     @Transactional
+    public void deleteEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
+        validateDeleteEveryGroup(currentUser, everyGroupEntity);
+        everyGroupRepository.delete(everyGroupEntity);
+    }
+
+    @Override
+    @Transactional
     public void validateApplyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
         validateAlreadyApplied(currentUser, everyGroupEntity);
         validateHostAccess(currentUser, everyGroupEntity);
@@ -164,12 +173,20 @@ public class EveryGroupServiceImpl implements EveryGroupService {
         everyGroupEntities.forEach(groupStatusUpdater::updateEveryGroup);
     }
 
+    private void validateDeleteEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
+        if (!everyGroupEntity.isHost(currentUser))
+            throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
+    }
 
     private EveryGroupEntity buildEveryGroupEntity(RegisterGroupServiceRequest serviceRequest,
         GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
+
+        LocalDate nowDate = LocalDate.now();
+        int month = nowDate.getMonth().getValue();
+
         return EveryGroupEntity.builder()
-            .dueDate(serviceRequest.dueDate())
             .category(serviceRequest.category())
+            .dueDate(dueDateExtractor(month, nowDate))
             .coverImg(serviceRequest.coverImg())
             .location(serviceRequest.location())
             .status(Status.RECRUITING)
@@ -179,6 +196,12 @@ public class EveryGroupServiceImpl implements EveryGroupService {
             .introduction(serviceRequest.introduction())
             .userEntity(serviceRequest.userEntity())
             .build();
+    }
+
+    private LocalDate dueDateExtractor(int month, LocalDate nowDate) {
+        if(month < 7)
+            return  LocalDate.of(nowDate.getYear(), Month.JUNE, 30);
+        return LocalDate.of(nowDate.getYear(), Month.DECEMBER, 31);
     }
 
     private void validateAlreadyApplied(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {

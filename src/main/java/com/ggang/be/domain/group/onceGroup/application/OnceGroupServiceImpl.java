@@ -132,6 +132,13 @@ public class OnceGroupServiceImpl implements OnceGroupService {
 
     @Override
     @Transactional
+    public void deleteOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity) {
+        validateDeleteOnceGroup(currentUser, onceGroupEntity);
+        onceGroupRepository.delete(onceGroupEntity);
+    }
+
+    @Override
+    @Transactional
     public void validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity){
         validateAlreadyApplied(currentUser, onceGroupEntity);
         validateHostAccess(currentUser, onceGroupEntity);
@@ -153,6 +160,11 @@ public class OnceGroupServiceImpl implements OnceGroupService {
         List<OnceGroupEntity> onceGroupEntities = onceGroupRepository.findAllByNotStatus(Status.CLOSED);
         onceGroupEntities
             .forEach(groupStatusUpdater::updateOnceGroup);
+    }
+
+    private void validateDeleteOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity) {
+        if (!onceGroupEntity.isHost(currentUser))
+            throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
     }
 
     private OnceGroupEntity buildOnceGroupEntity(RegisterGroupServiceRequest serviceRequest,

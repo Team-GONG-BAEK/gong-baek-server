@@ -24,7 +24,9 @@ public interface EveryGroupService {
     ReadCommentGroup readCommentInGroup(UserEntity userEntity, boolean commentEntity, final long groupId);
 
     EveryGroupEntity registerEveryGroup(RegisterGroupServiceRequest serviceRequest,
-                            GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
+                                        GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
+
+    void deleteEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
 
     ReadEveryGroup getActiveEveryGroups(UserEntity currentUser, Category category);
 

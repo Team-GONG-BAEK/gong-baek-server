@@ -2,7 +2,7 @@ package com.ggang.be.api.group.dto;
 
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.GroupType;
-import com.ggang.be.domain.constant.WeekDate;
+import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.dto.GongbaekTimeSlotRequest;
 import com.ggang.be.domain.timslot.lectureTimeSlot.dto.LectureTimeSlotRequest;
@@ -16,11 +16,9 @@ public record RegisterGongbaekRequest(
         GroupType groupType,
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         LocalDate weekDate,
-        WeekDate weekDay,
+        WeekDay weekDay,
         double startTime,
         double endTime,
-        @DateTimeFormat(pattern = "yyyy-MM-dd")
-        LocalDate dueDate,
         Category category,
         int coverImg,
         String location,
@@ -36,7 +34,7 @@ public record RegisterGongbaekRequest(
                     userEntity,
                     request.startTime(),
                     request.endTime(),
-                    WeekDate.fromDayOfWeek(request.weekDate().getDayOfWeek())
+                    WeekDay.fromDayOfWeek(request.weekDate().getDayOfWeek())
             );
         else
             return LectureTimeSlotRequest.of(
@@ -56,7 +54,7 @@ public record RegisterGongbaekRequest(
                     userEntity,
                     request.startTime(),
                     request.endTime(),
-                    WeekDate.fromDayOfWeek(request.weekDate().getDayOfWeek())
+                    WeekDay.fromDayOfWeek(request.weekDate().getDayOfWeek())
             );
         } else {
             return new GongbaekTimeSlotRequest(
@@ -78,7 +76,6 @@ public record RegisterGongbaekRequest(
                 request.weekDay(),
                 request.startTime(),
                 request.endTime(),
-                request.dueDate(),
                 request.category(),
                 request.coverImg(),
                 request.location(),

@@ -1,25 +1,27 @@
 package com.ggang.be.api.group.facade;
 
+import com.ggang.be.api.group.ActiveCombinedGroupVoPreparer;
 import com.ggang.be.api.group.CombinedNearestGroupVo;
 import com.ggang.be.api.group.CombinedNearestGroupVoPreparer;
-import com.ggang.be.api.group.ActiveCombinedGroupVoPreparer;
 import com.ggang.be.api.group.GroupVoAggregator;
 import com.ggang.be.api.group.dto.*;
 import com.ggang.be.api.group.registry.*;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.constant.Category;
+import com.ggang.be.domain.constant.FillGroupType;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.domain.group.vo.NearestGroup;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.UserInfo;
 import com.ggang.be.global.annotation.Facade;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Facade
@@ -36,6 +38,7 @@ public class GroupFacade {
     private final RegisterGroupStrategyRegistry registerGroupStrategyRegistry;
     private final PrepareRegisterGongbaekFacade prepareRegisterGongbaekFacade;
     private final CancelGroupStrategyRegistry cancelGroupStrategyRegistry;
+    private final DeleteGroupStrategyRegistry deleteGroupStrategyRegistry;
     private final GroupUserInfoStrategyRegistry groupUserInfoStrategyRegistry;
     private final ActiveCombinedGroupVoPreparer activeCombinedGroupVoPreparer;
     private final MyGroupStrategyRegistry myGroupStrategyRegistry;
@@ -105,12 +108,23 @@ public class GroupFacade {
         cancelGroupStrategy.cancelGroup(findUserEntity, requestDto);
     }
 
-    public List<MyGroupResponse> getMyGroups(long userId, FillGroupFilterRequest filterRequestDto) {
+    @Transactional
+    public void deleteMyGroup(Long userId, GroupRequest requestDto) {
+        UserEntity findUserEntity = userService.getUserById(userId);
+
+        DeleteGroupStrategy deleteGroupStrategy = deleteGroupStrategyRegistry.getDeleteGroupStrategy(
+                requestDto.groupType()
+        );
+
+        deleteGroupStrategy.deleteGroup(findUserEntity, requestDto);
+    }
+
+    public List<MyGroupResponse> getMyGroups(long userId, FillGroupType category, boolean status) {
         UserEntity currentUser = userService.getUserById(userId);
 
-        MyGroupStrategy groupStrategy = myGroupStrategyRegistry.getGroupStrategy(filterRequestDto.getFillGroupCategory());
+        MyGroupStrategy groupStrategy = myGroupStrategyRegistry.getGroupStrategy(category);
 
-        List<GroupVo> groupResponses = groupStrategy.getGroups(currentUser, filterRequestDto.status());
+        List<GroupVo> groupResponses = groupStrategy.getGroups(currentUser, status);
 
         return groupResponses.stream()
                 .map(MyGroupResponse::fromGroupVo)
@@ -134,7 +148,7 @@ public class GroupFacade {
             .collect(Collectors.toList());
     }
 
-    public List<ActiveGroupsResponse> getLatestGroups(long userId, GroupType groupType) {
+    public List<LatestResponse> getLatestGroups(long userId, GroupType groupType) {
         UserEntity currentUser = userService.getUserById(userId);
 
         LatestGroupStrategy latestGroupStrategy = latestGroupStrategyRegistry.getGroupStrategy(
@@ -143,8 +157,7 @@ public class GroupFacade {
         return latestGroupStrategy.getLatestGroups(currentUser).stream()
             .filter(groupVo -> lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(currentUser, groupVo))
             .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
-            .limit(5)
-            .map(ActiveGroupsResponse::fromGroupVo)
+            .limit(5).map(LatestResponse::fromGroupVo)
             .collect(Collectors.toList());
     }
 

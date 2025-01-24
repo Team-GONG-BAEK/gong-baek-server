@@ -29,9 +29,11 @@ public class GroupController {
     @GetMapping("/fill/info")
     public ResponseEntity<ApiResponse<GroupResponse>> getGroupInfo(
             @RequestHeader("Authorization") final String accessToken,
-            @RequestBody final GroupRequest groupRequestDto
+            @RequestParam("groupId") long groupId,
+            @RequestParam("groupType") GroupType groupType
     ) {
         Long userId = jwtService.parseTokenAndGetUserId(accessToken);
+        GroupRequest groupRequestDto = new GroupRequest(groupId, groupType);
 
         GroupResponse groupResponseDto = groupFacade.getGroupInfo(
                 groupRequestDto.groupType(), groupRequestDto.groupId(), userId
@@ -42,9 +44,11 @@ public class GroupController {
     @GetMapping("/fill/user/info")
     public ResponseEntity<ApiResponse<GroupUserInfoResponseDto>> getGroupUserInfo(
             @RequestHeader("Authorization") final String accessToken,
-            @RequestBody final GroupRequest groupRequestDto
+            @RequestParam("groupId") long groupId,
+            @RequestParam("groupType") GroupType groupType
     ){
         jwtService.isValidToken(accessToken);
+        GroupRequest groupRequestDto = new GroupRequest(groupId, groupType);
 
         GroupUserInfoResponseDto groupUserInfoResponseDto = GroupUserInfoResponseDto.of(
                 groupFacade.getGroupUserInfo(groupRequestDto.groupType(), groupRequestDto.groupId()));
@@ -67,24 +71,32 @@ public class GroupController {
     @GetMapping("/fill/members")
     public ResponseEntity<ApiResponse<ReadFillMembersResponse>> getGroupMembers(
             @RequestHeader("Authorization") String token,
-            @RequestBody ReadFillMembersRequest dto
+            @RequestParam("groupId") long groupId,
+            @RequestParam("groupType") GroupType groupType
     ) {
         Long userId = jwtService.parseTokenAndGetUserId(token);
+        ReadFillMembersRequest dto = new ReadFillMembersRequest(groupId, groupType);
+
         return ResponseBuilder.ok(groupFacade.getGroupUsersInfo(userId, dto));
     }
 
     @GetMapping("/my/groups")
-    public ResponseEntity<ApiResponse<List<MyGroupResponse>>> getMyGroups(
+    public ResponseEntity<ApiResponse<FinalMyGroupResponse>> getMyGroups(
             @RequestHeader("Authorization") final String accessToken,
-            @RequestBody final FillGroupFilterRequest groupFilterRequest
+            @RequestParam(value = "category") FillGroupType category,
+            @RequestParam(value = "status") boolean status
     ) {
         Long userId = jwtService.parseTokenAndGetUserId(accessToken);
 
-        if (!FillGroupType.isValidCategory(groupFilterRequest.category())) {
+        if (!FillGroupType.isValidCategory(category)) {
             throw new GongBaekException(ResponseError.BAD_REQUEST);
         }
 
-        return ResponseBuilder.ok(groupFacade.getMyGroups(userId, groupFilterRequest));
+        FinalMyGroupResponse finalResponse = new FinalMyGroupResponse(
+                groupFacade.getMyGroups(userId, category, status)
+        );
+
+        return ResponseBuilder.ok(finalResponse);
     }
 
     @GetMapping("/fill/groups")
@@ -98,7 +110,7 @@ public class GroupController {
     }
 
     @GetMapping("/group/latest")
-    public ResponseEntity<ApiResponse<List<ActiveGroupsResponse>>> getLatestGroups(
+    public ResponseEntity<ApiResponse<List<LatestResponse>>> getLatestGroups(
             @RequestHeader("Authorization") final String accessToken,
             @RequestParam("groupType") final GroupType groupType
     ) {
@@ -134,6 +146,17 @@ public class GroupController {
     ){
         Long userId = jwtService.parseTokenAndGetUserId(accessToken);
         groupFacade.cancelMyApplication(userId, requestDto);
+
+        return ResponseBuilder.ok(null);
+    }
+
+    @DeleteMapping("/my/groups")
+    public ResponseEntity<ApiResponse<Void>> deleteMyGroup(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody final GroupRequest requestDto
+    ) {
+        Long userId = jwtService.parseTokenAndGetUserId(accessToken);
+        groupFacade.deleteMyGroup(userId, requestDto);
 
         return ResponseBuilder.ok(null);
     }

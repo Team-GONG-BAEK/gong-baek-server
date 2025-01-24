@@ -3,7 +3,7 @@ package com.ggang.be.domain.constant;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
-public enum WeekDate {
+public enum WeekDay {
     MON,
     TUE,
     WED,
@@ -12,7 +12,7 @@ public enum WeekDate {
     SAT,
     SUN;
 
-    public static WeekDate fromDayOfWeek(DayOfWeek dayOfWeek) {
+    public static WeekDay fromDayOfWeek(DayOfWeek dayOfWeek) {
         return switch (dayOfWeek) {
             case MONDAY -> MON;
             case TUESDAY -> TUE;
@@ -24,8 +24,8 @@ public enum WeekDate {
         };
     }
 
-    public static DayOfWeek getDayOfWeekFromWeekDate(WeekDate weekDate) {
-        return switch (weekDate) {
+    public static DayOfWeek getDayOfWeekFromWeekDate(WeekDay weekDay) {
+        return switch (weekDay) {
             case MON -> DayOfWeek.MONDAY;
             case TUE -> DayOfWeek.TUESDAY;
             case WED -> DayOfWeek.WEDNESDAY;
@@ -36,9 +36,9 @@ public enum WeekDate {
         };
     }
 
-    public static LocalDate getNextMeetingDate(WeekDate weekDate) {
+    public static LocalDate getNextMeetingDate(WeekDay weekDay) {
         LocalDate today = LocalDate.now();
-        DayOfWeek targetDay = getDayOfWeekFromWeekDate(weekDate);
+        DayOfWeek targetDay = getDayOfWeekFromWeekDate(weekDay);
         LocalDate nextMeetingDate = today;
 
         while (nextMeetingDate.getDayOfWeek() != targetDay) {

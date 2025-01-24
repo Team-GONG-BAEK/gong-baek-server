@@ -13,8 +13,8 @@ public class NicknameValidator {
 
     public static void validate(String nickname){
         if(!LengthValidator.rangelengthCheck(nickname, MIN_LENGTH, MAX_LENGTH))
-            throw new GongBaekException(ResponseError.INVALID_INPUT_LENGTH);
+            throw new GongBaekException(ResponseError.BAD_REQUEST);
         if(!koreanPattern.matcher(nickname).find())
-            throw new GongBaekException(ResponseError.INVALID_INPUT_NICKNAME);
+            throw new GongBaekException(ResponseError.BAD_REQUEST);
     }
 }

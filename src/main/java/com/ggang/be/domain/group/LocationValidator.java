@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 @Slf4j
 public class LocationValidator {
 
-    private static final Pattern pattern = Pattern.compile("^[가-힣a-zA-Z\s]+$");
+    private static final Pattern pattern = Pattern.compile("^[가-힣a-zA-Z\s0-9]+$");
 
     public void isLocationValid(final String value){
         log.info("now Location value is : {}", value);

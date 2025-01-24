@@ -2,22 +2,32 @@ package com.ggang.be.api.group.dto;
 
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.GroupType;
-import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.group.dto.GroupVo;
 
 import java.time.LocalDate;
 
-public record MyGroupResponse(
-    long groupId, Status status, Category category, int coverImg, GroupType groupType,
-    String groupTitle, WeekDay weekDay, LocalDate weekDate, double startTime, double endTime, String location
+public record LatestResponse(
+        long groupId,
+        Category category,
+        int coverImg,
+        int profileImg,
+        String nickname,
+        GroupType groupType,
+        String groupTitle,
+        WeekDay weekDay,
+        LocalDate weekDate,
+        double startTime,
+        double endTime,
+        String location
 ) {
-    public static MyGroupResponse fromGroupVo(GroupVo groupVo) {
-        return new MyGroupResponse(
+    public static LatestResponse fromGroupVo(GroupVo groupVo) {
+        return new LatestResponse(
                 groupVo.groupId(),
-                groupVo.status(),
                 groupVo.category(),
                 groupVo.coverImg(),
+                groupVo.profileImg(),
+                groupVo.nickname(),
                 groupVo.groupType(),
                 groupVo.groupTitle(),
                 groupVo.weekDay(),

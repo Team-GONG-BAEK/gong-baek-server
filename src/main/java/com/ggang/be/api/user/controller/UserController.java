@@ -6,6 +6,7 @@ import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.common.ResponseSuccess;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.facade.SignupFacade;
+import com.ggang.be.api.facade.SignupRequestFacade;
 import com.ggang.be.api.user.NicknameValidator;
 import com.ggang.be.api.user.dto.SignupRequest;
 import com.ggang.be.api.user.dto.SignupResponse;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
     private final SignupFacade signupFacade;
+    private final SignupRequestFacade signupRequestFacade;
     private final JwtService jwtService;
 
     private final static int INTRODUCTION_MIN_LENGTH = 20;
@@ -49,6 +51,7 @@ public class UserController {
 
     @PostMapping("/user/signup")
     public ResponseEntity<ApiResponse<SignupResponse>> signup(@RequestBody final SignupRequest request){
+        signupRequestFacade.validateSignupRequest(request);
         return ResponseBuilder.created(signupFacade.signup(request));
     }
   

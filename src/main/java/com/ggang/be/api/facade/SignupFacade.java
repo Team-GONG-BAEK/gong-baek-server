@@ -4,15 +4,18 @@ import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
 import com.ggang.be.api.school.service.SchoolService;
+import com.ggang.be.api.user.NicknameValidator;
 import com.ggang.be.api.user.dto.SignupRequest;
 import com.ggang.be.api.user.dto.SignupResponse;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.api.user.vo.TimeTableVo;
+import com.ggang.be.domain.group.IntroductionValidator;
 import com.ggang.be.domain.school.SchoolEntity;
 import com.ggang.be.domain.timslot.lectureTimeSlot.vo.LectureTimeSlotVo;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.SaveUserSignUp;
 import com.ggang.be.global.jwt.JwtService;
+import com.ggang.be.global.util.TimeValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,9 +37,6 @@ public class SignupFacade {
 
     @Transactional
     public SignupResponse signup(SignupRequest request) {
-
-        duplicateUserCheck(request);
-
         SchoolEntity schoolEntityByName = schoolService.findSchoolEntityByName(request.schoolName());
 
         SaveUserSignUp saveUserSignUp = SignupRequest.toSaveUserSignUp(request, schoolEntityByName);
@@ -50,14 +50,6 @@ public class SignupFacade {
         lectureTimeSlotService.saveLectureTimeSlot(lectureTimeSlotVos, userEntity);
 
         return madeSignupResponse(userEntity);
-    }
-
-    private void duplicateUserCheck(SignupRequest request) {
-        try{
-            duplicateCheckNickname(request.nickname());
-        } catch (GongBaekException e) {
-            throw new GongBaekException(ResponseError.USERNAME_ALREADY_EXISTS);
-        }
     }
 
     private SignupResponse madeSignupResponse(final UserEntity userEntity) {

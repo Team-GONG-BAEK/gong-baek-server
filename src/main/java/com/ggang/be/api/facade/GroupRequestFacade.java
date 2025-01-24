@@ -24,7 +24,6 @@ public class GroupRequestFacade {
     private final UserService userService;
     private final LocationValidator locationValidator;
     private final TitleValidator titleValidator;
-    private final IntroductionValidator introductionValidator;
 
     public void validateRegisterRequest(Long userId, RegisterGongbaekRequest dto) {
         TimeValidator.isTimeValid(dto.startTime(), dto.endTime());
@@ -32,7 +31,7 @@ public class GroupRequestFacade {
         isWeekDateRight(dto);
         titleValidator.isGroupTitleValid(dto.groupTitle());
         locationValidator.isLocationValid(dto.location());
-        introductionValidator.isIntroductionValid(dto.introduction());
+        IntroductionValidator.isIntroductionValid(dto.introduction());
         isValidCoverImg(dto);
         isValidMaxPeople(dto);
 

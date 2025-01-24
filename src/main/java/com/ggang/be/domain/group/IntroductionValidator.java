@@ -6,10 +6,9 @@ import com.ggang.be.global.util.LengthValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-@Component
 @Slf4j
 public class IntroductionValidator {
-    public void isIntroductionValid(String introduction) {
+    public static void isIntroductionValid(String introduction) {
         log.info("now value is : {}", introduction);
         if(!LengthValidator.rangelengthCheck(introduction, 20, 100)) {
             log.error("소개글 길이 검증에 실패하였습니다.");

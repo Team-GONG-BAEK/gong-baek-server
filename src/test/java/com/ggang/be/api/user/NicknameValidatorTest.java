@@ -16,8 +16,8 @@ class NicknameValidatorTest {
         //when && then
         Assertions.assertThatThrownBy(() -> NicknameValidator.validate(name))
                 .isInstanceOf(GongBaekException.class)
-                .hasMessageContaining("닉네임은 한글로만 입력 가능합니다.")
-                .hasFieldOrPropertyWithValue("responseError", ResponseError.INVALID_INPUT_NICKNAME);
+                .hasMessageContaining("유효하지 않은 요청입니다.")
+                .hasFieldOrPropertyWithValue("responseError", ResponseError.BAD_REQUEST);
     }
 
 
@@ -28,8 +28,8 @@ class NicknameValidatorTest {
         //when && then
         Assertions.assertThatThrownBy(() -> NicknameValidator.validate(name))
             .isInstanceOf(GongBaekException.class)
-            .hasMessageContaining("입력된 글자수가 허용된 범위를 벗어났습니다.")
-            .hasFieldOrPropertyWithValue("responseError", ResponseError.INVALID_INPUT_LENGTH);
+            .hasMessageContaining("유효하지 않은 요청입니다.")
+            .hasFieldOrPropertyWithValue("responseError", ResponseError.BAD_REQUEST);
     }
 
     @ParameterizedTest

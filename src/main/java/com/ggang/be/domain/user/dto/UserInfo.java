@@ -8,7 +8,6 @@ public record UserInfo(
         String sex,
         String schoolMajor,
         int enterYear,
-        int schoolGrade,
         String mbti,
         String introduction
 ) {
@@ -19,7 +18,6 @@ public record UserInfo(
                 userEntity.getGender().name(),
                 userEntity.getSchoolMajorName(),
                 userEntity.getEnterYear(),
-                userEntity.getSchoolGrade(),
                 userEntity.getMbti().name(),
                 userEntity.getIntroduction()
         );

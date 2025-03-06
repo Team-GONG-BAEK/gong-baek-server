@@ -45,7 +45,6 @@ class LectureTimeSlotServiceImplTest {
             .schoolMajorName("Computer Science")
             .profileImg(1)
             .nickname("TestUser")
-            .schoolGrade(3)
             .enterYear(2020)
             .mbti(Mbti.INFJ)
             .gender(Gender.MAN)

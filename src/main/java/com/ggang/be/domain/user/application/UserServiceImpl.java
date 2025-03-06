@@ -49,7 +49,6 @@ public class UserServiceImpl implements UserService {
         UserEntity build = UserEntity.builder()
             .nickname(request.nickname())
             .school(request.school())
-            .schoolGrade(request.schoolGrade())
             .gender(request.sex())
             .introduction(request.introduction())
             .mbti(request.mbti())
@@ -71,11 +70,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateRefreshToken(String refreshToken, UserEntity userEntity) {
         userEntity.updateRefreshToken(refreshToken);
-    }
-
-    private UserEntity findByIdOrThrow(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new GongBaekException(ResponseError.USER_NOT_FOUND));
     }
 }
 

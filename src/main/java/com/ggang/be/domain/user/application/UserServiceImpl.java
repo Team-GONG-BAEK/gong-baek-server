@@ -79,5 +79,13 @@ public class UserServiceImpl implements UserService {
     public boolean findByPlatformAndPlatformId(Platform platform, String platformId) {
         return userRepository.findByPlatformAndPlatformId(platform, platformId) != null;
     }
+
+    @Override
+    public Long getUserIdByPlatformAndPlatformId(Platform platform, String platformId) {
+        UserEntity userEntity = userRepository.findByPlatformAndPlatformId(platform, platformId);
+
+        if (userEntity == null) return null;
+        return userEntity.getId();
+    }
 }
 

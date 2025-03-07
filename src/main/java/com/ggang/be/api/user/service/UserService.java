@@ -19,4 +19,7 @@ public interface UserService {
     void updateRefreshToken(String refreshToken, UserEntity userEntity);
 
     boolean findByPlatformAndPlatformId(Platform platform, String platformId);
+
+    Long getUserIdByPlatformAndPlatformId(Platform platform, String platformId);
+
 }

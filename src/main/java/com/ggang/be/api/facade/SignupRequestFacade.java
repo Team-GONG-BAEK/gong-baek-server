@@ -1,7 +1,5 @@
 package com.ggang.be.api.facade;
 
-import com.ggang.be.api.common.ResponseError;
-import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.user.NicknameValidator;
 import com.ggang.be.api.user.dto.SignupRequest;
 import com.ggang.be.api.user.service.UserService;
@@ -23,15 +21,6 @@ public class SignupRequestFacade {
         TimeValidator.hasDuplicateInfo(request.timeTable());
         TimeValidator.isTimeVoValidTime(request.timeTable());
 
-        isValidSchoolGrade(request.schoolGrade());
         TimeValidator.isYearAfterNow(request.enterYear());
     }
-
-    private void isValidSchoolGrade(Integer schoolGrade) {
-        if (schoolGrade < 1 || schoolGrade > 4) {
-            throw new GongBaekException(ResponseError.BAD_REQUEST);
-        }
-    }
-
-
 }

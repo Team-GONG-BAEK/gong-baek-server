@@ -71,9 +71,8 @@ class UserServiceImplTest {
         SaveUserSignUp request = new SaveUserSignUp(
             1,
             "nickname",
-            Mbti.INFJ, // schoolGrade
+            Mbti.INFJ,
             "computer science",
-            4,
             2024,
             "hello",
             Gender.MAN,
@@ -83,7 +82,6 @@ class UserServiceImplTest {
         UserEntity expectedUserEntity = UserEntity.builder()
             .nickname("nickname")
             .school(school)
-            .schoolGrade(3)
             .gender(Gender.MAN)
             .introduction("introduction")
             .mbti(Mbti.INFJ)

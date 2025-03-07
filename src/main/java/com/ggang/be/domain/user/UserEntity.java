@@ -50,8 +50,6 @@ public class UserEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String nickname;
 
-    private int schoolGrade;
-
     private int enterYear;
 
     @Column(nullable = false)
@@ -79,12 +77,11 @@ public class UserEntity extends BaseTimeEntity {
 
     @Builder
     private UserEntity(SchoolEntity school, String schoolMajorName, int profileImg, String nickname,
-        int schoolGrade, int enterYear, Mbti mbti, Gender gender, String introduction) {
+                       int enterYear, Mbti mbti, Gender gender, String introduction) {
         this.school = school;
         this.schoolMajorName = schoolMajorName;
         this.profileImg = profileImg;
         this.nickname = nickname;
-        this.schoolGrade = schoolGrade;
         this.enterYear = enterYear;
         this.mbti = mbti;
         this.gender = gender;

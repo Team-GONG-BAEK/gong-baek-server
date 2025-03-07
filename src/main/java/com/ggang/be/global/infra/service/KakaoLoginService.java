@@ -14,17 +14,10 @@ public class KakaoLoginService {
     private final KakaoOAuthClient kakaoOAuthClient;
 
     @Transactional
-    public String login(String code) {
-        String kakaoAccessToken = getKakaoAccessToken(code);
-        return getPlatformId(kakaoAccessToken);
-    }
+    public String getKakaoPlatformId(String code) {
+        String kakaoAccessToken = kakaoOAuthClient.getAccessToken(code);
+        log.info("kakaoAccessToken: {}", kakaoAccessToken);
 
-    public String getKakaoAccessToken(String authCode) {
-        return kakaoOAuthClient.getAccessToken(authCode);
-    }
-
-    public String getPlatformId(String accessToken) {
-        log.info("getPlatformId: {}", accessToken);
-        return kakaoOAuthClient.getUserInfo(accessToken).kakaoId();
+        return kakaoOAuthClient.getUserInfo(kakaoAccessToken).kakaoId();
     }
 }

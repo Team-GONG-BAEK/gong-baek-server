@@ -89,8 +89,8 @@ public class UserController {
             @RequestBody final LoginRequest request
     ) {
         String platformId = switch (request.getPlatform()) {
-            case KAKAO -> kakaoLoginService.login(request.getCode());
-            case APPLE -> appleLoginService.login(request.getCode());
+            case KAKAO -> kakaoLoginService.getKakaoPlatformId(request.getCode());
+            case APPLE -> appleLoginService.getApplePlatformId(request.getCode());
         };
 
         log.info("socialLogin platformId : {}", platformId);

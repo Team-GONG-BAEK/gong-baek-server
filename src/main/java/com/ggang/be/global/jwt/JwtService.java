@@ -130,8 +130,6 @@ public class JwtService {
 
 
     public String extractPlatformUserIdFromToken(String token) {
-        isValidToken(token);
-
         try {
             String splitToken = token.split(" ")[1];
             SecretKey secretKey = getSecretKey();

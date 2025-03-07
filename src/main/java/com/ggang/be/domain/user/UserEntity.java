@@ -3,6 +3,7 @@ package com.ggang.be.domain.user;
 import com.ggang.be.domain.BaseTimeEntity;
 import com.ggang.be.domain.constant.Gender;
 import com.ggang.be.domain.constant.Mbti;
+import com.ggang.be.domain.constant.Platform;
 import com.ggang.be.domain.school.SchoolEntity;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.timslot.lectureTimeSlot.LectureTimeSlotEntity;
@@ -28,6 +29,13 @@ public class UserEntity extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Platform platform;
+
+    @Column(nullable = false, unique = true)
+    private String platformId;
 
     @OneToMany(mappedBy = "userEntity")
     private List<UserOnceGroupEntity> userOnceGroupEntites;
@@ -76,8 +84,10 @@ public class UserEntity extends BaseTimeEntity {
     }
 
     @Builder
-    private UserEntity(SchoolEntity school, String schoolMajorName, int profileImg, String nickname,
+    private UserEntity(Platform platform, String platformId, SchoolEntity school, String schoolMajorName, int profileImg, String nickname,
                        int enterYear, Mbti mbti, Gender gender, String introduction) {
+        this.platform = platform;
+        this.platformId = platformId;
         this.school = school;
         this.schoolMajorName = schoolMajorName;
         this.profileImg = profileImg;

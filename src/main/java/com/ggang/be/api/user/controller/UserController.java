@@ -58,6 +58,11 @@ public class UserController {
     ) {
         log.info("Received Authorization Header: {}", accessToken);
 
+        if (jwtService.parseTokenAndGetUserId(accessToken) != null) {
+            log.info("SignUp - userId: {}", jwtService.parseTokenAndGetUserId(accessToken));
+            throw new GongBaekException(ResponseError.USERNAME_ALREADY_EXISTS);
+        }
+
         String platformId = jwtService.extractPlatformUserIdFromToken(accessToken);
         log.info("SignUp - platformId: {}", platformId);
 
@@ -67,7 +72,7 @@ public class UserController {
                 signupFacade.signUp(platformId, request)
         );
     }
-  
+
     @GetMapping("/user/home/profile")
     public ResponseEntity<ApiResponse<UserSchoolResponseDto>> getGroupInfo(
             @RequestHeader("Authorization") final String accessToken
@@ -80,7 +85,7 @@ public class UserController {
 
     @PatchMapping("/reissue/token")
     public ResponseEntity<ApiResponse<TokenVo>> reIssueToken(
-        @RequestHeader("Authorization") String refreshToken) {
+            @RequestHeader("Authorization") String refreshToken) {
         return ResponseBuilder.ok(jwtService.reIssueToken(refreshToken));
     }
 

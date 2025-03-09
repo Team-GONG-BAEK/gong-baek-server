@@ -36,6 +36,10 @@ public class SignUpFacade {
 
     @Transactional
     public SignUpResponse signUp(String platformId, SignUpRequest request) {
+        if (userService.findByPlatformAndPlatformId(request.platform(), platformId)) {
+            throw new GongBaekException(ResponseError.USERNAME_ALREADY_EXISTS);
+        }
+
         SchoolEntity schoolEntityByName = schoolService.findSchoolEntityByName(request.schoolName());
 
         SaveUserSignUp saveUserSignUp = SignUpRequest.toSaveUserSignUp(request, platformId, schoolEntityByName);

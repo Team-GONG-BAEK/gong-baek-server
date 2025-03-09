@@ -1,9 +1,5 @@
 package com.ggang.be.global.jwt;
 
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
-
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.fixture.UserEntityFixture;
@@ -11,9 +7,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import javax.crypto.SecretKey;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +15,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)

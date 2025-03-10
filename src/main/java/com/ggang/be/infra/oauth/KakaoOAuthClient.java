@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
 
@@ -20,7 +19,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KakaoOAuthClient implements OAuthClient {
 
-    private final WebClient webClient;
     private final KakaoProperties kakaoProperties;
 
     private final static String KAKAO_TOKEN_URL = "https://kauth.kakao.com/oauth/token";
@@ -33,25 +31,22 @@ public class KakaoOAuthClient implements OAuthClient {
     public Auth getUserInfo(String accessToken) {
         log.info("카카오 OAuth 검증 요청 시작");
 
-        JsonNode response = webClient.get()
-                .uri(KAKAO_USER_INFO_URL)
-                .header(AUTHORIZATION, BEARER + accessToken)
-                .retrieve()
-                .onStatus(HttpStatusCode::isError, clientResponse -> {
-                    log.error("카카오 API 요청 실패: {}", clientResponse.statusCode());
-                    throw new GongBaekException(ResponseError.KAKAO_API_REQUEST_FAILED);
-                })
-                .bodyToMono(JsonNode.class)
-                .block();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(AUTHORIZATION, BEARER + accessToken);
 
-        if (response == null || !response.has("id")) {
-            throw new GongBaekException(ResponseError.INVALID_KAKAO_AUTH_CODE);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<JsonNode> response = restTemplate.exchange(
+                KAKAO_USER_INFO_URL, HttpMethod.GET, entity, JsonNode.class);
+
+        if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
+            throw new GongBaekException(ResponseError.INVALID_KAKAO_ACCESS_TOKEN);
         }
 
-        log.info("카카오 로그인 응답: {}", response);
-        return new Auth(response.get("id").asText());
+        log.info("카카오 로그인 응답: {}", response.getBody());
+        return new Auth(response.getBody().get("id").asText());
     }
-
 
     public String getAccessToken(String code) {
         log.info("카카오 accessToken 요청 시작");

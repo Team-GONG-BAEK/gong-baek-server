@@ -1,6 +1,6 @@
 package com.ggang.be.api.auth.service;
 
-import com.ggang.be.api.user.dto.LoginRequest;
+import com.ggang.be.domain.constant.Platform;
 import com.ggang.be.infra.service.AppleLoginService;
 import com.ggang.be.infra.service.KakaoLoginService;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +14,10 @@ public class PlatformAuthService {
     private final KakaoLoginService kakaoLoginService;
     private final AppleLoginService appleLoginService;
 
-    public String getPlatformId(LoginRequest request) {
-        return switch (request.getPlatform()) {
-            case KAKAO -> kakaoLoginService.getKakaoPlatformId(request.getCode());
-            case APPLE -> appleLoginService.getApplePlatformId(request.getCode());
+    public String getPlatformId(Platform platform, String authorization) {
+        return switch (platform) {
+            case KAKAO -> kakaoLoginService.getKakaoPlatformId(authorization);
+            case APPLE -> appleLoginService.getApplePlatformId(authorization);
         };
     }
 }

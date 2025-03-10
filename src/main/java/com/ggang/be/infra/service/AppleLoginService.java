@@ -14,8 +14,10 @@ public class AppleLoginService {
     private final AppleOAuthClient appleOAuthClient;
 
     @Transactional
-    public String getApplePlatformId(String code) {
-        String appleIdToken = appleOAuthClient.getAccessToken(code);
+    public String getApplePlatformId(String identityToken) {
+        log.info("Apple OAuth - Identity Token received: {}", identityToken);
+
+        String appleIdToken = appleOAuthClient.getAccessToken(identityToken);
         log.info("appleIdToken: {}", appleIdToken);
 
         return appleOAuthClient.getPlatformId(appleIdToken);

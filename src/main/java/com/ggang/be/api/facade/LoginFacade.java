@@ -1,7 +1,6 @@
 package com.ggang.be.api.facade;
 
 import com.ggang.be.api.auth.service.PlatformAuthService;
-import com.ggang.be.api.user.dto.LoginRequest;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.constant.Platform;
 import com.ggang.be.global.jwt.JwtService;
@@ -27,8 +26,8 @@ public class LoginFacade {
                 .orElseGet(() -> createTemporaryToken(platformId));
     }
 
-    public String getPlatformId(LoginRequest request) {
-        return platformAuthService.getPlatformId(request);
+    public String getPlatformId(Platform platform, String authorization) {
+        return platformAuthService.getPlatformId(platform, authorization);
     }
 
     private TokenVo login(Long userId) {

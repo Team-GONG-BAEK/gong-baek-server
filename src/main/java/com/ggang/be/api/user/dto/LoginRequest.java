@@ -7,11 +7,9 @@ import lombok.Getter;
 @Getter
 public class LoginRequest {
     private Platform platform;
-    private String code;
 
     @Builder
-    public LoginRequest(Platform platform, String authorizationCode) {
+    public LoginRequest(Platform platform) {
         this.platform = platform;
-        this.code = authorizationCode;
     }
 }

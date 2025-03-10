@@ -17,6 +17,8 @@ public enum ResponseError {
     GROUP_ACCESS_SCHOOL_MISMATCH(4007, "같은 학교의 모임만 조회 가능합니다."),
     INVALID_REQUEST_PARAMETER(4008, "요청 파라미터가 잘못되었습니다."),
     INVALID_APPLE_AUTH_CODE(4009, "유효하지 않은 애플 로그인 코드입니다."),
+    INVALID_KAKAO_AUTH_CODE(40010, "유효하지 않은 카카오 로그인 코드입니다."),
+
 
     // 401 Unauthorized
     UNAUTHORIZED_ACCESS(4010, "리소스 접근 권한이 없습니다."),
@@ -25,9 +27,8 @@ public enum ResponseError {
     INVALID_APPLE_ID_TOKEN(4013, "잘못된 애플 idToken 형식입니다."),
     APPLE_ID_TOKEN_DECODING_FAILED(4014, "애플 idToken 디코딩에 실패했습니다."),
     APPLE_ID_TOKEN_MISSING_SUB(4015, "유효하지 않은 애플 idToken 입니다."),
-    INVALID_KAKAO_AUTH_CODE(4016, "유효하지 않은 카카오 로그인 코드입니다."),
-    INVALID_KAKAO_ACCESS_TOKEN(4017, "유효하지 않은 카카오 액세스 토큰입니다."),
-    KAKAO_API_REQUEST_FAILED(4018, "카카오 API 요청에 실패했습니다."),
+    INVALID_KAKAO_ACCESS_TOKEN(4016, "유효하지 않은 카카오 액세스 토큰입니다."),
+    KAKAO_API_REQUEST_FAILED(4017, "카카오 API 요청에 실패했습니다."),
 
     // 404 Not Found
     NOT_FOUND(4040, "대상을 찾을 수 없습니다."),

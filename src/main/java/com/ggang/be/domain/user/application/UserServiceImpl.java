@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -39,7 +41,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean duplicateCheckNickname(String nickname) {
         log.info("nickname {}", nickname);
-        if(userRepository.existsUserEntitiesByNickname(nickname))
+        if (userRepository.existsUserEntitiesByNickname(nickname))
             throw new GongBaekException(ResponseError.NICKNAME_ALREADY_EXISTS);
         return true;
     }
@@ -66,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void validateRefreshToken(UserEntity findUser, String refreshToken) {
-        if(!findUser.validateRefreshToken(refreshToken))
+        if (!findUser.validateRefreshToken(refreshToken))
             throw new GongBaekException(ResponseError.INVALID_TOKEN);
     }
 
@@ -81,11 +83,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Long getUserIdByPlatformAndPlatformId(Platform platform, String platformId) {
-        UserEntity userEntity = userRepository.findByPlatformAndPlatformId(platform, platformId);
-
-        if (userEntity == null) return null;
-        return userEntity.getId();
+    public Optional<Long> getUserIdByPlatformAndPlatformId(Platform platform, String platformId) {
+        return Optional.ofNullable(userRepository.findByPlatformAndPlatformId(platform, platformId))
+                .map(UserEntity::getId);
     }
 }
 

@@ -3,6 +3,7 @@ package com.ggang.be.global.infra.oauth;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
+import com.ggang.be.global.infra.Auth;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -17,7 +18,7 @@ import java.util.Map;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class KakaoOAuthClient {
+public class KakaoOAuthClient implements OAuthClient {
 
     private final WebClient webClient;
     private final KakaoProperties kakaoProperties;
@@ -29,7 +30,7 @@ public class KakaoOAuthClient {
     private final static String BEARER = "Bearer ";
     private final static String AUTHORIZATION_TOKEN = "authorization_code";
 
-    public KakaoUser getUserInfo(String accessToken) {
+    public Auth getUserInfo(String accessToken) {
         log.info("카카오 OAuth 검증 요청 시작");
 
         JsonNode response = webClient.get()
@@ -48,7 +49,7 @@ public class KakaoOAuthClient {
         }
 
         log.info("카카오 로그인 응답: {}", response);
-        return new KakaoUser(response.get("id").asText());
+        return new Auth(response.get("id").asText());
     }
 
 
@@ -80,5 +81,10 @@ public class KakaoOAuthClient {
         } catch (Exception e) {
             throw new GongBaekException(ResponseError.INVALID_TOKEN);
         }
+    }
+
+    @Override
+    public String getPlatformId(String code) {
+        return getUserInfo(code).platformId();
     }
 }

@@ -1,5 +1,7 @@
 package com.ggang.be.global.jwt;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.user.service.UserService;
@@ -24,6 +26,7 @@ public class JwtService {
     private static final String USER_ID = "userId";
     private static final String PLATFROM_ID = "platformId";
     private static final String BEARER = "Bearer ";
+    private static final ObjectMapper objectMapper = new ObjectMapper();
     private final JwtProperties jwtProperties;
     private final UserService userService;
 
@@ -170,6 +173,15 @@ public class JwtService {
         } catch (JwtException | NumberFormatException e) {
             log.error("JWT parsing error : {}", e.getMessage());
             throw new GongBaekException(ResponseError.INVALID_TOKEN);
+        }
+    }
+
+    public static JsonNode parseJson(String jsonString) {
+        try {
+            return objectMapper.readTree(jsonString);
+        } catch (Exception e) {
+            log.error("JSON 파싱 실패", e);
+            throw new IllegalArgumentException("JSON 파싱에 실패했습니다.");
         }
     }
 }

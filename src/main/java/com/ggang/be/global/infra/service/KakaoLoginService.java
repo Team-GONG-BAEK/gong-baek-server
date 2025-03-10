@@ -18,6 +18,6 @@ public class KakaoLoginService {
         String kakaoAccessToken = kakaoOAuthClient.getAccessToken(code);
         log.info("kakaoAccessToken: {}", kakaoAccessToken);
 
-        return kakaoOAuthClient.getUserInfo(kakaoAccessToken).kakaoId();
+        return kakaoOAuthClient.getPlatformId(kakaoAccessToken);
     }
 }

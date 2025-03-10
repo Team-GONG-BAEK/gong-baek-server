@@ -85,22 +85,19 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<TokenVo>> socialLogin(
-            @RequestBody final LoginRequest request
-    ) {
-        String platformId = switch (request.getPlatform()) {
+    public ResponseEntity<ApiResponse<TokenVo>> socialLogin(@RequestBody final LoginRequest request) {
+        String platformId = getPlatformId(request);
+        return userService.getUserIdByPlatformAndPlatformId(request.getPlatform(), platformId)
+                .map(userId -> loginFacade.login(platformId, request.getPlatform()))
+                .map(ResponseBuilder::ok)
+                .orElseGet(() -> ResponseBuilder.created(loginFacade.login(platformId, request.getPlatform())));
+    }
+
+    private String getPlatformId(LoginRequest request) {
+        return switch (request.getPlatform()) {
             case KAKAO -> kakaoLoginService.getKakaoPlatformId(request.getCode());
             case APPLE -> appleLoginService.getApplePlatformId(request.getCode());
         };
-
-        log.info("socialLogin platformId : {}", platformId);
-
-        Long userId = userService.getUserIdByPlatformAndPlatformId(request.getPlatform(), platformId);
-
-        if (userId == null) {
-            return ResponseBuilder.created(loginFacade.login(platformId));
-        }
-
-        return ResponseBuilder.ok(loginFacade.login(userId));
     }
+
 }

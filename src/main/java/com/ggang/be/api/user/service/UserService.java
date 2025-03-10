@@ -5,6 +5,8 @@ import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.SaveUserSignUp;
 import com.ggang.be.domain.user.dto.UserSchoolDto;
 
+import java.util.Optional;
+
 public interface UserService {
     UserEntity getUserById(Long userId);
 
@@ -20,6 +22,6 @@ public interface UserService {
 
     boolean findByPlatformAndPlatformId(Platform platform, String platformId);
 
-    Long getUserIdByPlatformAndPlatformId(Platform platform, String platformId);
+    Optional<Long> getUserIdByPlatformAndPlatformId(Platform platform, String platformId);
 
 }

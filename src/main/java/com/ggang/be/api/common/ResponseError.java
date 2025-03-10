@@ -53,7 +53,6 @@ public enum ResponseError {
 
     // 500 Internal Server Error
     INTERNAL_SERVER_ERROR(5000, "서버 내부 오류입니다."),
-    KAKAO_SECRET_GENERATION_FAILED(5001, "Apple Client Secret 생성에 실패했습니다."),
     APPLE_SECRET_GENERATION_FAILED(5001, "Apple Client Secret 생성에 실패했습니다.");
 
     private final int code;

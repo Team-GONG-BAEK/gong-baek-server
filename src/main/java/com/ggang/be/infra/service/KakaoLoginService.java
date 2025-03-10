@@ -1,6 +1,6 @@
-package com.ggang.be.global.infra.service;
+package com.ggang.be.infra.service;
 
-import com.ggang.be.global.infra.oauth.KakaoOAuthClient;
+import com.ggang.be.infra.oauth.KakaoOAuthClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

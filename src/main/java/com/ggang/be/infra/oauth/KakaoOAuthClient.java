@@ -1,9 +1,9 @@
-package com.ggang.be.global.infra.oauth;
+package com.ggang.be.infra.oauth;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
-import com.ggang.be.global.infra.Auth;
+import com.ggang.be.infra.Auth;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;

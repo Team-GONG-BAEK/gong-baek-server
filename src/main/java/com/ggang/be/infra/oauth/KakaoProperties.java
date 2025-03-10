@@ -1,4 +1,4 @@
-package com.ggang.be.global.infra.oauth;
+package com.ggang.be.infra.oauth;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,11 +8,8 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "apple")
-public class AppleProperties {
-    private String teamId;
-    private String loginKey;
+@ConfigurationProperties(prefix = "kakao")
+public class KakaoProperties {
     private String clientId;
     private String redirectUri;
-    private String keyPath;
 }

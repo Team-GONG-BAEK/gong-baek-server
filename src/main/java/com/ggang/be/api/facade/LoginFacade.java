@@ -1,5 +1,7 @@
 package com.ggang.be.api.facade;
 
+import com.ggang.be.api.auth.service.PlatformAuthService;
+import com.ggang.be.api.user.dto.LoginRequest;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.constant.Platform;
 import com.ggang.be.global.jwt.JwtService;
@@ -16,12 +18,17 @@ public class LoginFacade {
 
     private final UserService userService;
     private final JwtService jwtService;
+    private final PlatformAuthService platformAuthService;
 
     @Transactional
     public TokenVo login(String platformId, Platform platform) {
         return userService.getUserIdByPlatformAndPlatformId(platform, platformId)
                 .map(this::login)
                 .orElseGet(() -> createTemporaryToken(platformId));
+    }
+
+    public String getPlatformId(LoginRequest request) {
+        return platformAuthService.getPlatformId(request);
     }
 
     private TokenVo login(Long userId) {
@@ -32,5 +39,4 @@ public class LoginFacade {
     private TokenVo createTemporaryToken(String platformId) {
         return new TokenVo(null, jwtService.createTempAccessToken(platformId), jwtService.createTempRefreshToken(platformId));
     }
-
 }

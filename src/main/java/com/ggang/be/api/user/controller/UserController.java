@@ -11,8 +11,6 @@ import com.ggang.be.api.user.NicknameValidator;
 import com.ggang.be.api.user.dto.*;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.user.dto.UserSchoolDto;
-import com.ggang.be.infra.service.AppleLoginService;
-import com.ggang.be.infra.service.KakaoLoginService;
 import com.ggang.be.global.jwt.JwtService;
 import com.ggang.be.global.jwt.TokenVo;
 import com.ggang.be.global.util.LengthValidator;
@@ -31,8 +29,6 @@ public class UserController {
     private final LoginFacade loginFacade;
     private final SignupRequestFacade signupRequestFacade;
     private final JwtService jwtService;
-    private final AppleLoginService appleLoginService;
-    private final KakaoLoginService kakaoLoginService;
 
     private final static int INTRODUCTION_MIN_LENGTH = 20;
     private final static int INTRODUCTION_MAX_LENGTH = 100;
@@ -86,18 +82,10 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<TokenVo>> socialLogin(@RequestBody final LoginRequest request) {
-        String platformId = getPlatformId(request);
+        String platformId = loginFacade.getPlatformId(request);
         return userService.getUserIdByPlatformAndPlatformId(request.getPlatform(), platformId)
                 .map(userId -> loginFacade.login(platformId, request.getPlatform()))
                 .map(ResponseBuilder::ok)
                 .orElseGet(() -> ResponseBuilder.created(loginFacade.login(platformId, request.getPlatform())));
     }
-
-    private String getPlatformId(LoginRequest request) {
-        return switch (request.getPlatform()) {
-            case KAKAO -> kakaoLoginService.getKakaoPlatformId(request.getCode());
-            case APPLE -> appleLoginService.getApplePlatformId(request.getCode());
-        };
-    }
-
 }

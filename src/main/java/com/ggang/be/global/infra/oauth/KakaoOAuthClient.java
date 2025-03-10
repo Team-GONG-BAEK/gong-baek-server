@@ -39,13 +39,13 @@ public class KakaoOAuthClient implements OAuthClient {
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse -> {
                     log.error("카카오 API 요청 실패: {}", clientResponse.statusCode());
-                    throw new GongBaekException(ResponseError.INVALID_TOKEN);
+                    throw new GongBaekException(ResponseError.KAKAO_API_REQUEST_FAILED);
                 })
                 .bodyToMono(JsonNode.class)
                 .block();
 
         if (response == null || !response.has("id")) {
-            throw new GongBaekException(ResponseError.INVALID_TOKEN);
+            throw new GongBaekException(ResponseError.INVALID_KAKAO_AUTH_CODE);
         }
 
         log.info("카카오 로그인 응답: {}", response);
@@ -74,12 +74,12 @@ public class KakaoOAuthClient implements OAuthClient {
                     KAKAO_TOKEN_URL, HttpMethod.POST, request, Map.class);
 
             if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
-                throw new GongBaekException(ResponseError.INVALID_TOKEN);
+                throw new GongBaekException(ResponseError.INVALID_KAKAO_ACCESS_TOKEN);
             }
 
             return response.getBody().get(ACCESS_TOKEN).toString();
         } catch (Exception e) {
-            throw new GongBaekException(ResponseError.INVALID_TOKEN);
+            throw new GongBaekException(ResponseError.INVALID_KAKAO_ACCESS_TOKEN);
         }
     }
 

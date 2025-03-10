@@ -7,11 +7,11 @@ import com.ggang.be.infra.Auth;
 import com.ggang.be.infra.service.TokenParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 import java.util.Map;
 
@@ -32,13 +32,10 @@ public class AppleOAuthClient implements OAuthClient {
     private final static String REDIRECT_URI = "redirect_uri";
     private final static String ID_TOKEN = "id_token";
 
+    private final RestClient restClient = RestClient.create();
+
     public String getAccessToken(String authorizationCode) {
         log.info("애플 OAuth 토큰 요청 시작");
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(GRANT_TYPE, AUTHORIZATION_TOKEN);
@@ -47,18 +44,21 @@ public class AppleOAuthClient implements OAuthClient {
         params.add(CODE, authorizationCode);
         params.add(REDIRECT_URI, appleProperties.getRedirectUri());
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-
         try {
-            ResponseEntity<Map> response = restTemplate.exchange(
-                    APPLE_TOKEN_URL, HttpMethod.POST, request, Map.class);
+            Map response = restClient.post()
+                    .uri(APPLE_TOKEN_URL)
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .body(params)
+                    .retrieve()
+                    .body(Map.class);
 
-            if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
+            if (response == null || !response.containsKey(ID_TOKEN)) {
                 throw new GongBaekException(ResponseError.INVALID_APPLE_ID_TOKEN);
             }
 
-            log.info("애플 로그인 응답: {}", response.getBody());
-            return response.getBody().get(ID_TOKEN).toString();
+
+            log.info("애플 로그인 응답: {}", response);
+            return response.get(ID_TOKEN).toString();
         } catch (Exception e) {
             log.error("애플 액세스 토큰 요청 실패", e);
             throw new GongBaekException(ResponseError.INVALID_APPLE_ID_TOKEN);

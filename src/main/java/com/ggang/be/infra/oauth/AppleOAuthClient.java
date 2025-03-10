@@ -13,6 +13,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Map;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -33,33 +35,32 @@ public class AppleOAuthClient implements OAuthClient {
     public String getAccessToken(String authorizationCode) {
         log.info("애플 OAuth 토큰 요청 시작");
 
+        RestTemplate restTemplate = new RestTemplate();
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(GRANT_TYPE, AUTHORIZATION_TOKEN);
         params.add(CLIENT_ID, appleProperties.getClientId());
         params.add(CLIENT_SECRET, generateClientSecret());
-        params.add(GRANT_TYPE, AUTHORIZATION_TOKEN);
         params.add(CODE, authorizationCode);
         params.add(REDIRECT_URI, appleProperties.getRedirectUri());
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
         try {
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<JsonNode> response = restTemplate.exchange(
-                    APPLE_TOKEN_URL, HttpMethod.POST, request, JsonNode.class);
+            ResponseEntity<Map> response = restTemplate.exchange(
+                    APPLE_TOKEN_URL, HttpMethod.POST, request, Map.class);
 
             if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
-                log.error("애플 OAuth 토큰 요청 실패: {}", response.getStatusCode());
                 throw new GongBaekException(ResponseError.INVALID_APPLE_ID_TOKEN);
             }
 
-            log.info("✅ 애플 OAuth 토큰 요청 성공: {}", response.getBody());
-
-            return response.getBody().get(ID_TOKEN).asText();
+            log.info("애플 로그인 응답: {}", response.getBody());
+            return response.getBody().get(ID_TOKEN).toString();
         } catch (Exception e) {
-            log.error("애플 OAuth 토큰 요청 중 예외 발생", e);
+            log.error("애플 액세스 토큰 요청 실패", e);
             throw new GongBaekException(ResponseError.INVALID_APPLE_ID_TOKEN);
         }
     }

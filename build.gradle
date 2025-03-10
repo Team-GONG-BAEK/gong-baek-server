@@ -33,6 +33,15 @@ dependencyManagement {
     }
 }
 
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    from('src/main/resources/key') {
+        include '**/*.p8'
+        into 'key'
+    }
+}
+
 dependencies {
     //web
     implementation 'org.springframework.boot:spring-boot-starter-web'

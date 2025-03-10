@@ -10,6 +10,7 @@ import com.ggang.be.api.facade.SignupRequestFacade;
 import com.ggang.be.api.user.NicknameValidator;
 import com.ggang.be.api.user.dto.*;
 import com.ggang.be.api.user.service.UserService;
+import com.ggang.be.domain.constant.Platform;
 import com.ggang.be.domain.user.dto.UserSchoolDto;
 import com.ggang.be.global.jwt.JwtService;
 import com.ggang.be.global.jwt.TokenVo;
@@ -80,7 +81,7 @@ public class UserController {
         return ResponseBuilder.ok(jwtService.reIssueToken(refreshToken));
     }
 
-    @PostMapping("/login")
+    @PostMapping("/kakao/login")
     public ResponseEntity<ApiResponse<TokenVo>> socialLogin(@RequestBody final LoginRequest request) {
         String platformId = loginFacade.getPlatformId(request);
         return userService.getUserIdByPlatformAndPlatformId(request.getPlatform(), platformId)
@@ -88,4 +89,20 @@ public class UserController {
                 .map(ResponseBuilder::ok)
                 .orElseGet(() -> ResponseBuilder.created(loginFacade.login(platformId, request.getPlatform())));
     }
+
+    @PostMapping("/apple/login")
+    public ResponseEntity<ApiResponse<TokenVo>> socialLogin(
+            @RequestParam("code") String authorizationCode,
+            @RequestParam(value = "id_token", required = false) String idToken
+    ) {
+        log.info("Received authorizationCode: {}", authorizationCode);
+
+        String platformId = loginFacade.getPlatformId(new LoginRequest(Platform.APPLE, authorizationCode));
+
+        return userService.getUserIdByPlatformAndPlatformId(Platform.APPLE, platformId)
+                .map(userId -> loginFacade.login(platformId, Platform.APPLE))
+                .map(ResponseBuilder::ok)
+                .orElseGet(() -> ResponseBuilder.created(loginFacade.login(platformId, Platform.APPLE)));
+    }
+
 }

@@ -6,6 +6,7 @@ import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.constant.Platform;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.SaveUserSignUp;
+import com.ggang.be.domain.user.dto.UserProfile;
 import com.ggang.be.domain.user.dto.UserSchoolDto;
 import com.ggang.be.domain.user.infra.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,13 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new GongBaekException(ResponseError.USER_NOT_FOUND));
 
         return new UserSchoolDto(nickname, schoolName);
+    }
+
+    @Override
+    public UserProfile getUserInfoById(Long userId) {
+        return UserProfile.of(userRepository.findById(userId)
+                .orElseThrow(() -> new GongBaekException(ResponseError.USER_NOT_FOUND))
+        );
     }
 
     @Override

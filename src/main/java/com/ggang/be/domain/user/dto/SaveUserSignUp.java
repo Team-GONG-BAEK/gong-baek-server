@@ -8,6 +8,7 @@ import com.ggang.be.domain.school.SchoolEntity;
 public record SaveUserSignUp(Platform platform,
                              String platformUserId,
                              Integer profileImg,
+                             String email,
                              String nickname,
                              Mbti mbti,
                              String schoolMajorName,

@@ -52,6 +52,7 @@ public class UserServiceImpl implements UserService {
         UserEntity build = UserEntity.builder()
                 .platform(request.platform())
                 .platformId(request.platformUserId())
+                .email(request.email())
                 .nickname(request.nickname())
                 .school(request.school())
                 .gender(request.sex())
@@ -86,6 +87,15 @@ public class UserServiceImpl implements UserService {
     public Optional<Long> getUserIdByPlatformAndPlatformId(Platform platform, String platformId) {
         return Optional.ofNullable(userRepository.findByPlatformAndPlatformId(platform, platformId))
                 .map(UserEntity::getId);
+    }
+
+    @Override
+    public void checkDuplicatedEmail(String email) {
+        Optional<UserEntity> userOptional = userRepository.findByEmail(email);
+        if (userOptional.isPresent()) {
+            log.debug("MemberServiceImpl.checkDuplicatedEmail exception occur email: {}", email);
+            throw new GongBaekException(ResponseError.USERNAME_ALREADY_EXISTS);
+        }
     }
 }
 

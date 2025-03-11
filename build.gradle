@@ -23,6 +23,25 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    set('springCloudVersion', "2021.0.4")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    from('src/main/resources/key') {
+        include '**/*.p8'
+        into 'key'
+    }
+}
+
 dependencies {
     //web
     implementation 'org.springframework.boot:spring-boot-starter-web'

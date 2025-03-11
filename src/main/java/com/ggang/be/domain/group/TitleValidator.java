@@ -16,7 +16,7 @@ public class TitleValidator {
             log.error("그룹 제목에 엔터가 들어갔습니다.");
             throw new GongBaekException(ResponseError.BAD_REQUEST);
         }
-        if(!LengthValidator.rangelengthCheck(title, 2, 20)) {
+        if(!LengthValidator.rangeLengthCheck(title, 2, 20)) {
             log.error("그룹 제목 길이 검증에 실패하였습니다.");
             throw new GongBaekException(ResponseError.BAD_REQUEST);
         }

@@ -28,8 +28,6 @@ public interface OnceGroupService {
 
     void deleteOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);
 
-    void deleteComment(UserEntity currentUser, CommentEntity commentEntity, final long groupId);
-
     ReadOnceGroup getActiveOnceGroups(UserEntity currentUser, Category category);
 
     void validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);

@@ -42,17 +42,6 @@ public class OnceGroupCommentStrategy implements CommentStrategy {
     }
 
     @Override
-    public void deleteComment(UserEntity findUserEntity, DeleteCommentRequest dto) {
-        OnceGroupEntity onceGroup = onceGroupService.findOnceGroupEntityByGroupId(dto.groupId());
-        CommentEntity comment = onceGroup.getComments().stream()
-                .filter(c -> c.getId().equals(dto.commentId()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
-
-        onceGroupService.deleteComment(findUserEntity, comment, dto.groupId());
-    }
-
-    @Override
     public ReadCommentResponse readComment(
             UserEntity findUserEntity, boolean isPublic, ReadCommentRequest dto
     ) {

@@ -102,10 +102,6 @@ public class OnceGroupEntity extends BaseTimeEntity {
         this.comments.add(commentEntity);
     }
 
-    public void deleteComment(CommentEntity commentEntity) {
-        this.comments.remove(commentEntity);
-    }
-
     public void addCurrentPeopleCount() {
         this.currentPeopleCount++;
         checkCurrentStatus(this.currentPeopleCount, this.maxPeopleCount);

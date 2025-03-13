@@ -11,4 +11,6 @@ public interface CommentStrategy {
     boolean supports(GroupType groupType);
 
     WriteCommentResponse writeComment(final long userId, WriteCommentRequest dto, WriteCommentEntityDto from);
+
+    void deleteComment(UserEntity findUserEntity, DeleteCommentRequest dto);
 }

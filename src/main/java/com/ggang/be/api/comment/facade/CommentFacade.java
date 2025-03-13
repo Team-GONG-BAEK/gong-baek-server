@@ -40,4 +40,12 @@ public class CommentFacade {
         return commentStrategy.readComment(findUserEntity, isPublic, dto);
     }
 
+    @Transactional
+    public void deleteComment(long userId, DeleteCommentRequest dto) {
+        UserEntity findUserEntity = userService.getUserById(userId);
+        CommentStrategy commentStrategy = commentStrategyRegistry.getCommentGroupStrategy(dto.groupType());
+
+        commentStrategy.deleteComment(findUserEntity, dto);
+    }
+
 }

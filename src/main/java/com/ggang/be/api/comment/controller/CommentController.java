@@ -1,9 +1,6 @@
 package com.ggang.be.api.comment.controller;
 
-import com.ggang.be.api.comment.dto.ReadCommentRequest;
-import com.ggang.be.api.comment.dto.ReadCommentResponse;
-import com.ggang.be.api.comment.dto.WriteCommentRequest;
-import com.ggang.be.api.comment.dto.WriteCommentResponse;
+import com.ggang.be.api.comment.dto.*;
 import com.ggang.be.api.comment.facade.CommentFacade;
 import com.ggang.be.api.common.ApiResponse;
 import com.ggang.be.api.common.ResponseBuilder;
@@ -41,6 +38,17 @@ public class CommentController {
         ReadCommentRequest dto = new ReadCommentRequest(groupId, groupType);
 
         return ResponseBuilder.ok(commentFacade.readComment(userId, isPublic, dto));
+    }
+
+    @DeleteMapping("/comment")
+    public ResponseEntity<ApiResponse<Void>> writeComment(
+            @RequestHeader("Authorization") final String token,
+            @RequestBody @Valid final DeleteCommentRequest dto
+    ) {
+        Long userId = jwtService.parseTokenAndGetUserId(token);
+        commentFacade.deleteComment(userId, dto);
+
+        return ResponseBuilder.ok(null);
     }
 
 }

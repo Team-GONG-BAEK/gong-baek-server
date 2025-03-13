@@ -35,6 +35,17 @@ public class EveryGroupCommentStrategy implements CommentStrategy {
     }
 
     @Override
+    public void deleteComment(UserEntity findUserEntity, DeleteCommentRequest dto) {
+        EveryGroupEntity everyGroup = everyGroupService.findEveryGroupEntityByGroupId(dto.groupId());
+        CommentEntity comment = everyGroup.getComments().stream()
+                .filter(c -> c.getId().equals(dto.commentId()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+
+        // everyGroup.getComments().remove(comment);
+        everyGroupService.deleteComment(findUserEntity, comment, dto.groupId());
+    }
+    @Override
     public ReadCommentResponse readComment(UserEntity findUserEntity, boolean isPublic, ReadCommentRequest dto) {
         EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(dto.groupId());
         sameSchoolValidator.isUserReadMySchoolEveryGroup(findUserEntity, everyGroupEntity);

@@ -1,7 +1,10 @@
 package com.ggang.be.domain.comment.application;
 
+import com.ggang.be.api.comment.dto.DeleteCommentRequest;
 import com.ggang.be.api.comment.dto.WriteCommentRequest;
 import com.ggang.be.api.comment.service.CommentService;
+import com.ggang.be.api.common.ResponseError;
+import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.comment.infra.CommentRepository;
 import com.ggang.be.domain.user.UserEntity;
@@ -23,6 +26,15 @@ public class CommentServiceImpl implements CommentService {
             .isPublic(dto.isPublic())
             .body(dto.body())
             .build());
+    }
+
+    @Transactional
+    @Override
+    public void deleteComment(DeleteCommentRequest dto) {
+        commentRepository.findById(dto.commentId())
+                .orElseThrow(() -> new GongBaekException(ResponseError.COMMENT_NOT_FOUND));
+
+        commentRepository.deleteById(dto.commentId());
     }
 
 }

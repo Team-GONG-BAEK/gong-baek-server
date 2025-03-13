@@ -27,8 +27,9 @@ public class MailFacade {
     private static final String AUTH_CODE_PREFIX = "AuthCode ";
     private static final String EMAIL_TITLE = "공백 학교 이메일 인증 안내";
 
-    public void sendCodeToEmail(String toEmail) {
+    public void sendCodeToEmail(String toEmail, String schoolName) {
         userService.checkDuplicatedEmail(toEmail);
+        verifyDomain(toEmail, schoolName);
         String authCode = mailService.createCode();
         mailService.sendEmail(toEmail, EMAIL_TITLE, authCode);
 
@@ -41,16 +42,20 @@ public class MailFacade {
         String redisKey = AUTH_CODE_PREFIX + email;
         String redisAuthCode = redisService.getValue(redisKey);
 
+        verifyDomain(email, schoolName);
+
+        if (redisAuthCode == null || !redisService.checkExistsValue(redisKey) || !redisAuthCode.equals(authCode)) {
+            throw new GongBaekException(ResponseError.INVALID_INPUT_VALUE);
+        }
+    }
+
+    private void verifyDomain(String email, String schoolName) {
         String schoolDomain = schoolService.findSchoolDomainByName(schoolName);
         String[] emailDomain = email.substring(email.indexOf("@") + 1).split("\\.");
 
         if (!Arrays.asList(emailDomain).contains(schoolDomain)) {
             log.info("schoolDomain: {}, emailDomainParts: {}", schoolDomain, Arrays.toString(emailDomain));
             throw new GongBaekException(ResponseError.INVALID_EMAIL_DOMAIN);
-        }
-
-        if (redisAuthCode == null || !redisService.checkExistsValue(redisKey) || !redisAuthCode.equals(authCode)) {
-            throw new GongBaekException(ResponseError.INVALID_INPUT_VALUE);
         }
     }
 }

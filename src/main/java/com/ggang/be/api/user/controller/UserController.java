@@ -109,9 +109,10 @@ public class UserController {
 
     @PostMapping("/emails/verification-requests")
     public ResponseEntity<ApiResponse<Void>> sendMessage(
-            @RequestParam("email") String email
-    ) {
-        mailFacade.sendCodeToEmail(email);
+            @RequestParam("email") String email,
+            @RequestParam("schoolName") String schoolName
+            ) {
+        mailFacade.sendCodeToEmail(email, schoolName);
 
         return ResponseBuilder.created(null);
     }

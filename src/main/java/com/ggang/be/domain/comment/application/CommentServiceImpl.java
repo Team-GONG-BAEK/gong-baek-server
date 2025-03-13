@@ -1,6 +1,5 @@
 package com.ggang.be.domain.comment.application;
 
-import com.ggang.be.api.comment.dto.DeleteCommentRequest;
 import com.ggang.be.api.comment.dto.WriteCommentRequest;
 import com.ggang.be.api.comment.service.CommentService;
 import com.ggang.be.api.common.ResponseError;
@@ -28,13 +27,18 @@ public class CommentServiceImpl implements CommentService {
             .build());
     }
 
-    @Transactional
     @Override
-    public void deleteComment(DeleteCommentRequest dto) {
-        commentRepository.findById(dto.commentId())
+    @Transactional
+    public void deleteComment(final long commentId) {
+        commentRepository.findById(commentId)
                 .orElseThrow(() -> new GongBaekException(ResponseError.COMMENT_NOT_FOUND));
 
-        commentRepository.deleteById(dto.commentId());
+        commentRepository.deleteById(commentId);
     }
 
+    @Override
+    public CommentEntity findById(final long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new GongBaekException(ResponseError.COMMENT_NOT_FOUND));
+    }
 }

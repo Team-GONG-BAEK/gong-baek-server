@@ -41,14 +41,13 @@ public class CommentController {
     }
 
     @DeleteMapping("/comment")
-    public ResponseEntity<ApiResponse<Void>> writeComment(
+    public ResponseEntity<ApiResponse<Void>> deleteComment(
             @RequestHeader("Authorization") final String token,
             @RequestBody @Valid final DeleteCommentRequest dto
     ) {
         Long userId = jwtService.parseTokenAndGetUserId(token);
-        commentFacade.deleteComment(userId, dto);
+        commentFacade.deleteComment(userId, dto.commentId());
 
         return ResponseBuilder.ok(null);
     }
-
 }

@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 public class LengthValidator {
     private final static Pattern emojiPattern = Pattern.compile("\\X");
 
-    public static boolean rangelengthCheck(final String value, final int minLength, final int maxLength){
+    public static boolean rangeLengthCheck(final String value, final int minLength, final int maxLength){
         Matcher matcher = emojiPattern.matcher(value);
         long count = matcher.results().count();
         log.info("now value is : {}", value);

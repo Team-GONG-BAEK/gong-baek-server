@@ -1,7 +1,5 @@
 package com.ggang.be.global.util;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,7 +15,7 @@ class LengthValidatorTest {
         int minLength = 3;
         int maxLength = 7;
         //when & then
-        Assertions.assertThat(LengthValidator.rangelengthCheck(testCase, minLength, maxLength)).isTrue();
+        Assertions.assertThat(LengthValidator.rangeLengthCheck(testCase, minLength, maxLength)).isTrue();
     }
 
     @ParameterizedTest
@@ -28,7 +26,7 @@ class LengthValidatorTest {
         int minLength = 3;
         int maxLength = 7;
         //when & then
-        Assertions.assertThat(LengthValidator.rangelengthCheck(testCase, minLength, maxLength)).isFalse();
+        Assertions.assertThat(LengthValidator.rangeLengthCheck(testCase, minLength, maxLength)).isFalse();
     }
 
     @ParameterizedTest

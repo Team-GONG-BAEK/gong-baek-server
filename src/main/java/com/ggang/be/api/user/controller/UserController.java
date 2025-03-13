@@ -5,6 +5,7 @@ import com.ggang.be.api.common.ResponseBuilder;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.facade.LoginFacade;
+import com.ggang.be.api.facade.MailFacade;
 import com.ggang.be.api.facade.SignUpFacade;
 import com.ggang.be.api.facade.SignupRequestFacade;
 import com.ggang.be.api.user.NicknameValidator;
@@ -29,6 +30,7 @@ public class UserController {
     private final LoginFacade loginFacade;
     private final SignupRequestFacade signupRequestFacade;
     private final JwtService jwtService;
+    private final MailFacade mailFacade;
 
     private final static int INTRODUCTION_MIN_LENGTH = 20;
     private final static int INTRODUCTION_MAX_LENGTH = 100;
@@ -93,5 +95,24 @@ public class UserController {
                 .map(userId -> loginFacade.login(platformId, request.getPlatform()))
                 .map(ResponseBuilder::ok)
                 .orElseGet(() -> ResponseBuilder.created(loginFacade.login(platformId, request.getPlatform())));
+    }
+
+    @PostMapping("/emails/verification-requests")
+    public ResponseEntity<ApiResponse<Void>> sendMessage(
+            @RequestParam("email") String email
+    ) {
+        mailFacade.sendCodeToEmail(email);
+
+        return ResponseBuilder.created(null);
+    }
+
+    @GetMapping("/emails/verifications")
+    public ResponseEntity<ApiResponse<Void>> verificationEmail(
+            @RequestParam("email") String email,
+            @RequestParam("code") String authCode
+    ) {
+        mailFacade.verifiedCode(email, authCode);
+
+        return ResponseBuilder.ok(null);
     }
 }

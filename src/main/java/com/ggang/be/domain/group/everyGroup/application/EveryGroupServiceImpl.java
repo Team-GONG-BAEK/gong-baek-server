@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -152,6 +153,17 @@ public class EveryGroupServiceImpl implements EveryGroupService {
 
     @Override
     @Transactional
+    public void deleteComment(UserEntity currentUser, CommentEntity commentEntity, final long groupId) {
+        validateDeleteComment(currentUser, commentEntity);
+
+        everyGroupRepository.findById(groupId)
+                .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_NOT_FOUND))
+                .deleteComment(commentEntity);
+        log.info("everyGroupEntity delete Comment success CommentId was  : {}", commentEntity.getId());
+    }
+
+    @Override
+    @Transactional
     public void validateApplyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
         validateAlreadyApplied(currentUser, everyGroupEntity);
         validateHostAccess(currentUser, everyGroupEntity);
@@ -175,6 +187,11 @@ public class EveryGroupServiceImpl implements EveryGroupService {
 
     private void validateDeleteEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
         if (!everyGroupEntity.isHost(currentUser))
+            throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
+    }
+
+    private void validateDeleteComment(UserEntity currentUser, CommentEntity commentEntity) {
+        if (!Objects.equals(commentEntity.getUserEntity().getId(), currentUser.getId()))
             throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
     }
 

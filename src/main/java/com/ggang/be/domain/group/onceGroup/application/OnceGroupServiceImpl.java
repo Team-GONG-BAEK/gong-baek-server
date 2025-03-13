@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -139,6 +140,17 @@ public class OnceGroupServiceImpl implements OnceGroupService {
 
     @Override
     @Transactional
+    public void deleteComment(UserEntity currentUser, CommentEntity commentEntity, final long groupId) {
+        validateDeleteComment(currentUser, commentEntity);
+
+        onceGroupRepository.findById(groupId)
+                .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_NOT_FOUND))
+                .deleteComment(commentEntity);
+        log.info("onceGroupEntity delete Comment success CommentId was  : {}", commentEntity.getId());
+    }
+
+    @Override
+    @Transactional
     public void validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity){
         validateAlreadyApplied(currentUser, onceGroupEntity);
         validateHostAccess(currentUser, onceGroupEntity);
@@ -164,6 +176,11 @@ public class OnceGroupServiceImpl implements OnceGroupService {
 
     private void validateDeleteOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity) {
         if (!onceGroupEntity.isHost(currentUser))
+            throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
+    }
+
+    private void validateDeleteComment(UserEntity currentUser, CommentEntity commentEntity) {
+        if (!Objects.equals(commentEntity.getUserEntity().getId(), currentUser.getId()))
             throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
     }
 

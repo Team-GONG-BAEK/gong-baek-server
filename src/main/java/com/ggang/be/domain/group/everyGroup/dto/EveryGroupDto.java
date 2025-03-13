@@ -1,7 +1,6 @@
 package com.ggang.be.domain.group.everyGroup.dto;
 
 import com.ggang.be.domain.constant.Category;
-import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
@@ -10,7 +9,6 @@ public record EveryGroupDto(
         long groupId,
         String title,
         String location,
-        Status status,
         int currentPeopleCount,
         int maxPeopleCount,
         boolean isHost,
@@ -25,7 +23,6 @@ public record EveryGroupDto(
                 entity.getId(),
                 entity.getTitle(),
                 entity.getLocation(),
-                entity.getStatus(),
                 entity.getCurrentPeopleCount(),
                 entity.getMaxPeopleCount(),
                 entity.isHost(currentUser),

@@ -1,7 +1,6 @@
 package com.ggang.be.domain.group.onceGroup.dto;
 
 import com.ggang.be.domain.constant.Category;
-import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
@@ -11,7 +10,6 @@ public record OnceGroupDto(
     long groupId,
     String groupTitle,
     String location,
-    Status status,
     int currentPeopleCount,
     int maxPeopleCount,
     boolean isHost,
@@ -29,7 +27,6 @@ public record OnceGroupDto(
             entity.getId(),
             entity.getTitle(),
             entity.getLocation(),
-            entity.getStatus(),
             entity.getCurrentPeopleCount(),
             entity.getMaxPeopleCount(),
             entity.isHost(currentUser),

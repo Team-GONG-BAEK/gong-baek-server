@@ -33,11 +33,8 @@ public class GroupController {
             @RequestParam("groupType") GroupType groupType
     ) {
         Long userId = jwtService.parseTokenAndGetUserId(accessToken);
-        GroupRequest groupRequestDto = new GroupRequest(groupId, groupType);
 
-        GroupResponse groupResponseDto = groupFacade.getGroupInfo(
-                groupRequestDto.groupType(), groupRequestDto.groupId(), userId
-        );
+        GroupResponse groupResponseDto = groupFacade.getGroupInfo(groupType, groupId, userId);
         return ResponseEntity.ok(ApiResponse.success(ResponseSuccess.OK, groupResponseDto));
     }
 
@@ -48,10 +45,9 @@ public class GroupController {
             @RequestParam("groupType") GroupType groupType
     ){
         jwtService.isValidToken(accessToken);
-        GroupRequest groupRequestDto = new GroupRequest(groupId, groupType);
 
         GroupUserInfoResponseDto groupUserInfoResponseDto = GroupUserInfoResponseDto.of(
-                groupFacade.getGroupUserInfo(groupRequestDto.groupType(), groupRequestDto.groupId()));
+                groupFacade.getGroupUserInfo(groupType, groupId));
 
         return ResponseEntity.ok(ApiResponse.success(ResponseSuccess.OK, groupUserInfoResponseDto));
     }

@@ -20,7 +20,7 @@ public class LocationValidator {
             log.error("그룹 장소글 패턴 검증에 실패하였습니다.");
             throw new GongBaekException(ResponseError.BAD_REQUEST);
         }
-        if(!LengthValidator.rangelengthCheck(value, 2, 20)) {
+        if (!LengthValidator.rangeLengthCheck(value, 2, 20)) {
             log.error("그룹 장소글 길이 검증에 실패하였습니다.");
             throw new GongBaekException(ResponseError.BAD_REQUEST);
         }

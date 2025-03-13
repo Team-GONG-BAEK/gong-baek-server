@@ -11,7 +11,6 @@ import com.ggang.be.api.facade.SignupRequestFacade;
 import com.ggang.be.api.user.NicknameValidator;
 import com.ggang.be.api.user.dto.*;
 import com.ggang.be.api.user.service.UserService;
-import com.ggang.be.domain.user.dto.UserSchoolDto;
 import com.ggang.be.global.jwt.JwtService;
 import com.ggang.be.global.jwt.TokenVo;
 import com.ggang.be.global.util.LengthValidator;
@@ -32,12 +31,12 @@ public class UserController {
     private final JwtService jwtService;
     private final MailFacade mailFacade;
 
-    private final static int INTRODUCTION_MIN_LENGTH = 20;
+    private final static int INTRODUCTION_MIN_LENGTH = 0;
     private final static int INTRODUCTION_MAX_LENGTH = 100;
 
     @PostMapping("/user/validate/introduction")
     public ResponseEntity<ApiResponse<Void>> validateIntroduction(@RequestBody final ValidIntroductionRequest dto) {
-        if(LengthValidator.rangelengthCheck(dto.introduction(), INTRODUCTION_MIN_LENGTH, INTRODUCTION_MAX_LENGTH))
+        if(LengthValidator.rangeLengthCheck(dto.introduction(), INTRODUCTION_MIN_LENGTH, INTRODUCTION_MAX_LENGTH))
             return ResponseBuilder.ok(null);
         throw new GongBaekException(ResponseError.INVALID_INPUT_LENGTH);
     }
@@ -68,12 +67,23 @@ public class UserController {
   
     @GetMapping("/user/home/profile")
     public ResponseEntity<ApiResponse<UserSchoolResponseDto>> getGroupInfo(
-            @RequestHeader("Authorization") final String accessToken
+            @RequestHeader("Authorization") String accessToken
     ) {
         Long userId = jwtService.parseTokenAndGetUserId(accessToken);
-        UserSchoolDto userSchoolDto = userService.getUserSchoolById(userId);
 
-        return ResponseBuilder.ok(UserSchoolResponseDto.of(userSchoolDto));
+        return ResponseBuilder.ok(
+                UserSchoolResponseDto.of(userService.getUserSchoolById(userId))
+        );
+    }
+
+    @GetMapping("/user/my/profile")
+    public ResponseEntity<ApiResponse<UserProfileResponse>> getUserProfile(
+            @RequestHeader("Authorization") String accessToken
+    ) {
+        Long userId = jwtService.parseTokenAndGetUserId(accessToken);
+        return ResponseBuilder.ok(
+                UserProfileResponse.of(userService.getUserInfoById(userId))
+        );
     }
 
     @PatchMapping("/reissue/token")
@@ -84,7 +94,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<TokenVo>> login(
-            @RequestHeader(value = "Authorization") String authorization,
+            @RequestHeader("Authorization") String authorization,
             @RequestBody final LoginRequest request
     ) {
         log.info("소셜 로그인 요청 - Platform: {}, Code: {}", request.getPlatform(), authorization);

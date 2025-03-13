@@ -119,9 +119,10 @@ public class UserController {
     @GetMapping("/emails/verifications")
     public ResponseEntity<ApiResponse<Void>> verificationEmail(
             @RequestParam("email") String email,
+            @RequestParam("schoolName") String schoolName,
             @RequestParam("code") String authCode
     ) {
-        mailFacade.verifiedCode(email, authCode);
+        mailFacade.verifiedCode(email, schoolName, authCode);
 
         return ResponseBuilder.ok(null);
     }

@@ -12,4 +12,7 @@ public interface SchoolRepository extends JpaRepository<SchoolEntity, Long> {
     List<SchoolEntity> findContainingSearchKeyword(String searchKeyword);
 
     Optional<SchoolEntity> findBySchoolName(String schoolName);
+
+    @Query("SELECT s.schoolDomain FROM school s WHERE s.schoolName = :schoolName")
+    Optional<String> findDomainBySchoolName(String schoolName);
 }

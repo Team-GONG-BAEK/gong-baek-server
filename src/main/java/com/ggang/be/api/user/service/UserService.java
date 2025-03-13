@@ -26,4 +26,6 @@ public interface UserService {
     boolean findByPlatformAndPlatformId(Platform platform, String platformId);
 
     Optional<Long> getUserIdByPlatformAndPlatformId(Platform platform, String platformId);
+
+    void checkDuplicatedEmail(String email);
 }

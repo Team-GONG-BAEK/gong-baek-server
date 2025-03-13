@@ -70,6 +70,7 @@ class UserServiceImplTest {
                 Platform.KAKAO,
                 "dasff",
             1,
+            "guswlsdl04@gmail.com",
             "nickname",
             Mbti.INFJ,
             "computer science",

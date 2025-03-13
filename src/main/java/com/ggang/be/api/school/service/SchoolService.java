@@ -11,4 +11,6 @@ public interface SchoolService {
     School findSchoolByName(String schoolName);
 
     SchoolEntity findSchoolEntityByName(String schoolName);
+
+    String findSchoolDomainByName(String schoolName);
 }

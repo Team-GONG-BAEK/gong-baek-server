@@ -10,6 +10,7 @@ import com.ggang.be.domain.user.dto.SaveUserSignUp;
 import java.util.List;
 
 public record SignUpRequest(Platform platform,
+        String email,
         Integer profileImg,
                             String nickname,
                             Mbti mbti,
@@ -26,6 +27,7 @@ public record SignUpRequest(Platform platform,
                 request.platform(),
                 platformUserId,
                 request.profileImg(),
+                request.email(),
                 request.nickname(),
                 request.mbti(),
                 request.schoolMajor(),

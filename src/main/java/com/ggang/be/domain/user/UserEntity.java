@@ -37,6 +37,9 @@ public class UserEntity extends BaseTimeEntity {
     @Column(nullable = false, unique = true)
     private String platformId;
 
+    @Column(nullable = false)
+    private String email;
+
     @OneToMany(mappedBy = "userEntity")
     private List<UserOnceGroupEntity> userOnceGroupEntites;
 
@@ -84,10 +87,11 @@ public class UserEntity extends BaseTimeEntity {
     }
 
     @Builder
-    private UserEntity(Platform platform, String platformId, SchoolEntity school, String schoolMajorName, int profileImg, String nickname,
+    private UserEntity(Platform platform, String platformId, String email, SchoolEntity school, String schoolMajorName, int profileImg, String nickname,
                        int enterYear, Mbti mbti, Gender gender, String introduction) {
         this.platform = platform;
         this.platformId = platformId;
+        this.email = email;
         this.school = school;
         this.schoolMajorName = schoolMajorName;
         this.profileImg = profileImg;

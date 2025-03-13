@@ -29,6 +29,7 @@ public enum ResponseError {
     APPLE_ID_TOKEN_MISSING_SUB(4015, "유효하지 않은 애플 idToken 입니다."),
     INVALID_KAKAO_ACCESS_TOKEN(4016, "유효하지 않은 카카오 액세스 토큰입니다."),
     KAKAO_API_REQUEST_FAILED(4017, "카카오 API 요청에 실패했습니다."),
+    INVALID_EMAIL_DOMAIN(4018, "이메일의 도메인 값이 올바르지 않습니다."),
 
     // 404 Not Found
     NOT_FOUND(4040, "대상을 찾을 수 없습니다."),

@@ -47,20 +47,20 @@ public class JwtServiceTest {
         Long userId = 1L;
 
         String token = Jwts.builder()
-            .subject(userId.toString())
-            .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
-            .claim("userId", userId)
-            .signWith(secretKey)
-            .compact();
+                .subject(userId.toString())
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
+                .claim("userId", userId)
+                .signWith(secretKey)
+                .compact();
 
-            //when && then
-            Jws<Claims> x = Jwts.parser().verifyWith(secretKey).build()
-                    .parseSignedClaims(token);
-                String parsedUserId = x.getPayload().get("userId").toString();
+        //when && then
+        Jws<Claims> x = Jwts.parser().verifyWith(secretKey).build()
+                .parseSignedClaims(token);
+        String parsedUserId = x.getPayload().get("userId").toString();
         Date expiration = x.getPayload().getExpiration();
         Assertions.assertThat(expiration).isAfter(new Date());
         Assertions.assertThat(Long.parseLong(parsedUserId)).isEqualTo(userId);
-        }
+    }
 
     @Test
     @DisplayName("토큰 재발급 테스트")
@@ -70,20 +70,21 @@ public class JwtServiceTest {
         SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         Long userId = 1L;
         UserEntity fixture = UserEntityFixture.create();
+        fixture.updateRefreshToken("mockedRefreshToken");
 
         Date date = new Date(System.currentTimeMillis() + 86400000000L);
         String token = Jwts.builder()
-            .subject(userId.toString())
-            .expiration(date)
-            .claim("userId", userId)
-            .signWith(secretKey)
-            .compact();
+                .subject(userId.toString())
+                .expiration(date)
+                .claim("userId", userId)
+                .signWith(secretKey)
+                .compact();
 
         when(jwtProperties.getKey()).thenReturn(secret);
         when(userService.getUserById(userId)).thenReturn(fixture);
         doNothing().when(userService).validateRefreshToken(fixture, token);
 
-       String accessToken = jwtService.createAccessToken(userId);
+        String accessToken = jwtService.createAccessToken(userId);
         String refreshToken = jwtService.createRefreshToken(userId);
         String addBearerPrefix = "Bearer " + token;
 

@@ -12,7 +12,7 @@ public class NicknameValidator {
     private static final Pattern koreanPattern = Pattern.compile("^[가-힣]+$");
 
     public static void validate(String nickname){
-        if(!LengthValidator.rangelengthCheck(nickname, MIN_LENGTH, MAX_LENGTH))
+        if(!LengthValidator.rangeLengthCheck(nickname, MIN_LENGTH, MAX_LENGTH))
             throw new GongBaekException(ResponseError.BAD_REQUEST);
         if(!koreanPattern.matcher(nickname).find())
             throw new GongBaekException(ResponseError.BAD_REQUEST);

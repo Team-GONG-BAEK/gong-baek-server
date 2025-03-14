@@ -1,17 +1,13 @@
 package com.ggang.be.domain.user.application;
 
-import static org.hamcrest.Matchers.any;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.domain.constant.Gender;
 import com.ggang.be.domain.constant.Mbti;
+import com.ggang.be.domain.constant.Platform;
 import com.ggang.be.domain.school.SchoolEntity;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.SaveUserSignUp;
 import com.ggang.be.domain.user.infra.UserRepository;
-import jakarta.validation.constraints.Max;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +16,8 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
@@ -69,11 +67,13 @@ class UserServiceImplTest {
         SchoolEntity school = SchoolEntity.builder().schoolName("school").build();
 
         SaveUserSignUp request = new SaveUserSignUp(
+                Platform.KAKAO,
+                "dasff",
             1,
+            "guswlsdl04@gmail.com",
             "nickname",
-            Mbti.INFJ, // schoolGrade
+            Mbti.INFJ,
             "computer science",
-            4,
             2024,
             "hello",
             Gender.MAN,
@@ -83,7 +83,6 @@ class UserServiceImplTest {
         UserEntity expectedUserEntity = UserEntity.builder()
             .nickname("nickname")
             .school(school)
-            .schoolGrade(3)
             .gender(Gender.MAN)
             .introduction("introduction")
             .mbti(Mbti.INFJ)

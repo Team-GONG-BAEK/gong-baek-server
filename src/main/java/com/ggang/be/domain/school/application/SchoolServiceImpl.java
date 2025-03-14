@@ -37,4 +37,10 @@ public class SchoolServiceImpl implements SchoolService {
         return schoolRepository.findBySchoolName(schoolName)
             .orElseThrow(() -> new GongBaekException(ResponseError.NOT_FOUND));
     }
+
+    @Override
+    public String findSchoolDomainByName(String schoolName) {
+        return schoolRepository.findDomainBySchoolName(schoolName)
+                .orElseThrow(() -> new GongBaekException(ResponseError.NOT_FOUND));
+    }
 }

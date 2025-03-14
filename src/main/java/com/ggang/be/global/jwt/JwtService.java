@@ -1,9 +1,12 @@
 package com.ggang.be.global.jwt;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.user.UserEntity;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -21,6 +24,9 @@ import java.util.Date;
 @Slf4j
 public class JwtService {
     private static final String USER_ID = "userId";
+    private static final String PLATFROM_ID = "platformId";
+    private static final String BEARER = "Bearer ";
+    private static final ObjectMapper objectMapper = new ObjectMapper();
     private final JwtProperties jwtProperties;
     private final UserService userService;
 
@@ -38,6 +44,27 @@ public class JwtService {
         SecretKey secretKey = getSecretKey();
         return buildRefreshToken(userId, secretKey);
     }
+
+    public String createTempAccessToken(final String platformId) {
+        SecretKey secretKey = getSecretKey();
+        return Jwts.builder()
+                .subject(platformId)
+                .expiration(new Date(System.currentTimeMillis() + jwtProperties.getAccessExpiration()))
+                .claim(PLATFROM_ID, platformId)
+                .signWith(secretKey)
+                .compact();
+    }
+
+    public String createTempRefreshToken(final String platformId) {
+        SecretKey secretKey = getSecretKey();
+        return Jwts.builder()
+                .subject(platformId)
+                .expiration(new Date(System.currentTimeMillis() + jwtProperties.getRefreshExpiration()))
+                .claim(PLATFROM_ID, platformId)
+                .signWith(secretKey)
+                .compact();
+    }
+
 
     private String buildRefreshToken(Long userId, SecretKey secretKey) {
         return Jwts.builder()
@@ -71,7 +98,7 @@ public class JwtService {
         try {
             String splitToken = token.split(" ")[1];
             SecretKey secretKey = getSecretKey();
-            return Long.parseLong(parseTokenAndGetUserId(secretKey, splitToken));
+            return parseTokenAndGetUserId(secretKey, splitToken);
         } catch (JwtException | NumberFormatException e) {
             log.error("JWT parsing error : {}", e.getMessage());
             throw new GongBaekException(ResponseError.INVALID_TOKEN);
@@ -79,10 +106,53 @@ public class JwtService {
 
     }
 
-    private String parseTokenAndGetUserId(SecretKey secretKey, String splitToken) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(splitToken)
-            .getPayload().get(USER_ID).toString();
+    private Long parseTokenAndGetUserId(SecretKey secretKey, String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        if (!claims.containsKey(USER_ID)) {
+            log.error("잘못된 accessToken: userId 없음.");
+            throw new GongBaekException(ResponseError.INVALID_TOKEN);
+        }
+
+        try {
+            Object userIdObject = claims.get(USER_ID);
+            if (userIdObject instanceof Number) {
+                return ((Number) userIdObject).longValue();
+            } else {
+                throw new GongBaekException(ResponseError.INVALID_TOKEN);
+            }
+        } catch (Exception e) {
+            log.error("userId 변환 오류: {}", e.getMessage());
+            throw new GongBaekException(ResponseError.INVALID_TOKEN);
+        }
     }
+
+
+    public String extractPlatformUserIdFromToken(String token) {
+        try {
+            String splitToken = token.split(" ")[1];
+            SecretKey secretKey = getSecretKey();
+            return parseTokenAndGetPlatformUserId(secretKey, splitToken);
+        } catch (JwtException e) {
+            log.error("JWT parsing error: {}", e.getMessage());
+            throw new GongBaekException(ResponseError.INVALID_TOKEN);
+        }
+    }
+
+    private String parseTokenAndGetPlatformUserId(SecretKey secretKey, String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get(PLATFROM_ID)
+                .toString();
+    }
+
 
     private SecretKey getSecretKey() {
         return Keys.hmacShaKeyFor(
@@ -91,7 +161,7 @@ public class JwtService {
 
 
     public void isValidToken(String token) {
-        if (token == null || !token.startsWith("Bearer ")) {
+        if (token == null || !token.startsWith(BEARER)) {
             throw new GongBaekException(ResponseError.INVALID_TOKEN);
         }
 
@@ -99,10 +169,19 @@ public class JwtService {
             String splitToken = token.split(" ")[1];
             SecretKey secretKey = getSecretKey();
 
-            Long.parseLong(parseTokenAndGetUserId(secretKey, splitToken));
+            parseTokenAndGetUserId(secretKey, splitToken);
         } catch (JwtException | NumberFormatException e) {
             log.error("JWT parsing error : {}", e.getMessage());
             throw new GongBaekException(ResponseError.INVALID_TOKEN);
+        }
+    }
+
+    public static JsonNode parseJson(String jsonString) {
+        try {
+            return objectMapper.readTree(jsonString);
+        } catch (Exception e) {
+            log.error("JSON 파싱 실패", e);
+            throw new IllegalArgumentException("JSON 파싱에 실패했습니다.");
         }
     }
 }

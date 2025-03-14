@@ -4,12 +4,16 @@ import com.ggang.be.api.comment.dto.*;
 import com.ggang.be.api.comment.registry.CommentStrategy;
 import com.ggang.be.api.comment.registry.CommentStrategyRegistry;
 import com.ggang.be.api.comment.service.CommentService;
+import com.ggang.be.api.common.ResponseError;
+import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.global.annotation.Facade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Facade
 @RequiredArgsConstructor
@@ -40,4 +44,17 @@ public class CommentFacade {
         return commentStrategy.readComment(findUserEntity, isPublic, dto);
     }
 
+    @Transactional
+    public void deleteComment(long userId, long commentId) {
+        UserEntity findUserEntity = userService.getUserById(userId);
+        CommentEntity commentEntity = commentService.findById(commentId);
+        validateDeleteComment(findUserEntity, commentEntity);
+
+        commentService.deleteComment(commentId);
+    }
+
+    private void validateDeleteComment(UserEntity currentUser, CommentEntity commentEntity) {
+        if (!Objects.equals(commentEntity.getUserEntity().getId(), currentUser.getId()))
+            throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
+    }
 }

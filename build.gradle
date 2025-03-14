@@ -23,6 +23,25 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    set('springCloudVersion', "2021.0.4")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    from('src/main/resources/key') {
+        include '**/*.p8'
+        into 'key'
+    }
+}
+
 dependencies {
     //web
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -47,8 +66,15 @@ dependencies {
     // valid
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    //aop
+    // aop
     implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+    // email
+    implementation 'org.springframework.boot:spring-boot-starter-mail:3.0.5'
+    implementation 'javax.mail:javax.mail-api:1.6.2'
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {

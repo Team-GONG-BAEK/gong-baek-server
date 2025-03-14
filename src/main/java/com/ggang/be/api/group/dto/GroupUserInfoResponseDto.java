@@ -8,7 +8,6 @@ public record GroupUserInfoResponseDto(
         String sex,
         String schoolMajor,
         int enterYear,
-        int schoolGrade,
         String mbti,
         String introduction
 ) {
@@ -19,7 +18,6 @@ public record GroupUserInfoResponseDto(
                 userInfo.sex(),
                 userInfo.schoolMajor(),
                 userInfo.enterYear(),
-                userInfo.schoolGrade(),
                 userInfo.mbti(),
                 userInfo.introduction()
         );

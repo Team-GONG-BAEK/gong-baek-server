@@ -105,5 +105,14 @@ public class UserServiceImpl implements UserService {
             throw new GongBaekException(ResponseError.USERNAME_ALREADY_EXISTS);
         }
     }
+
+    @Override
+    @Transactional
+    public void removeRefreshToken(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new GongBaekException(ResponseError.USER_NOT_FOUND));
+
+        user.updateRefreshToken(null);
+    }
 }
 

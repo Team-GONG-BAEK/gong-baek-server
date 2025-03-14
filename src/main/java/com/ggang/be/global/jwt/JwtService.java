@@ -98,7 +98,12 @@ public class JwtService {
         try {
             String splitToken = token.split(" ")[1];
             SecretKey secretKey = getSecretKey();
-            return parseTokenAndGetUserId(secretKey, splitToken);
+            Long userId = parseTokenAndGetUserId(secretKey, splitToken);
+
+            if (userService.getUserById(userId).getRefreshToken() == null) {
+                throw new GongBaekException(ResponseError.INVALID_TOKEN);
+            }
+            return userId;
         } catch (JwtException | NumberFormatException e) {
             log.error("JWT parsing error : {}", e.getMessage());
             throw new GongBaekException(ResponseError.INVALID_TOKEN);

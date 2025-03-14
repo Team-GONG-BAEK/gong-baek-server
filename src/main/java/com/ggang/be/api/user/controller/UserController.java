@@ -107,6 +107,19 @@ public class UserController {
                 .orElseGet(() -> ResponseBuilder.created(loginFacade.login(platformId, request.getPlatform())));
     }
 
+    @DeleteMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(
+            @RequestHeader("Authorization") String accessToken
+    ) {
+        log.info("logout authorization: {}", accessToken);
+
+        long userId = jwtService.parseTokenAndGetUserId(accessToken);
+        log.info("logout userId: {}", userId);
+
+        loginFacade.logout(userId);
+        return ResponseBuilder.ok(null);
+    }
+
     @PostMapping("/emails/verification-requests")
     public ResponseEntity<ApiResponse<Void>> sendMessage(
             @RequestParam("email") String email,

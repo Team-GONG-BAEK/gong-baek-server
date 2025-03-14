@@ -26,13 +26,21 @@ public class LoginFacade {
                 .orElseGet(() -> createTemporaryToken(platformId));
     }
 
+    @Transactional
+    public void logout(Long userId) {
+        userService.removeRefreshToken(userId);
+    }
+
     public String getPlatformId(Platform platform, String authorization) {
         return platformAuthService.getPlatformId(platform, authorization);
     }
 
     private TokenVo login(Long userId) {
         log.info("기존 유저 로그인 성공 - userId: {}", userId);
-        return new TokenVo(userId, jwtService.createAccessToken(userId), jwtService.createRefreshToken(userId));
+        String newRefreshToken = jwtService.createRefreshToken(userId);
+
+        userService.updateRefreshToken(newRefreshToken, userService.getUserById(userId));
+        return new TokenVo(userId, jwtService.createAccessToken(userId), newRefreshToken);
     }
 
     private TokenVo createTemporaryToken(String platformId) {

@@ -33,6 +33,12 @@ jobs:
           EOF
           echo "YML file successfully created"
 
+      - name: Save Apple Auth Key
+        run: |
+          mkdir -p ./src/main/resources/key
+          echo "${{ secrets.APPLE_AUTH_KEY }}" | base64 --decode > ./src/main/resources/key/AuthKey_2G6Q39DQW9.p8
+          echo "Apple Auth Key successfully saved"
+
       - name: Build with Gradle
         run: ./gradlew -x test clean build
       - name: Login to DockerHub

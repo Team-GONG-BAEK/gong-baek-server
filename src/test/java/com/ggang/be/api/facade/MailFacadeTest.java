@@ -1,12 +1,12 @@
 package com.ggang.be.api.facade;
 
 import com.ggang.be.api.common.ResponseError;
+import com.ggang.be.api.email.service.AuthCodeCacheService;
 import com.ggang.be.api.email.service.EmailProperties;
 import com.ggang.be.api.email.service.MailService;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.school.service.SchoolService;
 import com.ggang.be.api.user.service.UserService;
-import com.ggang.be.infra.redis.RedisService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MailFacadeTest {
@@ -36,7 +36,7 @@ class MailFacadeTest {
     private SchoolService schoolService;
 
     @Mock
-    private RedisService redisService;
+    private AuthCodeCacheService authCodeCacheService;
 
     @InjectMocks
     private MailFacade mailFacade;
@@ -49,6 +49,8 @@ class MailFacadeTest {
         schoolDomainMap.put("홍익대학교", "hongik");
         schoolDomainMap.put("가톨릭대학교", "catholic");
         schoolDomainMap.put("건국대학교", "konkuk");
+
+        lenient().when(emailProperties.getAuthCodeExpirationMillis()).thenReturn(1800000L);
     }
 
     @Test
@@ -59,8 +61,7 @@ class MailFacadeTest {
 
         // Mock 설정
         when(schoolService.findSchoolDomainByName(schoolName)).thenReturn(schoolDomainMap.get(schoolName));
-        when(redisService.getValue("AuthCode " + email)).thenReturn(authCode);
-        when(redisService.checkExistsValue("AuthCode " + email)).thenReturn(true);
+        when(authCodeCacheService.getAuthCode(email)).thenReturn(authCode);
 
         // 정상 검증 테스트 (예외가 발생하지 않아야 함)
         mailFacade.verifiedCode(email, schoolName, authCode);
@@ -74,8 +75,7 @@ class MailFacadeTest {
 
         // Mock 설정
         when(schoolService.findSchoolDomainByName(schoolName)).thenReturn(schoolDomainMap.get(schoolName));
-        when(redisService.getValue("AuthCode " + email)).thenReturn(authCode);
-        when(redisService.checkExistsValue("AuthCode " + email)).thenReturn(true);
+        when(authCodeCacheService.getAuthCode(email)).thenReturn(authCode);
 
         // 정상 검증 테스트 (예외가 발생하지 않아야 함)
         mailFacade.verifiedCode(email, schoolName, authCode);
@@ -89,8 +89,7 @@ class MailFacadeTest {
 
         // Mock 설정
         when(schoolService.findSchoolDomainByName(schoolName)).thenReturn(schoolDomainMap.get(schoolName));
-        when(redisService.getValue("AuthCode " + email)).thenReturn(authCode);
-        when(redisService.checkExistsValue("AuthCode " + email)).thenReturn(true);
+        when(authCodeCacheService.getAuthCode(email)).thenReturn(authCode);
 
         // 정상 검증 테스트 (예외가 발생하지 않아야 함)
         mailFacade.verifiedCode(email, schoolName, authCode);
@@ -120,8 +119,7 @@ class MailFacadeTest {
 
         // Mock 설정
         when(schoolService.findSchoolDomainByName(schoolName)).thenReturn(schoolDomainMap.get(schoolName));
-        when(redisService.getValue("AuthCode " + email)).thenReturn(wrongAuthCode);
-        when(redisService.checkExistsValue("AuthCode " + email)).thenReturn(true);
+        when(authCodeCacheService.getAuthCode(email)).thenReturn(wrongAuthCode);
 
         // 인증 코드 불일치 예외 테스트
         assertThatThrownBy(() -> mailFacade.verifiedCode(email, schoolName, authCode))

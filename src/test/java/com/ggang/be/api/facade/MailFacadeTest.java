@@ -50,7 +50,7 @@ class MailFacadeTest {
         schoolDomainMap.put("가톨릭대학교", "catholic");
         schoolDomainMap.put("건국대학교", "konkuk");
 
-        when(emailProperties.getAuthCodeExpirationMillis()).thenReturn(1800000L);
+        lenient().when(emailProperties.getAuthCodeExpirationMillis()).thenReturn(1800000L);
     }
 
     @Test

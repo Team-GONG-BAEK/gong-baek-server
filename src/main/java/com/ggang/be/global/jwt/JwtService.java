@@ -32,6 +32,10 @@ public class JwtService {
 
     public String createAccessToken(final Long userId) {
         SecretKey secretKey = getSecretKey();
+
+        long expirationMillis = jwtProperties.getAccessExpiration();
+        log.info("[JwtService] access token expirationMillis: {}", expirationMillis);
+
         return Jwts.builder()
             .subject(userId.toString())
             .expiration(new Date(System.currentTimeMillis() + jwtProperties.getAccessExpiration()))

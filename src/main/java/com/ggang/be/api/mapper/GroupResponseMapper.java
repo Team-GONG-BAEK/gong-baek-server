@@ -11,6 +11,7 @@ public record GroupResponseMapper() {
     public static GroupResponse fromOnceGroup(OnceGroupDto dto) {
         return new GroupResponse(
             dto.groupId(),
+            dto.status(),
             GroupType.ONCE.toString(),
             dto.groupTitle(),
             dto.location(),
@@ -31,6 +32,7 @@ public record GroupResponseMapper() {
     public static GroupResponse fromEveryGroup(EveryGroupDto dto) {
         return new GroupResponse(
             dto.groupId(),
+            dto.status(),
             GroupType.WEEKLY.toString(),
             dto.title(),
             dto.location(),

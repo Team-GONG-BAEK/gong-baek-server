@@ -43,6 +43,7 @@ public class UserFacade {
         removeCommentAuthor(userId);
 
         log.info("== Removing group host");
+        modifyGroupStatus(user);
         removeGroupHost(user);
 
         log.info("== Removing gongbaek time slot user");
@@ -61,6 +62,11 @@ public class UserFacade {
         log.info("Removing group host for user: {}", user.getId());
         everyGroupService.deleteGroupHost(user);
         onceGroupService.deleteGroupHost(user);
+    }
+
+    private void modifyGroupStatus(UserEntity user) {
+        everyGroupService.modifyGroupStatus(user);
+        onceGroupService.modifyGroupStatus(user);
     }
 
     private void removeGongbaekTimeSlotUser(long userId) {

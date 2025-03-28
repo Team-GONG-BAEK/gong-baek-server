@@ -10,6 +10,7 @@ import com.ggang.be.api.facade.SignUpFacade;
 import com.ggang.be.api.facade.SignupRequestFacade;
 import com.ggang.be.api.user.NicknameValidator;
 import com.ggang.be.api.user.dto.*;
+import com.ggang.be.api.user.facade.UserFacade;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.global.jwt.JwtService;
 import com.ggang.be.global.jwt.TokenVo;
@@ -30,6 +31,7 @@ public class UserController {
     private final SignupRequestFacade signupRequestFacade;
     private final JwtService jwtService;
     private final MailFacade mailFacade;
+    private final UserFacade userFacade;
 
     private final static int INTRODUCTION_MIN_LENGTH = 0;
     private final static int INTRODUCTION_MAX_LENGTH = 100;
@@ -63,6 +65,20 @@ public class UserController {
         return ResponseBuilder.created(
                 signupFacade.signUp(platformId, request)
         );
+    }
+
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<ApiResponse<Void>> deleteUser(
+            @RequestHeader("Authorization") String accessToken
+    ) {
+        log.info("withdraw authorization: {}", accessToken);
+
+        long userId = jwtService.parseTokenAndGetUserId(accessToken);
+        log.info("withdraw userId: {}", userId);
+
+        userFacade.deleteUser(userId);
+
+        return ResponseBuilder.ok(null);
     }
   
     @GetMapping("/user/home/profile")

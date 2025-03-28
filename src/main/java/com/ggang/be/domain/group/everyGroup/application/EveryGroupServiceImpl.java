@@ -63,6 +63,14 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     }
 
     @Override
+    public void deleteGroupHost(UserEntity currentUser) {
+        List<EveryGroupEntity> everyGroups = everyGroupRepository.findByUserEntity_Id(
+                currentUser.getId());
+        everyGroups.forEach(EveryGroupEntity::removeHost);
+        everyGroupRepository.saveAll(everyGroups);
+    }
+
+    @Override
     public ReadEveryGroup getActiveEveryGroups(UserEntity currentUser, Category category) {
         List<EveryGroupEntity> everyGroupEntities;
         if(category == null) everyGroupEntities = everyGroupRepository.findAll();

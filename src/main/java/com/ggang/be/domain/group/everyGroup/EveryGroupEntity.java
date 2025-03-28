@@ -123,4 +123,8 @@ public class EveryGroupEntity extends BaseTimeEntity {
     public void updateStatus(Status status) {
         this.status = status;
     }
+
+    public void removeHost() {
+        this.userEntity = null;
+    }
 }

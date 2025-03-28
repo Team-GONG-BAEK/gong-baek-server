@@ -91,6 +91,7 @@ public class EveryGroupEntity extends BaseTimeEntity {
     }
 
     public boolean isHost(UserEntity currentUser) {
+        if (this.userEntity == null) return false;
         return this.userEntity.getId().equals(currentUser.getId());
     }
 

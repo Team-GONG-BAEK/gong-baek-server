@@ -11,14 +11,18 @@ import java.time.LocalDateTime;
 public record EveryGroupVo(long groupId, Status status, Category category, int coverImg, int profileImg,
                            String nickname, GroupType groupType,
                            String groupTitle, WeekDay weekDay, double startTime, double endTime, String location, LocalDateTime createdAt) {
+
     public static EveryGroupVo of(EveryGroupEntity everyGroupEntity) {
+        int profileImg = (everyGroupEntity.getUserEntity()) != null ? everyGroupEntity.getUserEntity().getProfileImg() : 0;
+        String nickname = (everyGroupEntity.getUserEntity()) != null ? everyGroupEntity.getUserEntity().getNickname() : null;
+
         return new EveryGroupVo(
                 everyGroupEntity.getId(),
                 everyGroupEntity.getStatus(),
                 everyGroupEntity.getCategory(),
                 everyGroupEntity.getCoverImg(),
-                everyGroupEntity.getUserEntity().getProfileImg(),
-                everyGroupEntity.getUserEntity().getNickname(),
+                profileImg,
+                nickname,
                 GroupType.WEEKLY,
                 everyGroupEntity.getTitle(),
                 everyGroupEntity.getGongbaekTimeSlotEntity().getWeekDay(),

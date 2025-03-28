@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -77,7 +78,9 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
         List<UserEveryGroupEntity> userEveryGroupEntities = getMyEveryGroup(currentUser);
 
         List<EveryGroupEntity> filteredGroups = getGroupsByStatus(userEveryGroupEntities, status).stream()
-                .filter(group -> !group.getUserEntity().getId().equals(currentUser.getId()))
+                .filter(group -> Optional.ofNullable(group.getUserEntity())
+                        .map(host -> !host.getId().equals(currentUser.getId()))
+                        .orElse(true))
                 .toList();
 
         return ReadEveryGroup.of(groupVoMaker.makeEveryGroup(filteredGroups));

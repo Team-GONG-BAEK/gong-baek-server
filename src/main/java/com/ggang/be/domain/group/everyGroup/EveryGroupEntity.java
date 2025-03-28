@@ -128,4 +128,8 @@ public class EveryGroupEntity extends BaseTimeEntity {
     public void removeHost() {
         this.userEntity = null;
     }
+
+    public void closeGroup() {
+        this.status = Status.CLOSED;
+    }
 }

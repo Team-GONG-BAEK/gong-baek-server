@@ -90,6 +90,7 @@ public class OnceGroupEntity extends BaseTimeEntity {
     }
 
     public boolean isHost(UserEntity currentUser) {
+        if (this.userEntity == null) return false;
         return this.userEntity.getId().equals(currentUser.getId());
     }
 
@@ -125,5 +126,9 @@ public class OnceGroupEntity extends BaseTimeEntity {
 
     public void removeHost() {
         this.userEntity = null;
+    }
+
+    public void closeGroup() {
+        this.status = Status.CLOSED;
     }
 }

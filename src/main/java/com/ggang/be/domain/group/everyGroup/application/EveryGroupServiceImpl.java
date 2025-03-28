@@ -72,6 +72,14 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     }
 
     @Override
+    public void modifyGroupStatus(UserEntity currentUser) {
+        List<EveryGroupEntity> everyGroups = everyGroupRepository.findByUserEntity_Id(
+                currentUser.getId());
+        everyGroups.forEach(EveryGroupEntity::closeGroup);
+        everyGroupRepository.saveAll(everyGroups);
+    }
+
+    @Override
     public ReadEveryGroup getActiveEveryGroups(UserEntity currentUser, Category category) {
         List<EveryGroupEntity> everyGroupEntities;
         if(category == null) everyGroupEntities = everyGroupRepository.findAll();

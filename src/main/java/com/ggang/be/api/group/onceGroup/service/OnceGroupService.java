@@ -30,6 +30,8 @@ public interface OnceGroupService {
 
     void deleteGroupHost(UserEntity currentUser);
 
+    void modifyGroupStatus(UserEntity currentUser);
+
     ReadOnceGroup getActiveOnceGroups(UserEntity currentUser, Category category);
 
     void validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);

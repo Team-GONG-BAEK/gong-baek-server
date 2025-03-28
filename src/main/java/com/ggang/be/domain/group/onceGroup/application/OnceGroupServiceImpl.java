@@ -48,6 +48,7 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     @Override
     public long getOnceGroupRegisterUserId(final long groupId) {
         OnceGroupEntity entity = findIdOrThrow(groupId);
+        if(entity.getUserEntity() == null) throw new GongBaekException(ResponseError.USER_NOT_FOUND);
         return entity.getUserEntity().getId();
     }
 

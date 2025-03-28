@@ -50,6 +50,7 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     @Override
     public long getEveryGroupRegisterUserId(final long groupId) {
         EveryGroupEntity entity = findIdOrThrow(groupId);
+        if(entity.getUserEntity() == null) throw new GongBaekException(ResponseError.USER_NOT_FOUND);
         return entity.getUserEntity().getId();
     }
 

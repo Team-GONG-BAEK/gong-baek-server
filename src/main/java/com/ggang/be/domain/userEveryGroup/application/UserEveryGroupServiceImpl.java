@@ -103,6 +103,11 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
 
     }
 
+    @Override
+    public void deleteUserEveryGroup(UserEntity user){
+        userEveryGroupRepository.deleteAll(user.getUserEveryGroupEntities());
+    }
+
     private EveryGroupEntity getNearestGroup(List<EveryGroupEntity> groups) {
         return groups.stream()
                 .min(Comparator.comparing(group -> WeekDay.getNextMeetingDate(group.getGongbaekTimeSlotEntity().getWeekDay())))

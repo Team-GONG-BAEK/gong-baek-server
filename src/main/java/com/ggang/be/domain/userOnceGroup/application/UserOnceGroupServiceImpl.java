@@ -103,6 +103,11 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
         }
     }
 
+    @Override
+    public void deleteUserOnceGroup(UserEntity user){
+        userOnceGroupRepository.deleteAll(user.getUserOnceGroupEntites());
+    }
+
     private OnceGroupEntity getNearestGroup(List<OnceGroupEntity> groups) {
         return groups.stream()
             .min(Comparator.comparing(OnceGroupEntity::getGroupDate))

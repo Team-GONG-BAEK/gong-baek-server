@@ -30,4 +30,6 @@ public interface UserService {
     void checkDuplicatedEmail(String email);
 
     void removeRefreshToken(Long userId);
+
+    void deleteUser(Long userId);
 }

@@ -5,6 +5,7 @@ import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.group.dto.GroupRequest;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.registry.ApplyGroupStrategy;
+import com.ggang.be.api.group.validator.GroupValidator;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.domain.common.SameSchoolValidator;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class ApplyEveryGroupStrategy implements ApplyGroupStrategy {
 
     private final EveryGroupService everyGroupService;
+    private final GroupValidator groupValidator;
     private final SameSchoolValidator sameSchoolValidator;
     private final UserEveryGroupService userEveryGroupService;
     private final LectureTimeSlotService lectureTimeSlotService;
@@ -33,6 +35,7 @@ public class ApplyEveryGroupStrategy implements ApplyGroupStrategy {
     @Override
     public void applyGroup(UserEntity findUserEntity, GroupRequest request) {
         EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(request.groupId());
+        groupValidator.isValidEveryGroup(everyGroupEntity);
         sameSchoolValidator.isUserReadMySchoolEveryGroup(findUserEntity, everyGroupEntity);
         everyGroupService.validateApplyEveryGroup(findUserEntity, everyGroupEntity);
         GroupVo groupVo = GroupVo.fromEveryGroup(EveryGroupVo.of(everyGroupEntity));

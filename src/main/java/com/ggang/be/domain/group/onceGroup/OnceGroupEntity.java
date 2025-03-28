@@ -122,4 +122,8 @@ public class OnceGroupEntity extends BaseTimeEntity {
     public void updateStatus(Status status){
         this.status=status;
     }
+
+    public void removeHost() {
+        this.userEntity = null;
+    }
 }

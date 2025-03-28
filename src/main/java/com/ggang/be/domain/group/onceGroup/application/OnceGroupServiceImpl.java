@@ -59,6 +59,14 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     }
 
     @Override
+    public void deleteGroupHost(UserEntity currentUser) {
+        List<OnceGroupEntity> onceGroups = onceGroupRepository.findByUserEntity_Id(
+                currentUser.getId());
+        onceGroups.forEach(OnceGroupEntity::removeHost);
+        onceGroupRepository.saveAll(onceGroups);
+    }
+
+    @Override
     public ReadOnceGroup getActiveOnceGroups(UserEntity currentUser, Category category) {
         List<OnceGroupEntity> onceGroupEntities;
         if(category == null) onceGroupEntities = onceGroupRepository.findAll();

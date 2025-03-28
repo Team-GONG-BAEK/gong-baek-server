@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -40,5 +42,16 @@ public class CommentServiceImpl implements CommentService {
     public CommentEntity findById(final long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new GongBaekException(ResponseError.COMMENT_NOT_FOUND));
+    }
+
+    @Transactional
+    @Override
+    public void removeCommentAuthor(final long userId) {
+        List<CommentEntity> comments = commentRepository.findAllByUserEntity_Id(userId);
+
+        for (CommentEntity comment : comments) {
+            comment.removeAuthor();
+        }
+        commentRepository.saveAll(comments);
     }
 }

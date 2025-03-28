@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,8 +45,10 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
 
         List<OnceGroupEntity> filteredGroups = getGroupsByStatus(userOnceGroupEntities,
             status).stream()
-            .filter(group -> !group.getUserEntity().getId().equals(currentUser.getId()))
-            .toList();
+                .filter(group -> Optional.ofNullable(group.getUserEntity())
+                        .map(host -> !host.getId().equals(currentUser.getId()))
+                        .orElse(true))
+                .toList();
 
         return ReadOnceGroup.of(groupVoMaker.makeOnceGroup(filteredGroups));
     }
@@ -101,6 +104,11 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
             log.error("User is not in group");
             throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
         }
+    }
+
+    @Override
+    public void deleteUserOnceGroup(UserEntity user){
+        userOnceGroupRepository.deleteAll(user.getUserOnceGroupEntites());
     }
 
     private OnceGroupEntity getNearestGroup(List<OnceGroupEntity> groups) {

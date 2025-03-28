@@ -1,6 +1,7 @@
 package com.ggang.be.domain.group.onceGroup.dto;
 
 import com.ggang.be.domain.constant.Category;
+import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
@@ -8,6 +9,7 @@ import com.ggang.be.domain.user.UserEntity;
 
 public record OnceGroupDto(
     long groupId,
+    Status status,
     String groupTitle,
     String location,
     int currentPeopleCount,
@@ -25,6 +27,7 @@ public record OnceGroupDto(
     public static OnceGroupDto toDto(OnceGroupEntity entity, UserEntity currentUser) {
         return new OnceGroupDto(
             entity.getId(),
+            entity.getStatus(),
             entity.getTitle(),
             entity.getLocation(),
             entity.getCurrentPeopleCount(),

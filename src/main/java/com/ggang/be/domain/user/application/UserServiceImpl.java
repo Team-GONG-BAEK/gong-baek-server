@@ -114,5 +114,13 @@ public class UserServiceImpl implements UserService {
 
         user.updateRefreshToken(null);
     }
+
+    @Transactional
+    @Override
+    public void deleteUser(Long userId) {
+        log.info("delete User start ======");
+        userRepository.deleteById(userId);
+        log.info("delete User clear ======");
+    }
 }
 

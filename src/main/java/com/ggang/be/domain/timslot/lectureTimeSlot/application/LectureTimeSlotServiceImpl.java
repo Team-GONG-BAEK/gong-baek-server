@@ -52,4 +52,10 @@ public class LectureTimeSlotServiceImpl implements LectureTimeSlotService {
             userById);
     }
 
+    @Override
+    public void deleteUserTime(UserEntity userById) {
+        List<LectureTimeSlotEntity> userLectureTimeSlots = readUserTime(userById);
+        lectureTimeSlotRepository.deleteAll(userLectureTimeSlots);
+    }
+
 }

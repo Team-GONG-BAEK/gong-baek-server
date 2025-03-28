@@ -23,4 +23,6 @@ public interface UserOnceGroupService {
     void isValidCommentAccess(UserEntity userEntity, final long groupId);
 
     void isUserInGroup(UserEntity findUserEntity, OnceGroupEntity findOnceGroupEntity);
+
+    void deleteUserOnceGroup(UserEntity user);
 }

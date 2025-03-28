@@ -12,4 +12,7 @@ public interface CommentService {
     void deleteComment(final long commentId);
 
     CommentEntity findById(long commentId);
+
+    @Transactional
+    void removeCommentAuthor(long userId);
 }

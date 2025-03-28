@@ -37,4 +37,8 @@ public class GongbaekTimeSlotEntity extends BaseTimeEntity {
         this.endTime = endTime;
         this.userEntity = userEntity;
     }
+
+    public void removeUserEntity() {
+        this.userEntity = null;
+    }
 }

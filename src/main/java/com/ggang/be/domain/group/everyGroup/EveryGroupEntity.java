@@ -91,6 +91,7 @@ public class EveryGroupEntity extends BaseTimeEntity {
     }
 
     public boolean isHost(UserEntity currentUser) {
+        if (this.userEntity == null) return false;
         return this.userEntity.getId().equals(currentUser.getId());
     }
 
@@ -122,5 +123,13 @@ public class EveryGroupEntity extends BaseTimeEntity {
 
     public void updateStatus(Status status) {
         this.status = status;
+    }
+
+    public void removeHost() {
+        this.userEntity = null;
+    }
+
+    public void closeGroup() {
+        this.status = Status.CLOSED;
     }
 }

@@ -2,10 +2,12 @@ package com.ggang.be.api.group.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ggang.be.domain.constant.Category;
+import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.constant.WeekDay;
 
 public record GroupResponse(
         long groupId,
+        Status status,
         String groupType,
         String groupTitle,
         String location,

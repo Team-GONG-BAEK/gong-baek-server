@@ -52,6 +52,7 @@ public enum ResponseError {
     TIME_SLOT_ALREADY_EXIST(4095, "이미 해당 시간표에는 강의 시간표가 존재합니다." ),
     APPLY_ALREADY_EXIST(4096, "이미 신청한 유저입니다."),
     GROUP_ALREADY_FULL(4097, "이미 인원이 마감된 모임입니다."),
+    GROUP_ALREADY_CLOSED(4098, "해당 모임은 종료되었습니다."),
 
     // 500 Internal Server Error
     INTERNAL_SERVER_ERROR(5000, "서버 내부 오류입니다."),

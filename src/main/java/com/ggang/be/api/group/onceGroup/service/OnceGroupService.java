@@ -28,6 +28,10 @@ public interface OnceGroupService {
 
     void deleteOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);
 
+    void deleteGroupHost(UserEntity currentUser);
+
+    void modifyGroupStatus(UserEntity currentUser);
+
     ReadOnceGroup getActiveOnceGroups(UserEntity currentUser, Category category);
 
     void validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);

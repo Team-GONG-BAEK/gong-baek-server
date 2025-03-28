@@ -50,6 +50,7 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     @Override
     public long getEveryGroupRegisterUserId(final long groupId) {
         EveryGroupEntity entity = findIdOrThrow(groupId);
+        if(entity.getUserEntity() == null) throw new GongBaekException(ResponseError.USER_NOT_FOUND);
         return entity.getUserEntity().getId();
     }
 
@@ -60,6 +61,22 @@ public class EveryGroupServiceImpl implements EveryGroupService {
 
         return ReadEveryGroup.of(
             groupVoMaker.makeEveryGroup(getGroupsByStatus(everyGroupEntities, status)));
+    }
+
+    @Override
+    public void deleteGroupHost(UserEntity currentUser) {
+        List<EveryGroupEntity> everyGroups = everyGroupRepository.findByUserEntity_Id(
+                currentUser.getId());
+        everyGroups.forEach(EveryGroupEntity::removeHost);
+        everyGroupRepository.saveAll(everyGroups);
+    }
+
+    @Override
+    public void modifyGroupStatus(UserEntity currentUser) {
+        List<EveryGroupEntity> everyGroups = everyGroupRepository.findByUserEntity_Id(
+                currentUser.getId());
+        everyGroups.forEach(EveryGroupEntity::closeGroup);
+        everyGroupRepository.saveAll(everyGroups);
     }
 
     @Override

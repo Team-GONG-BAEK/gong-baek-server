@@ -5,6 +5,7 @@ import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.group.dto.GroupRequest;
 import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.api.group.registry.CancelGroupStrategy;
+import com.ggang.be.api.group.validator.GroupValidator;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class CancelEveryGroupStrategy implements CancelGroupStrategy {
     private final EveryGroupService everyGroupService;
     private final UserEveryGroupService userEveryGroupService;
+    private final GroupValidator groupValidator;
 
     @Override
     public boolean support(GroupType groupType) {
@@ -26,6 +28,7 @@ public class CancelEveryGroupStrategy implements CancelGroupStrategy {
     @Override
     public void cancelGroup(UserEntity userEntity, GroupRequest request) {
         EveryGroupEntity everyGroupEntity = everyGroupService.findEveryGroupEntityByGroupId(request.groupId());
+        groupValidator.isValidEveryGroup(everyGroupEntity);
         if (everyGroupService.validateCancelEveryGroup(userEntity, everyGroupEntity))
             userEveryGroupService.cancelEveryGroup(userEntity, everyGroupEntity);
         else throw new GongBaekException(ResponseError.GROUP_CANCEL_NOT_FOUND);

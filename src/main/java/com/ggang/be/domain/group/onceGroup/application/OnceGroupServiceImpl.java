@@ -48,6 +48,7 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     @Override
     public long getOnceGroupRegisterUserId(final long groupId) {
         OnceGroupEntity entity = findIdOrThrow(groupId);
+        if(entity.getUserEntity() == null) throw new GongBaekException(ResponseError.USER_NOT_FOUND);
         return entity.getUserEntity().getId();
     }
 
@@ -56,6 +57,22 @@ public class OnceGroupServiceImpl implements OnceGroupService {
         List<OnceGroupEntity> onceGroupEntities = onceGroupRepository.findByUserEntity_Id(currentUser.getId());
 
         return ReadOnceGroup.of(groupVoMaker.makeOnceGroup(getGroupsByStatus(onceGroupEntities, status)));
+    }
+
+    @Override
+    public void deleteGroupHost(UserEntity currentUser) {
+        List<OnceGroupEntity> onceGroups = onceGroupRepository.findByUserEntity_Id(
+                currentUser.getId());
+        onceGroups.forEach(OnceGroupEntity::removeHost);
+        onceGroupRepository.saveAll(onceGroups);
+    }
+
+    @Override
+    public void modifyGroupStatus(UserEntity currentUser) {
+        List<OnceGroupEntity> onceGroups = onceGroupRepository.findByUserEntity_Id(
+                currentUser.getId());
+        onceGroups.forEach(OnceGroupEntity::closeGroup);
+        onceGroupRepository.saveAll(onceGroups);
     }
 
     @Override

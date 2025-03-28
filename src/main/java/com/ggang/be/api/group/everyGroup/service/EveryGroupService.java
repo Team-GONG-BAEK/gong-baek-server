@@ -28,6 +28,10 @@ public interface EveryGroupService {
 
     void deleteEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
 
+    void deleteGroupHost(UserEntity currentUser);
+
+    void modifyGroupStatus(UserEntity currentUser);
+
     ReadEveryGroup getActiveEveryGroups(UserEntity currentUser, Category category);
 
     void validateApplyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);

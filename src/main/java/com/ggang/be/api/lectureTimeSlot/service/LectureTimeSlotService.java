@@ -16,4 +16,6 @@ public interface LectureTimeSlotService {
     boolean isActiveGroupsInLectureTimeSlot(UserEntity findUserEntity, GroupVo groupVo);
 
     List<LectureTimeSlotEntity> readUserTime(UserEntity userById);
+
+    void deleteUserTime(UserEntity userById);
 }

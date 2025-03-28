@@ -14,13 +14,16 @@ public record OnceGroupVo(long groupId, Status status, Category category, int co
                           String groupTitle, LocalDate dateTime, double startTime, double endTime, String location,
                           LocalDateTime createdAt, GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
     public static OnceGroupVo of(OnceGroupEntity onceGroupEntity) {
+        int profileImg = (onceGroupEntity.getUserEntity()) != null ? onceGroupEntity.getUserEntity().getProfileImg() : 0;
+        String nickname = (onceGroupEntity.getUserEntity()) != null ? onceGroupEntity.getUserEntity().getNickname() : null;
+
         return new OnceGroupVo(
                 onceGroupEntity.getId(),
                 onceGroupEntity.getStatus(),
                 onceGroupEntity.getCategory(),
                 onceGroupEntity.getCoverImg(),
-                onceGroupEntity.getUserEntity().getProfileImg(),
-                onceGroupEntity.getUserEntity().getNickname(),
+                profileImg,
+                nickname,
                 GroupType.ONCE,
                 onceGroupEntity.getTitle(),
                 onceGroupEntity.getGroupDate(),

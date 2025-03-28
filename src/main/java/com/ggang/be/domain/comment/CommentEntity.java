@@ -32,4 +32,8 @@ public class CommentEntity extends BaseTimeEntity {
         this.isPublic = isPublic;
         this.body = body;
     }
+
+    public void removeAuthor() {
+        this.userEntity = null;
+    }
 }

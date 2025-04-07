@@ -9,8 +9,6 @@
 
 ## ✨ Contributors
 
-## ✨ Contributors
-
 | | ⭐️**리더** 김효준 [@khyojun](https://github.com/khyojun) | 이현진 [@2hyunjinn](https://github.com/2hyunjinn) |
 | :--- | :--- | :--- |
 | | <img src="https://github.com/user-attachments/assets/9b8bba10-1729-4f74-ae96-ad721bf1fa83" width="300"/> | <img src="https://github.com/user-attachments/assets/0b5dfc62-7f39-4890-bb61-bf1e9a6a14d8" width="300"/> |

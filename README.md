@@ -1,12 +1,11 @@
-# 공강을 백으로 채우다, 공백 🧩
-공백은 대학생들의 공강 시간을 특별하게 채우는 모임 플랫폼입니다.<br>
-원하는 모임을 만들고 신청하며, 멤버들과 소통할 수 있는 공간을 제공하여 공강 시간을 의미 있는 경험으로 바꿔줍니다.
-<br>
+# 🧩 공강을 백으로 채우다, 공백
+
+공백은 **대학생들의 공강 시간을 특별하게 채우는 모임 플랫폼**입니다.  
+원하는 모임을 만들고 신청하며, 멤버들과 소통할 수 있는 공간을 제공하여, 공강 시간을 **의미 있는 경험**으로 바꿔줍니다.
 
 ![gongbaek](https://github.com/user-attachments/assets/c8838b3f-9ee8-447c-854e-7778d0867e21)
-<br/>
 
-<br>
+---
 
 ## ✨ Contributors
 
@@ -19,41 +18,68 @@
 | **담당 API** | <ul><li>내 강의 시간표 조회 API</li><li>모임 등록하기 API</li><li>모임 참여 멤버 전체 조회 API</li><li>댓글 작성 API</li><li>댓글 조회 API (모임방 / 채우기)</li><li>댓글 삭제 API</li><li>학교 검색 API</li><li>학과 검색 API</li><li>닉네임 검증 API</li><li>소개글 검증 API</li><li>회원가입 API</li><li>JWT 재발급 API</li></ul> | <ul><li>나의 모임 전체 조회 API</li><li>참여 가능한 모임 조회 API (최신순 5개)</li><li>가장 가까운 모임 1개 조회 API</li><li>채우기 모임 전체 조회 API</li><li>모임 신청 API</li><li>모임 신청 취소하기 API</li><li>나의 모임 삭제하기 API</li><li>등록자 프로필 조회 API</li><li>모임 상세 정보 조회 API</li><li>유저 프로필 조회 API (학교명 / 닉네임)</li><li>광고 배너 전체 조회 API (5개)</li></ul> |
 | **기타 작업** |                                                                <ul><li>Public / Private Subnet 분리 작업</li><li>HTTPS 설정 및 도메인 연결   </li><li>Docker 관련 설정 진행</li><li>무중단 배포를 위한 **스크립트 작성**</li></ul>                                                                |                                                                                                                               <ul><li>서버 내부 QA 주관 및 보수 작업 진행 </li></ul>                                                                                                                                |
 
-<br>
-
-## Architecture v1
-
 ---
+
+## 🏗️ Architecture Overview
+
 ![Gongbaek_Server_Arch](https://github.com/user-attachments/assets/cee82b4e-3ae4-43e1-8f9b-14303d6eb8ad)
 
-<br>
+- **모놀리식 구조 기반**, 기능 단위 도메인 설계
+- `Facade`, `Strategy`, `Registry` 패턴을 통해 **도메인 유연성 확보**
+- 계층 분리 및 책임 분배로 **서비스 확장성과 유지보수성 강화**
 
-<h2>📌 주요 기능</h2>
 ---
 
-| **기능**          | **설명**                                                                                                                                       | **주요 특징**                                                                                                  |
-|-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
-| **1️⃣ 온보딩**     | 나의 정보를 입력하고 공강 시간을 채울 준비를 할 수 있는 공간                                                                                       | - 학교와 학과 등 간단한 정보를 입력<br>- 수업 시간표를 바탕으로 공강 시간표 확인                                                                   |
-| **2️⃣ 채우기**     | 나의 공강 시간에 열리는 모임을 확인할 수 있는 공간                                                                                                 | - 카테고리 필터링<br>- ~~요일별 필터링 (추후 구현 예정)~~<br>- ~~일회성 / 다회성 모임 필터링 (추후 구현 예정)~~<br>- 원하는 모임 신청 가능             |
-| **3️⃣ 모임 모집**  | 나의 공강 시간에 하고 싶은 모임을 직접 등록할 수 있는 공간                                                                                        | - 주기 선택 (일회성 / 다회성)<br>- 날짜와 시간<br>- 카테고리 / 커버사진<br>- 장소 / 인원 / 소개글 입력 후 등록                                       |
-| **4️⃣ 나의 채움**  | 내가 참여하는 모임 현황을 한눈에 확인할 수 있는 공간                                                                                               | - **내가 모집한 모임**: 진행 중 / 종료된 모임 구분 가능<br>- **내가 신청한 모임**: 진행 중 / 종료된 모임 구분 가능                                |
-| **5️⃣ 스페이스**   | 같은 모임을 신청한 멤버만 참여할 수 있는 공간                                                                                                     | - 참여 멤버 정보 확인<br>- 대화를 통해 모임 준비                                                                                             |
-| **6️⃣ 모임 상세**  | 모임에 대한 다양한 정보를 확인하고 신청할 수 있는 공간                                                                                            | - 댓글 작성 및 조회<br>- 모임 신청 및 취소<br>- 등록자 프로필 조회<br>- 모임 시간, 날짜, 장소 등 모임 정보 조회<br>**⭐️등록자**: 멤버 관리 가능<br>**⭐️참여자**: 등록자와 대화 후 모임 신청 가능 |
+## 🧩 주요 기능 요약
 
-<br/><br/>
-
-
+| 기능 | 설명 | 주요 특징 |
+|------|------|-----------|
+| **온보딩** | 유저 정보 및 시간표 입력 | 학교/학과 입력, 공강 시간 자동 도출 |
+| **채우기** | 공강 시간에 맞는 모임 탐색 | 카테고리 필터링, 최신순 추천 |
+| **모임 모집** | 직접 모임 개설 | 일회성/다회성, 장소·인원·소개글 설정 |
+| **나의 채움** | 내가 만든/참여한 모임 관리 | 진행 상태 구분, 빠른 확인 |
+| **스페이스** | 참여자 전용 커뮤니티 | 멤버 확인, 채팅 기능 |
+| **모임 상세** | 신청/취소 및 댓글, 프로필 확인 | 권한 기반 기능 노출 (등록자 vs 참여자) |
 
 
+---
 
-## 🧾 ERD
-<hr></hr>
+## 🗂️ ERD
+
+[🔗 ERD 자세히 보기](https://dbdiagram.io/d/gongbaek-677813005406798ef737c1cb)
 
 ![GONGBAEK-ERD](https://github.com/user-attachments/assets/6ddd368b-7231-4cec-9a54-479f31b485af)
 
-[ERD](https://dbdiagram.io/d/gongbaek-677813005406798ef737c1cb)
+---
 
-<br>
+## 🚀 CI/CD 파이프라인
+
+| 프로세스 | 설명 |
+|----------|------|
+| `gongbaek-build-ci` | 빌드 성공 여부 확인 |
+| `gongbaek-test-ci` | 테스트 성공 여부 및 리포트 작성 |
+| `gongbaek-cd` | EC2로 자동 배포 (무중단 배포 스크립트 적용) |
+
+> GitHub Actions + EC2 + Docker 기반 자동화  
+> 안정성과 유지보수를 고려한 **Blue-Green 배포 전략** 적용 예정
+
+---
+
+## ⚙️ 기술 스택
+
+| 분야 | 스택 |
+|------|------|
+| IDE | IntelliJ |
+| Language | Java 21 |
+| Framework | Spring Boot 3.4.1, Gradle |
+| ORM | Spring Data JPA |
+| DB | MySQL |
+| Auth | JWT |
+| Infra | AWS EC2 / RDS / Nginx / Docker-Compose |
+| CI/CD | GitHub Actions |
+| Tools | Discord, Figma, Postman, Notion (API 명세) |
+
+---
 
 ## 📋 Branch Convention
 
@@ -67,8 +93,8 @@
 - `init`  초기 설정 작업
 - `deploy`: 배포작업 진행시
 
+---
 
-<br><br>
 ## 📋 Commit Convetion
 
 - **init** : 프로젝트 초기 세팅 `[init] #1 프로젝트 초기 세팅`
@@ -79,168 +105,377 @@
 - **chore** : 의존성 추가, yml 추가와 수정, 패키지 구조 변경, 파일 이동 등의 작업 `[chore] #30 파일명 변경`
 - **test**: 테스트 코드 작성, 수정 `test: 로그인 API 테스트 코드 작성 (#20)`
 
-<br>
+--- 
 
-
-
-<br><br>
 ## 📋 Git Convention
-<hr></hr>
 
 [공백 서버 팀의 Git 컨벤션이 궁금하다면? ✔️](https://sumptuous-viscose-f29.notion.site/Git-Convention-7ff513348d1f4ea1aeca732027ec8f12?pvs=4)
 
-<br>
-
+--- 
 
 ## 📋 Code Convention
 <hr></hr>
 
 [공백 서버 팀의 코드 컨벤션이 궁금하다면? ✔️](https://sumptuous-viscose-f29.notion.site/Code-Convention-f40b5a5de8fb497faeeac3e18768f973?pvs=4)
 
-<br>
-
-
-## 📋 CI/CD
-<hr></hr>
-
-### 💡 gongbaek-build-ci
-`build` 가 성공적으로 수행되는지 검사합니다.
-
-### 💡 gongbaek-cd
-자동적으로 배포가 되기 위한 과정입니다.
-
-### 💡 gongbaek-test-ci
-`test` 가 성공적으로 수행되는지 검사하고 보고서를 작성합니다.
-
-
-<br>
-
-
-<br>
-
-## Teck Stack ✨
-<hr></hr>
-
-| IDE | IntelliJ |
-|:---|:---|
-| Language | Java 21 |
-| Framework | Spring Boot 3.4.1, Gradle |
-| Authentication | JSON Web Tokens |
-| Orm | Spring Data JPA |
-| Database | MySQL |
-| External | AWS EC2, AWS RDS, Nginx, Docker, Docker-Compose |
-| CI/CD | Github Action |
-| API Docs | Notion |
-| Other Tool | Discord, Postman, Figma |
-
-<br>
-
-
+---
 
 ## 📁 폴더 구조
 
 ---
 
 ```
-gongbaek-api
-├── 📁 src
-│   ├── 📁 main
-│   │   ├── 📁 java
-│   │   │   └── 📁 com
-│   │   │   │    └── 📁 ggang.be
-│   │   │   │        ├── 📁 api
-│   │   │   │        │   ├── 📁 advertisement
-│   │   │   │        │   │   └── 📁 controller
-│   │   │   │        │   ├── 📁 comment
-│   │   │   │        │   │   ├── 📁 controller
-│   │   │   │        │   │   ├── 📁 dto
-│   │   │   │        │   │   ├── 📁 facade
-│   │   │   │        │   │   ├── 📁 registry
-│   │   │   │        │   │   ├── 📁 service
-│   │   │   │        │   │   └── 📁 strategy
-│   │   │   │        │   ├── 📁 common
-│   │   │   │        │   ├── 📁 exception
-│   │   │   │        │   ├── 📁 group
-│   │   │   │        │   │   ├── 📁 everyGroup
-│   │   │   │        │   │   │   ├── 📁 controller
-│   │   │   │        │   │   │   ├── 📁 service
-│   │   │   │        │   │   │   └── 📁 strategy
-│   │   │   │        │   │   ├── 📁 onceGroup
-│   │   │   │        │   │   │   ├── 📁 controller
-│   │   │   │        │   │   │   ├── 📁 service
-│   │   │   │        │   │   │   └── 📁 strategy
-│   │   │   │        │   │   ├── 📁 dto
-│   │   │   │        │   │   ├── 📁 facade
-│   │   │   │        │   │   ├── 📁 registry
-│   │   │   │        │   │   └── 📁 strategy
-│   │   │   │        │   ├── 📁 gongbaekTimeSlot
-│   │   │   │        │   │   ├── 📁 controller
-│   │   │   │        │   │   ├── 📁 dto
-│   │   │   │        │   │   └── 📁 service
-│   │   │   │        │   ├── 📁 lectureTimeSlot
-│   │   │   │        │   │   ├── 📁 controller
-│   │   │   │        │   │   └── 📁 service
-│   │   │   │        │   ├── 📁 school
-│   │   │   │        │   │   ├── 📁 controller
-│   │   │   │        │   │   ├── 📁 dto
-│   │   │   │        │   │   └── 📁 service
-│   │   │   │        │   ├── 📁 user
-│   │   │   │        │   │   ├── 📁 controller
-│   │   │   │        │   │   ├── 📁 dto
-│   │   │   │        │   │   ├── 📁 service
-│   │   │   │        │   │   └── 📁 vo
-│   │   │   │        ├── 📁 domain
-│   │   │   │        │   ├── 📁 advertisement
-│   │   │   │        │   │   ├── 📁 application
-│   │   │   │        │   │   └── 📁 infra
-│   │   │   │        │   ├── 📁 comment
-│   │   │   │        │   │   ├── 📁 application
-│   │   │   │        │   │   └── 📁 infra
-│   │   │   │        │   ├── 📁 common
-│   │   │   │        │   ├── 📁 group
-│   │   │   │        │   │   ├── 📁 everyGroup
-│   │   │   │        │   │   │   ├── 📁 application
-│   │   │   │        │   │   │   ├── 📁 dto
-│   │   │   │        │   │   │   ├── 📁 infra
-│   │   │   │        │   │   │   └── 📁 vo
-│   │   │   │        │   │   ├── 📁 onceGroup
-│   │   │   │        │   │   │   ├── 📁 application
-│   │   │   │        │   │   │   ├── 📁 dto
-│   │   │   │        │   │   │   ├── 📁 infra
-│   │   │   │        │   │   │   └── 📁 vo
-│   │   │   │        │   │   └── 📁 vo
-│   │   │   │        │   ├── 📁 school
-│   │   │   │        │   │   ├── 📁 application
-│   │   │   │        │   │   ├── 📁 dto
-│   │   │   │        │   │   └── 📁 infra
-│   │   │   │        │   ├── 📁 timslot
-│   │   │   │        │   │   ├── 📁 gongbaekTimeSlot
-│   │   │   │        │   │   │   ├── 📁 application
-│   │   │   │        │   │   │   ├── 📁 dto
-│   │   │   │        │   │   │   └── 📁 infra
-│   │   │   │        │   │   ├── 📁 lectureTimeSlot
-│   │   │   │        │   │   │   ├── 📁 application
-│   │   │   │        │   │   │   ├── 📁 dto
-│   │   │   │        │   │   │   ├── 📁 infra
-│   │   │   │        │   │   │   └── 📁 vo
-│   │   │   │        │   │   └── 📁 vo
-│   │   │   │        │   ├── 📁 user
-│   │   │   │        │   │   ├── 📁 application
-│   │   │   │        │   │   ├── 📁 dto
-│   │   │   │        │   │   └── 📁 infra
-│   │   │   │        ├── 📁 global
-│   │   │   │        │   ├── 📁 annotation
-│   │   │   │        │   ├── 📁 aop
-│   │   │   │        │   ├── 📁 config
-│   │   │   │        │   ├── 📁 exception
-│   │   │   │        │   ├── 📁 jwt
-│   │   │   │        │   ├── 📁 schedule
-│   │   │   │        │   └── 📁 util
-│   │   │   │        ├── 📁 config
-│   │   │   │        └── Application.java
-│   │   │   └── 📁 resources
-│   └── 📁 test
+.
+├── Application.java
+├── api
+│   ├── advertisement
+│   │   └── controller
+│   ├── auth
+│   │   └── service
+│   │       └── PlatformAuthService.java
+│   ├── comment
+│   │   ├── controller
+│   │   │   └── CommentController.java
+│   │   ├── dto
+│   │   │   ├── DeleteCommentRequest.java
+│   │   │   ├── ReadCommentRequest.java
+│   │   │   ├── ReadCommentResponse.java
+│   │   │   ├── WriteCommentEntityDto.java
+│   │   │   ├── WriteCommentRequest.java
+│   │   │   └── WriteCommentResponse.java
+│   │   ├── facade
+│   │   │   └── CommentFacade.java
+│   │   ├── registry
+│   │   │   ├── CommentStrategy.java
+│   │   │   └── CommentStrategyRegistry.java
+│   │   ├── service
+│   │   │   └── CommentService.java
+│   │   └── strategy
+│   │       ├── EveryGroupCommentStrategy.java
+│   │       └── OnceGroupCommentStrategy.java
+│   ├── common
+│   │   ├── ApiResponse.java
+│   │   ├── HealthController.java
+│   │   ├── ResponseBuilder.java
+│   │   ├── ResponseError.java
+│   │   └── ResponseSuccess.java
+│   ├── email
+│   │   └── service
+│   │       ├── AuthCodeCacheService.java
+│   │       ├── EmailProperties.java
+│   │       └── MailService.java
+│   ├── exception
+│   │   ├── GlobalExceptionHandler.java
+│   │   └── GongBaekException.java
+│   ├── facade
+│   │   ├── GroupRequestFacade.java
+│   │   ├── LoginFacade.java
+│   │   ├── MailFacade.java
+│   │   ├── SearchSchoolFacade.java
+│   │   ├── SearchSchoolMajorFacade.java
+│   │   ├── SignUpFacade.java
+│   │   ├── SignupRequestFacade.java
+│   │   └── TimeTableFacade.java
+│   ├── gongbaekTimeSlot
+│   │   ├── controller
+│   │   │   └── GongbaekTimeController.java
+│   │   ├── dto
+│   │   │   └── ReadInvalidTimeResponse.java
+│   │   └── service
+│   │       └── GongbaekTimeSlotService.java
+│   ├── group
+│   │   ├── ActiveCombinedGroupVoPreparer.java
+│   │   ├── CombinedNearestGroupVo.java
+│   │   ├── CombinedNearestGroupVoPreparer.java
+│   │   ├── GroupStatusUpdater.java
+│   │   ├── GroupVoAggregator.java
+│   │   ├── controller
+│   │   │   └── GroupController.java
+│   │   ├── dto
+│   │   │   ├── ActiveGroupsResponse.java
+│   │   │   ├── CombinedGroupVos.java
+│   │   │   ├── FillGroupFilterRequest.java
+│   │   │   ├── FinalMyGroupResponse.java
+│   │   │   ├── GroupRequest.java
+│   │   │   ├── GroupResponse.java
+│   │   │   ├── GroupUserInfoResponseDto.java
+│   │   │   ├── LatestResponse.java
+│   │   │   ├── MyGroupResponse.java
+│   │   │   ├── NearestGroupResponse.java
+│   │   │   ├── PrepareRegisterInfo.java
+│   │   │   ├── ReadFillMembersRequest.java
+│   │   │   ├── ReadFillMembersResponse.java
+│   │   │   ├── RegisterGongbaekRequest.java
+│   │   │   └── RegisterGroupResponse.java
+│   │   ├── everyGroup
+│   │   │   ├── controller
+│   │   │   │   └── EveryGroupController.java
+│   │   │   ├── service
+│   │   │   │   └── EveryGroupService.java
+│   │   │   └── strategy
+│   │   │       ├── ApplyEveryGroupStrategy.java
+│   │   │       ├── CancelEveryGroupStrategy.java
+│   │   │       ├── DeleteEveryGroupStrategy.java
+│   │   │       ├── EveryGroupInfoStrategy.java
+│   │   │       ├── EveryGroupReadFillMemberStrategy.java
+│   │   │       ├── EveryGroupUserInfoStrategy.java
+│   │   │       ├── EveryLatestGroupStrategy.java
+│   │   │       ├── NearestEveryGroupResponseStrategy.java
+│   │   │       └── RegisterEveryGroupStrategy.java
+│   │   ├── facade
+│   │   │   ├── GroupFacade.java
+│   │   │   └── PrepareRegisterGongbaekFacade.java
+│   │   ├── onceGroup
+│   │   │   ├── controller
+│   │   │   │   └── OnceGroupController.java
+│   │   │   ├── service
+│   │   │   │   └── OnceGroupService.java
+│   │   │   └── strategy
+│   │   │       ├── ApplyOnceGroupStrategy.java
+│   │   │       ├── CancelOnceGroupStrategy.java
+│   │   │       ├── DeleteOnceGroupStrategy.java
+│   │   │       ├── NearestOnceGroupResponseStrategy.java
+│   │   │       ├── OnceGroupInfoStrategy.java
+│   │   │       ├── OnceGroupReadFillMemberStrategy.java
+│   │   │       ├── OnceGroupUserInfoStrategy.java
+│   │   │       ├── OnceLatestGroupStrategy.java
+│   │   │       └── RegisterOnceGroupStrategy.java
+│   │   ├── registry
+│   │   │   ├── ApplyGroupStrategy.java
+│   │   │   ├── ApplyGroupStrategyRegistry.java
+│   │   │   ├── CancelGroupStrategy.java
+│   │   │   ├── CancelGroupStrategyRegistry.java
+│   │   │   ├── DeleteGroupStrategy.java
+│   │   │   ├── DeleteGroupStrategyRegistry.java
+│   │   │   ├── GroupInfoStrategy.java
+│   │   │   ├── GroupInfoStrategyRegistry.java
+│   │   │   ├── GroupUserInfoStrategy.java
+│   │   │   ├── GroupUserInfoStrategyRegistry.java
+│   │   │   ├── LatestGroupStrategy.java
+│   │   │   ├── LatestGroupStrategyRegistry.java
+│   │   │   ├── MyGroupStrategy.java
+│   │   │   ├── MyGroupStrategyRegistry.java
+│   │   │   ├── NearestGroupResponseStrategy.java
+│   │   │   ├── NearestGroupResponseStrategyRegistry.java
+│   │   │   ├── ReadFillMemberStrategy.java
+│   │   │   ├── ReadFillMemberStrategyRegistry.java
+│   │   │   ├── RegisterGroupStrategy.java
+│   │   │   └── RegisterGroupStrategyRegistry.java
+│   │   ├── strategy
+│   │   │   ├── MyApplyGroupStrategy.java
+│   │   │   ├── MyRegisterGroupStrategy.java
+│   │   │   ├── NearestBothGroupResponseStrategy.java
+│   │   │   └── NearestEmptyResponseStrategy.java
+│   │   └── validator
+│   │       └── GroupValidator.java
+│   ├── lectureTimeSlot
+│   │   ├── controller
+│   │   └── service
+│   │       └── LectureTimeSlotService.java
+│   ├── mapper
+│   │   └── GroupResponseMapper.java
+│   ├── school
+│   │   ├── controller
+│   │   │   └── SchoolController.java
+│   │   ├── dto
+│   │   │   └── SchoolSearchResponse.java
+│   │   └── service
+│   │       └── SchoolService.java
+│   ├── schoolMajor
+│   │   ├── controller
+│   │   │   └── SchoolMajorController.java
+│   │   ├── dto
+│   │   │   └── SearchedSchoolMajorResponse.java
+│   │   └── service
+│   │       └── SchoolMajorService.java
+│   ├── user
+│   │   ├── NicknameValidator.java
+│   │   ├── controller
+│   │   │   └── UserController.java
+│   │   ├── dto
+│   │   │   ├── LoginRequest.java
+│   │   │   ├── SignUpRequest.java
+│   │   │   ├── SignUpResponse.java
+│   │   │   ├── UserProfileResponse.java
+│   │   │   ├── UserSchoolResponseDto.java
+│   │   │   └── ValidIntroductionRequest.java
+│   │   ├── facade
+│   │   │   └── UserFacade.java
+│   │   ├── service
+│   │   │   └── UserService.java
+│   │   └── vo
+│   │       └── TimeTableVo.java
+│   ├── userEveryGroup
+│   │   └── service
+│   │       └── UserEveryGroupService.java
+│   └── userOnceGroup
+│       └── service
+│           └── UserOnceGroupService.java
+├── domain
+│   ├── BaseTimeEntity.java
+│   ├── advertisement
+│   │   ├── AdvertisementEntity.java
+│   │   ├── application
+│   │   └── infra
+│   ├── comment
+│   │   ├── CommentEntity.java
+│   │   ├── application
+│   │   │   └── CommentServiceImpl.java
+│   │   └── infra
+│   │       └── CommentRepository.java
+│   ├── common
+│   │   └── SameSchoolValidator.java
+│   ├── constant
+│   │   ├── Category.java
+│   │   ├── FillGroupType.java
+│   │   ├── Gender.java
+│   │   ├── GroupType.java
+│   │   ├── Mbti.java
+│   │   ├── Platform.java
+│   │   ├── Status.java
+│   │   └── WeekDay.java
+│   ├── group
+│   │   ├── GroupCommentVoMaker.java
+│   │   ├── GroupVoMaker.java
+│   │   ├── IntroductionValidator.java
+│   │   ├── LocationValidator.java
+│   │   ├── TitleValidator.java
+│   │   ├── dto
+│   │   │   ├── GroupVo.java
+│   │   │   ├── ReadEveryGroupMember.java
+│   │   │   ├── ReadOnceGroupMember.java
+│   │   │   └── RegisterGroupServiceRequest.java
+│   │   ├── everyGroup
+│   │   │   ├── EveryGroupEntity.java
+│   │   │   ├── application
+│   │   │   │   └── EveryGroupServiceImpl.java
+│   │   │   ├── dto
+│   │   │   │   ├── EveryGroupDto.java
+│   │   │   │   ├── EveryGroupVo.java
+│   │   │   │   └── ReadEveryGroup.java
+│   │   │   ├── infra
+│   │   │   │   └── EveryGroupRepository.java
+│   │   │   └── vo
+│   │   │       └── ReadEveryGroupCommentCommonVo.java
+│   │   ├── onceGroup
+│   │   │   ├── OnceGroupEntity.java
+│   │   │   ├── application
+│   │   │   │   └── OnceGroupServiceImpl.java
+│   │   │   ├── dto
+│   │   │   │   ├── OnceGroupDto.java
+│   │   │   │   ├── OnceGroupVo.java
+│   │   │   │   └── ReadOnceGroup.java
+│   │   │   ├── infra
+│   │   │   │   └── OnceGroupRepository.java
+│   │   │   └── vo
+│   │   │       └── ReadOnceGroupCommentCommonVo.java
+│   │   └── vo
+│   │       ├── GroupCommentVo.java
+│   │       ├── NearestGroup.java
+│   │       └── ReadCommentGroup.java
+│   ├── school
+│   │   ├── SchoolEntity.java
+│   │   ├── application
+│   │   │   ├── School.java
+│   │   │   └── SchoolServiceImpl.java
+│   │   ├── dto
+│   │   │   └── SchoolSearchVo.java
+│   │   └── infra
+│   │       └── SchoolRepository.java
+│   ├── schoolMajor
+│   │   ├── SchoolMajorEntity.java
+│   │   ├── application
+│   │   │   ├── SchoolMajor.java
+│   │   │   └── SchoolMajorServiceImpl.java
+│   │   ├── dto
+│   │   │   └── SearchSchoolMajorVo.java
+│   │   └── infra
+│   │       └── SchoolMajorRepository.java
+│   ├── timslot
+│   │   ├── ReadCommonInvalidTimeVoMaker.java
+│   │   ├── gongbaekTimeSlot
+│   │   │   ├── GongbaekTimeSlotEntity.java
+│   │   │   ├── application
+│   │   │   │   └── GongbaekTimeSlotServiceImpl.java
+│   │   │   ├── dto
+│   │   │   │   └── GongbaekTimeSlotRequest.java
+│   │   │   └── infra
+│   │   │       └── GongbaekTimeSlotRepository.java
+│   │   ├── lectureTimeSlot
+│   │   │   ├── LectureTimeSlotEntity.java
+│   │   │   ├── application
+│   │   │   │   └── LectureTimeSlotServiceImpl.java
+│   │   │   ├── dto
+│   │   │   │   └── LectureTimeSlotRequest.java
+│   │   │   ├── infra
+│   │   │   │   └── LectureTimeSlotRepository.java
+│   │   │   └── vo
+│   │   │       └── LectureTimeSlotVo.java
+│   │   └── vo
+│   │       └── ReadCommonInvalidTimeVo.java
+│   ├── user
+│   │   ├── UserEntity.java
+│   │   ├── application
+│   │   │   └── UserServiceImpl.java
+│   │   ├── dto
+│   │   │   ├── SaveUserSignUp.java
+│   │   │   ├── UserInfo.java
+│   │   │   ├── UserProfile.java
+│   │   │   └── UserSchoolDto.java
+│   │   └── infra
+│   │       └── UserRepository.java
+│   ├── userEveryGroup
+│   │   ├── UserEveryGroupEntity.java
+│   │   ├── application
+│   │   │   └── UserEveryGroupServiceImpl.java
+│   │   ├── dto
+│   │   │   ├── FillMember.java
+│   │   │   └── NearestEveryGroup.java
+│   │   └── infra
+│   │       └── UserEveryGroupRepository.java
+│   └── userOnceGroup
+│       ├── UserOnceGroupEntity.java
+│       ├── application
+│       │   └── UserOnceGroupServiceImpl.java
+│       ├── dto
+│       │   └── NearestOnceGroup.java
+│       └── infra
+│           └── UserOnceGroupRepository.java
+├── global
+│   ├── annotation
+│   │   ├── Facade.java
+│   │   ├── Registry.java
+│   │   └── Strategy.java
+│   ├── aop
+│   │   └── LoggingAop.java
+│   ├── config
+│   ├── exception
+│   ├── jwt
+│   │   ├── JwtProperties.java
+│   │   ├── JwtService.java
+│   │   └── TokenVo.java
+│   ├── schedule
+│   │   ├── GroupUpdateScheduler.java
+│   │   └── SchedulerConfig.java
+│   └── util
+│       ├── LengthValidator.java
+│       ├── TimeConverter.java
+│       └── TimeValidator.java
+└── infra
+    ├── Auth.java
+    ├── oauth
+    │   ├── AppleClientSecretGenerator.java
+    │   ├── AppleOAuthClient.java
+    │   ├── AppleProperties.java
+    │   ├── KakaoOAuthClient.java
+    │   ├── KakaoProperties.java
+    │   └── OAuthClient.java
+    ├── redis
+    │   └── RedisService.java
+    └── service
+        ├── AppleLoginService.java
+        ├── KakaoLoginService.java
+        └── TokenParser.java
 
 ```
 
-<br><br>

@@ -9,14 +9,12 @@
 
 ## ✨ Contributors
 
----
-
-| |                                                                                                        ⭐️**리더** 김효준 [@khyojun](https://github.com/khyojun)                                                                                                        |                                                                                                                             이현진 [@2hyunjinn](https://github.com/2hyunjinn)                                                                                                                             |
-| :---: |:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| |                                                                                      ![효준](https://github.com/user-attachments/assets/9b8bba10-1729-4f74-ae96-ad721bf1fa83)                                                                                       |                                                                                                         ![현진](https://github.com/user-attachments/assets/0b5dfc62-7f39-4890-bb61-bf1e9a6a14d8)                                                                                                         |
-| **역할** |                                                                                                                          백엔드 개발 / 인프라 담당                                                                                                                          |                                                                                                                                             백엔드 개발 / QA 주관                                                                                                                                             |
-| **담당 API** | <ul><li>내 강의 시간표 조회 API</li><li>모임 등록하기 API</li><li>모임 참여 멤버 전체 조회 API</li><li>댓글 작성 API</li><li>댓글 조회 API (모임방 / 채우기)</li><li>댓글 삭제 API</li><li>학교 검색 API</li><li>학과 검색 API</li><li>닉네임 검증 API</li><li>소개글 검증 API</li><li>회원가입 API</li><li>JWT 재발급 API</li></ul> | <ul><li>나의 모임 전체 조회 API</li><li>참여 가능한 모임 조회 API (최신순 5개)</li><li>가장 가까운 모임 1개 조회 API</li><li>채우기 모임 전체 조회 API</li><li>모임 신청 API</li><li>모임 신청 취소하기 API</li><li>나의 모임 삭제하기 API</li><li>등록자 프로필 조회 API</li><li>모임 상세 정보 조회 API</li><li>유저 프로필 조회 API (학교명 / 닉네임)</li><li>광고 배너 전체 조회 API (5개)</li></ul> |
-| **기타 작업** |                                                                <ul><li>Public / Private Subnet 분리 작업</li><li>HTTPS 설정 및 도메인 연결   </li><li>Docker 관련 설정 진행</li><li>무중단 배포를 위한 **스크립트 작성**</li></ul>                                                                |                                                                                                                               <ul><li>서버 내부 QA 주관 및 보수 작업 진행 </li></ul>                                                                                                                                |
+| | ⭐️**리더** 김효준 [@khyojun](https://github.com/khyojun) | 이현진 [@2hyunjinn](https://github.com/2hyunjinn) |
+| :--- | :--- | :--- |
+| | ![효준](https://github.com/user-attachments/assets/9b8bba10-1729-4f74-ae96-ad721bf1fa83) | ![현진](https://github.com/user-attachments/assets/0b5dfc62-7f39-4890-bb61-bf1e9a6a14d8) |
+| **역할** | 백엔드 개발 / 인프라 담당 | 백엔드 개발 / QA 주관 |
+| **담당 API** | <ul>  <li><strong>🗂️ 유저 관련</strong>  <ul>  <li>학교 검색 API</li>  <li>학과 검색 API</li>  <li>닉네임 검증 API</li>  <li>회원가입 API</li>  <li>소개글 검증 API</li>  <li>accessToken 재발급 API</li>  </ul>  </li>  <li><strong>📅 시간표 관련</strong>  <ul>  <li>내 강의 시간표 조회 API</li>  </ul>  </li>  <li><strong>🧩 모임 관련</strong>  <ul>  <li>모임 등록하기 API</li>  <li>모임 참여 멤버 전체 조회 API</li>  </ul>  </li>  <li><strong>💬 댓글 관련</strong>  <ul>  <li>댓글 작성 API</li>  <li>댓글 조회 API (모임방 / 채우기)</li>  <li>댓글 삭제 API</li>  </ul>  </li>  </ul> | <ul>  <li><strong>🗂️ 유저 관련</strong>  <ul>  <li>소셜 로그인(APPLE, KAKAO) API</li>  <li>로그아웃 API</li>  <li>회원탈퇴 API</li>  <li>학교 이메일 인증 코드 전송 API</li>  <li>학교 이메일 인증 코드 인증 API</li>  <li>유저 프로필 조회 API (학교명 / 닉네임)</li>  <li>나의 프로필 조회 API</li>  </ul>  </li>  <li><strong>🧩 모임 관련</strong>  <ul>  <li>나의 모임 전체 조회 API</li>  <li>참여 가능한 모임 조회 API</li>  <li>가장 가까운 모임 1개 조회 API</li>  <li>채우기 모임 전체 조회 API</li>  <li>모임 신청 API</li>  <li>모임 신청 취소하기 API</li>  <li>나의 모임 삭제하기 API</li>  <li>모임 상세 정보 조회 API</li>  <li>등록자 프로필 조회 API</li>  </ul>  </li></ul> |
+| **기타 작업** | <ul><li>Public / Private Subnet 분리 작업</li><li>HTTPS 설정 및 도메인 연결</li><li>Docker 관련 설정 진행</li><li>무중단 배포를 위한 <strong>스크립트 작성</strong></li></ul> | <ul><li>서버 내부 QA 주관 및 보수 작업 진행</li><li>카카오 로그인 인증 플로우 구현 (RestClient 기반 사용자 정보 검증)</li><li>애플 로그인 인증 플로우 설계 및 토큰 파싱 구현 (idToken 디코딩 및 sub 추출 포함)</li></ul> |
 
 ---
 
@@ -46,9 +44,9 @@
 
 ## 🗂️ ERD
 
-[🔗 ERD 자세히 보기](https://dbdiagram.io/d/gongbaek-677813005406798ef737c1cb)
+[🔗 ERD 자세히 보기](https://dbdiagram.io/d/gongbaek-67f3d76c4f7afba184a2ea24)
 
-![GONGBAEK-ERD](https://github.com/user-attachments/assets/6ddd368b-7231-4cec-9a54-479f31b485af)
+![gongbaek-erd](https://github.com/user-attachments/assets/53b28484-5337-4589-a0c7-a117b50f553c)
 
 ---
 

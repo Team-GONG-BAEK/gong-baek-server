@@ -25,169 +25,141 @@ import java.util.Date;
 @Slf4j
 public class JwtService {
     private static final String USER_ID = "userId";
-    private static final String PLATFROM_ID = "platformId";
+    private static final String PLATFORM_ID = "platformId";
     private static final String BEARER = "Bearer ";
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private final JwtProperties jwtProperties;
     private final UserService userService;
 
     public String createAccessToken(final Long userId) {
+        return buildToken(userId.toString(), jwtProperties.getAccessExpiration(), USER_ID, userId);
+    }
+
+    public String createRefreshToken(final Long userId) {
+        return buildToken(userId.toString(), jwtProperties.getRefreshExpiration(), USER_ID, userId);
+    }
+
+    public String createTempAccessToken(final String platformId) {
+        return buildToken(platformId, jwtProperties.getAccessExpiration(), PLATFORM_ID, platformId);
+    }
+
+    public String createTempRefreshToken(final String platformId) {
+        return buildToken(platformId, jwtProperties.getRefreshExpiration(), PLATFORM_ID, platformId);
+    }
+
+    private String buildToken(String subject, long expiration, String claimKey, Object claimValue) {
         SecretKey secretKey = getSecretKey();
 
         long expirationMillis = jwtProperties.getAccessExpiration();
         log.info("[JwtService] access token expirationMillis: {}", expirationMillis);
 
         return Jwts.builder()
-            .subject(userId.toString())
-            .expiration(new Date(System.currentTimeMillis() + jwtProperties.getAccessExpiration()))
-            .claim(USER_ID, userId)
-            .signWith(secretKey)
-            .compact();
-    }
-
-    public String createRefreshToken(final Long userId) {
-        SecretKey secretKey = getSecretKey();
-        return buildRefreshToken(userId, secretKey);
-    }
-
-    public String createTempAccessToken(final String platformId) {
-        SecretKey secretKey = getSecretKey();
-        return Jwts.builder()
-                .subject(platformId)
-                .expiration(new Date(System.currentTimeMillis() + jwtProperties.getAccessExpiration()))
-                .claim(PLATFROM_ID, platformId)
+                .subject(subject)
+                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .claim(claimKey, claimValue)
                 .signWith(secretKey)
                 .compact();
-    }
-
-    public String createTempRefreshToken(final String platformId) {
-        SecretKey secretKey = getSecretKey();
-        return Jwts.builder()
-                .subject(platformId)
-                .expiration(new Date(System.currentTimeMillis() + jwtProperties.getRefreshExpiration()))
-                .claim(PLATFROM_ID, platformId)
-                .signWith(secretKey)
-                .compact();
-    }
-
-
-    private String buildRefreshToken(Long userId, SecretKey secretKey) {
-        return Jwts.builder()
-            .subject(userId.toString())
-            .expiration(new Date(System.currentTimeMillis() + jwtProperties.getRefreshExpiration()))
-            .claim(USER_ID, userId)
-            .signWith(secretKey)
-            .compact();
     }
 
     @Transactional
     public TokenVo reIssueToken(final String refreshToken) {
-        Long userId = parseTokenAndGetUserId(refreshToken);
-        UserEntity findUser = userService.getUserById(userId);
-        String extractPrefixToken = refreshToken.split(" ")[1];
-        isValidRefreshToken(findUser, extractPrefixToken);
-        String renewRefreshToken = createRefreshToken(userId);
-        findUser.updateRefreshToken(renewRefreshToken);
+        isValidRefreshToken(refreshToken);
+        Long userId = parseRefreshTokenAndGetUserId(refreshToken);
+        UserEntity user = userService.getUserById(userId);
 
-        return TokenVo.of(userId, createAccessToken(userId), renewRefreshToken);
+        String newRefreshToken = createRefreshToken(userId);
+        user.updateRefreshToken(newRefreshToken);
+
+        return TokenVo.of(userId, createAccessToken(userId), newRefreshToken);
     }
-
-    private void isValidRefreshToken(UserEntity findUser, String refreshToken) {
-        userService.validateRefreshToken(findUser, refreshToken);
-    }
-
 
     public Long parseTokenAndGetUserId(String token) {
-        isValidToken(token);
+        return parseToken(token, false);
+    }
 
+    public Long parseRefreshTokenAndGetUserId(String token) {
+        return parseToken(token, true);
+    }
+
+    private Long parseToken(String bearerToken, boolean isRefreshToken) {
+        String token = extractToken(bearerToken);
         try {
-            String splitToken = token.split(" ")[1];
-            SecretKey secretKey = getSecretKey();
-            Long userId = parseTokenAndGetUserId(secretKey, splitToken);
-
-            if (userService.getUserById(userId).getRefreshToken() == null) {
-                throw new GongBaekException(ResponseError.INVALID_TOKEN);
-            }
-            return userId;
-        } catch (JwtException | NumberFormatException e) {
-            if (e instanceof ExpiredJwtException) {
-                log.error("JWT expired: {}", e.getMessage());
-                throw new GongBaekException(ResponseError.EXPIRED_TOKEN);
-            }
-
-            log.error("Invalid JWT: {}", e.getMessage());
+            Claims claims = extractClaims(token);
+            return extractUserIdFromClaims(claims);
+        } catch (ExpiredJwtException e) {
+            log.error("JWT expired ({}): {}", isRefreshToken ? "refresh" : "access", e.getMessage());
+            throw new GongBaekException(isRefreshToken ? ResponseError.EXPIRED_REFRESH_TOKEN : ResponseError.EXPIRED_TOKEN);
+        } catch (JwtException | IllegalArgumentException e) {
+            log.error("JWT invalid ({}): {}", isRefreshToken ? "refresh" : "access", e.getMessage());
             throw new GongBaekException(ResponseError.INVALID_TOKEN);
         }
     }
 
-    private Long parseTokenAndGetUserId(SecretKey secretKey, String token) {
-        Claims claims = Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+    public void isValidAccessToken(String token) {
+        validateJwt(token, false);
+    }
 
-        if (!claims.containsKey(USER_ID)) {
-            log.error("잘못된 accessToken: userId 없음.");
-            throw new GongBaekException(ResponseError.INVALID_TOKEN);
-        }
+    public void isValidRefreshToken(String token) {
+        validateJwt(token, true);
+    }
 
+    private void validateJwt(String bearerToken, boolean isRefreshToken) {
+        String token = extractToken(bearerToken);
         try {
-            Object userIdObject = claims.get(USER_ID);
-            if (userIdObject instanceof Number) {
-                return ((Number) userIdObject).longValue();
-            } else {
-                throw new GongBaekException(ResponseError.INVALID_TOKEN);
-            }
-        } catch (Exception e) {
-            log.error("userId 변환 오류: {}", e.getMessage());
+            extractClaims(token); // 파싱만으로 유효성 검증
+        } catch (ExpiredJwtException e) {
+            log.error("JWT expired ({}): {}", isRefreshToken ? "refresh" : "access", e.getMessage());
+            throw new GongBaekException(isRefreshToken ? ResponseError.EXPIRED_REFRESH_TOKEN : ResponseError.EXPIRED_TOKEN);
+        } catch (JwtException | IllegalArgumentException e) {
+            log.error("JWT invalid ({}): {}", isRefreshToken ? "refresh" : "access", e.getMessage());
             throw new GongBaekException(ResponseError.INVALID_TOKEN);
         }
     }
 
-
-    public String extractPlatformUserIdFromToken(String token) {
+    public String extractPlatformUserIdFromToken(String bearerToken) {
         try {
-            String splitToken = token.split(" ")[1];
-            SecretKey secretKey = getSecretKey();
-            return parseTokenAndGetPlatformUserId(secretKey, splitToken);
+            String token = extractToken(bearerToken);
+            Claims claims = extractClaims(token);
+            return claims.get(PLATFORM_ID).toString();
         } catch (JwtException e) {
-            log.error("JWT parsing error: {}", e.getMessage());
+            log.error("Platform ID 토큰 파싱 실패: {}", e.getMessage());
             throw new GongBaekException(ResponseError.INVALID_TOKEN);
         }
     }
 
-    private String parseTokenAndGetPlatformUserId(SecretKey secretKey, String token) {
+    private String extractToken(String bearerToken) {
+        if (bearerToken == null || !bearerToken.startsWith(BEARER)) {
+            throw new GongBaekException(ResponseError.INVALID_TOKEN);
+        }
+        return bearerToken.substring(BEARER.length());
+    }
+
+    private Claims extractClaims(String token) {
+        SecretKey secretKey = getSecretKey();
         return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token)
-                .getPayload()
-                .get(PLATFROM_ID)
-                .toString();
+                .getPayload();
     }
 
+    private Long extractUserIdFromClaims(Claims claims) {
+        try {
+            Object userId = claims.get(USER_ID);
+            if (userId instanceof Number) {
+                return ((Number) userId).longValue();
+            } else {
+                return Long.parseLong(userId.toString());
+            }
+        } catch (Exception e) {
+            log.error("userId 추출 실패: {}", e.getMessage());
+            throw new GongBaekException(ResponseError.INVALID_TOKEN);
+        }
+    }
 
     private SecretKey getSecretKey() {
         return Keys.hmacShaKeyFor(
             jwtProperties.getKey().getBytes(StandardCharsets.UTF_8));
-    }
-
-
-    public void isValidToken(String token) {
-        if (token == null || !token.startsWith(BEARER)) {
-            throw new GongBaekException(ResponseError.INVALID_TOKEN);
-        }
-
-        try {
-            String splitToken = token.split(" ")[1];
-            SecretKey secretKey = getSecretKey();
-
-            parseTokenAndGetUserId(secretKey, splitToken);
-        } catch (JwtException | NumberFormatException e) {
-            log.error("JWT parsing error : {}", e.getMessage());
-            throw new GongBaekException(ResponseError.INVALID_TOKEN);
-        }
     }
 
     public static JsonNode parseJson(String jsonString) {

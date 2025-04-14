@@ -7,7 +7,6 @@ import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.user.UserEntity;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -110,14 +109,10 @@ public class JwtService {
             }
             return userId;
         } catch (JwtException | NumberFormatException e) {
-            if (e instanceof ExpiredJwtException) {
-                log.error("JWT expired: {}", e.getMessage());
-                throw new GongBaekException(ResponseError.EXPIRED_TOKEN);
-            }
-
-            log.error("Invalid JWT: {}", e.getMessage());
+            log.error("JWT parsing error : {}", e.getMessage());
             throw new GongBaekException(ResponseError.INVALID_TOKEN);
         }
+
     }
 
     private Long parseTokenAndGetUserId(SecretKey secretKey, String token) {

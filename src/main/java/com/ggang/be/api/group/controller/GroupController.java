@@ -44,7 +44,7 @@ public class GroupController {
             @RequestParam("groupId") long groupId,
             @RequestParam("groupType") GroupType groupType
     ){
-        jwtService.isValidToken(accessToken);
+        jwtService.isValidAccessToken(accessToken);
 
         GroupUserInfoResponseDto groupUserInfoResponseDto = GroupUserInfoResponseDto.of(
                 groupFacade.getGroupUserInfo(groupType, groupId));

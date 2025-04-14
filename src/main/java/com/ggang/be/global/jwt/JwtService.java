@@ -185,7 +185,12 @@ public class JwtService {
 
             parseTokenAndGetUserId(secretKey, splitToken);
         } catch (JwtException | NumberFormatException e) {
-            log.error("JWT parsing error : {}", e.getMessage());
+            if (e instanceof ExpiredJwtException) {
+                log.error("JWT expired: {}", e.getMessage());
+                throw new GongBaekException(ResponseError.EXPIRED_TOKEN);
+            }
+
+            log.error("Invalid JWT: {}", e.getMessage());
             throw new GongBaekException(ResponseError.INVALID_TOKEN);
         }
     }

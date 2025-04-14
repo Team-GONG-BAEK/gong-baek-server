@@ -82,7 +82,6 @@ public class JwtServiceTest {
 
         when(jwtProperties.getKey()).thenReturn(secret);
         when(userService.getUserById(userId)).thenReturn(fixture);
-        doNothing().when(userService).validateRefreshToken(fixture, token);
 
         String accessToken = jwtService.createAccessToken(userId);
         String refreshToken = jwtService.createRefreshToken(userId);
@@ -94,7 +93,7 @@ public class JwtServiceTest {
         TokenVo tokenVo = jwtService.reIssueToken(addBearerPrefix);
 
         // then
-       Assertions.assertThat(tokenVo.accessToken()).isNotEqualTo(accessToken);
+        Assertions.assertThat(tokenVo.accessToken()).isNotEqualTo(accessToken);
         Assertions.assertThat(tokenVo.refreshToken()).isNotEqualTo(refreshToken);
     }
 }

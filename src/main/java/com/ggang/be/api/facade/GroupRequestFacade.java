@@ -47,7 +47,7 @@ public class GroupRequestFacade {
     }
 
     private void isValidCoverImg(RegisterGongbaekRequest dto) {
-        if(dto.coverImg()<1 || dto.coverImg()>6) {
+        if(dto.coverImg()<0 || dto.coverImg()>5) {
             log.error("그룹 coverImg 검증에 실패하였습니다.");
             throw new GongBaekException(ResponseError.BAD_REQUEST);
         }

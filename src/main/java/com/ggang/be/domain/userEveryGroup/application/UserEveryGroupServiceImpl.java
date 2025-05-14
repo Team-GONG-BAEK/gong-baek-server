@@ -3,13 +3,13 @@ package com.ggang.be.domain.userEveryGroup.application;
 
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
-import com.ggang.be.domain.group.vo.NearestGroup;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.ReadEveryGroupMember;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.ReadEveryGroup;
+import com.ggang.be.domain.group.vo.NearestGroup;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userEveryGroup.UserEveryGroupEntity;
 import com.ggang.be.domain.userEveryGroup.dto.FillMember;
@@ -36,15 +36,15 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
     @Override
     public List<FillMember> getEveryGroupUsersInfo(ReadEveryGroupMember dto) {
         List<UserEveryGroupEntity> userEveryGroupEntityById = userEveryGroupRepository.findUserEveryGroupEntityByEveryGroupEntity(
-            dto.everyGroupEntity());
+                dto.everyGroupEntity());
 
         return userEveryGroupEntityById.stream().map(this::makeUserEveryFillMemberResponse)
-            .toList();
+                .toList();
     }
 
     @Override
     @Transactional
-    public void applyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity){
+    public void applyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
         UserEveryGroupEntity userEveryGroupEntity = UserEveryGroupEntity.builder()
                 .userEntity(currentUser)
                 .everyGroupEntity(everyGroupEntity)
@@ -56,7 +56,7 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
 
     @Override
     @Transactional
-    public void cancelEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity){
+    public void cancelEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
         UserEveryGroupEntity userEveryGroupEntity
                 = userEveryGroupRepository.findByUserEntityAndEveryGroupEntity(currentUser, everyGroupEntity)
                 .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_CANCEL_NOT_FOUND));
@@ -74,7 +74,7 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
     }
 
     @Override
-    public ReadEveryGroup getMyAppliedGroups(UserEntity currentUser, boolean status){
+    public ReadEveryGroup getMyAppliedGroups(UserEntity currentUser, boolean status) {
         List<UserEveryGroupEntity> userEveryGroupEntities = getMyEveryGroup(currentUser);
 
         List<EveryGroupEntity> filteredGroups = getGroupsByStatus(userEveryGroupEntities, status).stream()
@@ -87,7 +87,7 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
     }
 
     @Override
-    public NearestGroup getMyNearestGroup(UserEntity currentUser){
+    public NearestGroup getMyNearestGroup(UserEntity currentUser) {
         List<UserEveryGroupEntity> userEveryGroupEntities = getMyEveryGroup(currentUser);
 
         EveryGroupEntity nearestGroup = getNearestGroup(getGroupsByStatus(userEveryGroupEntities, true));
@@ -101,14 +101,21 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
     public void isValidCommentAccess(UserEntity userEntity, final long groupId) {
         List<UserEveryGroupEntity> userEveryGroupEntities = userEveryGroupRepository.findAllByUserEntity(userEntity);
 
-        if(userEveryGroupEntities.stream().noneMatch(ue -> ue.getEveryGroupEntity().getId().equals(groupId)))
+        if (userEveryGroupEntities.stream().noneMatch(ue -> ue.getEveryGroupEntity().getId().equals(groupId)))
             throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
 
     }
 
     @Override
-    public void deleteUserEveryGroup(UserEntity user){
-        userEveryGroupRepository.deleteAll(user.getUserEveryGroupEntities());
+    public void deleteUserEveryGroup(UserEntity user) {
+        List<UserEveryGroupEntity> userEveryGroups = user.getUserEveryGroupEntities();
+
+        for (UserEveryGroupEntity userEveryGroup : userEveryGroups) {
+            EveryGroupEntity everyGroup = userEveryGroup.getEveryGroupEntity();
+            everyGroup.decreaseCurrentPeopleCount();
+        }
+
+        userEveryGroupRepository.deleteAll(userEveryGroups);
     }
 
     private EveryGroupEntity getNearestGroup(List<EveryGroupEntity> groups) {
@@ -117,7 +124,7 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
                 .orElse(null);
     }
 
-    private List<UserEveryGroupEntity> getMyEveryGroup(UserEntity currentUser){
+    private List<UserEveryGroupEntity> getMyEveryGroup(UserEntity currentUser) {
         return userEveryGroupRepository.findByUserEntity_id(currentUser.getId());
     }
 
@@ -131,8 +138,12 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
     private FillMember makeUserEveryFillMemberResponse(UserEveryGroupEntity ue) {
         EveryGroupEntity everyGroupEntity = ue.getEveryGroupEntity();
         UserEntity userEntity = ue.getUserEntity();
-        boolean isHost = everyGroupEntity.getUserEntity().getNickname()
-            .equals(userEntity.getNickname());
+        UserEntity hostEntity = everyGroupEntity.getUserEntity();
+        boolean isHost = false;
+        if (hostEntity != null) {
+            isHost = everyGroupEntity.getUserEntity().getNickname()
+                    .equals(userEntity.getNickname());
+        }
         return FillMember.of(userEntity, isHost);
     }
 }

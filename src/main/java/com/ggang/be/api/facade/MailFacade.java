@@ -27,11 +27,12 @@ public class MailFacade {
 
     public void sendCodeToEmail(String toEmail, String schoolName) {
         userService.checkDuplicatedEmail(toEmail);
+        log.info("toEmail: {}, appEmail: {}", toEmail, appProperties.getReviewEmail());
         if (!toEmail.equals(appProperties.getReviewEmail())) {
             verifyDomain(toEmail, schoolName);
         }
         String authCode = toEmail.equals(appProperties.getReviewEmail())
-                ? appProperties.getFixedAuthCode()
+                ? appProperties.getEmailCode()
                 : mailService.createCode();
 
         authCodeCacheService.saveAuthCode(toEmail, authCode);
@@ -58,9 +59,11 @@ public class MailFacade {
         String schoolDomain = schoolService.findSchoolDomainByName(schoolName);
         String[] emailDomain = email.substring(email.indexOf("@") + 1).split("\\.");
 
-        if (!Arrays.asList(emailDomain).contains(schoolDomain)) {
-            log.info("schoolDomain: {}, emailDomainParts: {}", schoolDomain, Arrays.toString(emailDomain));
-            throw new GongBaekException(ResponseError.INVALID_EMAIL_DOMAIN);
+        if(!email.equals(appProperties.getReviewEmail())) {
+            if (!Arrays.asList(emailDomain).contains(schoolDomain)) {
+                log.info("schoolDomain: {}, emailDomainParts: {}", schoolDomain, Arrays.toString(emailDomain));
+                throw new GongBaekException(ResponseError.INVALID_EMAIL_DOMAIN);
+            }
         }
     }
 }

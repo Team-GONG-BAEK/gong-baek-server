@@ -1,6 +1,7 @@
 package com.ggang.be.api.facade;
 
 import com.ggang.be.api.common.ResponseError;
+import com.ggang.be.api.email.service.AppProperties;
 import com.ggang.be.api.email.service.AuthCodeCacheService;
 import com.ggang.be.api.email.service.EmailProperties;
 import com.ggang.be.api.email.service.MailService;
@@ -25,6 +26,9 @@ class MailFacadeTest {
 
     @Mock
     private EmailProperties emailProperties;
+
+    @Mock
+    private AppProperties appProperties;
 
     @Mock
     private UserService userService;

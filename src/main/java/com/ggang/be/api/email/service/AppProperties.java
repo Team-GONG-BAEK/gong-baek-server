@@ -7,9 +7,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Getter
 @Setter
-@Configuration
 @ConfigurationProperties(prefix = "app")
 public class AppProperties {
     private String reviewEmail;
-    private String fixedAuthCode;
+    private String emailCode;
 }

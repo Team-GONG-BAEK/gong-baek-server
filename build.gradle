@@ -70,8 +70,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-aop'
 
     // email
-    implementation 'org.springframework.boot:spring-boot-starter-mail:3.0.5'
-    implementation 'javax.mail:javax.mail-api:1.6.2'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 
     // redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'

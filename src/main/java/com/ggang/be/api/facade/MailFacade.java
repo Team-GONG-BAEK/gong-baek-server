@@ -41,7 +41,9 @@ public class MailFacade {
 
     public void verifiedCode(String email, String schoolName, String authCode) {
         userService.checkDuplicatedEmail(email);
-        verifyDomain(email, schoolName);
+        if (!email.equals(appProperties.getReviewEmail())) {
+            verifyDomain(email, schoolName);
+        }
 
         String cachedAuthCode = authCodeCacheService.getAuthCode(email);
 

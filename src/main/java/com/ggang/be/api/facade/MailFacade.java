@@ -1,6 +1,7 @@
 package com.ggang.be.api.facade;
 
 import com.ggang.be.api.common.ResponseError;
+import com.ggang.be.api.email.service.AppProperties;
 import com.ggang.be.api.email.service.AuthCodeCacheService;
 import com.ggang.be.api.email.service.MailService;
 import com.ggang.be.api.exception.GongBaekException;
@@ -20,14 +21,19 @@ public class MailFacade {
     private final MailService mailService;
     private final SchoolService schoolService;
     private final AuthCodeCacheService authCodeCacheService;
+    private final AppProperties appProperties;
 
     private static final String EMAIL_TITLE = "공백 학교 이메일 인증 안내";
 
     public void sendCodeToEmail(String toEmail, String schoolName) {
         userService.checkDuplicatedEmail(toEmail);
-        verifyDomain(toEmail, schoolName);
+        if (!toEmail.equals(appProperties.getReviewEmail())) {
+            verifyDomain(toEmail, schoolName);
+        }
+        String authCode = toEmail.equals(appProperties.getReviewEmail())
+                ? appProperties.getFixedAuthCode()
+                : mailService.createCode();
 
-        String authCode = mailService.createCode();
         authCodeCacheService.saveAuthCode(toEmail, authCode);
 
         mailService.sendEmail(toEmail, EMAIL_TITLE, authCode);

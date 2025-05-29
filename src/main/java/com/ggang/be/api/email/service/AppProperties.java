@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "app")
 @Component
 public class AppProperties {
-    private String reviewEmail;
+    private String iosReviewEmail;
+    private String andReviewEmail;
     private String emailCode;
 }

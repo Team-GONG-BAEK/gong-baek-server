@@ -25,24 +25,24 @@ public class MailFacade {
 
     private static final String EMAIL_TITLE = "공백 학교 이메일 인증 안내";
 
-    public void sendCodeToEmail(String toEmail, String schoolName) {
-        userService.checkDuplicatedEmail(toEmail);
-        log.info("toEmail: {}, appEmail: {}", toEmail, appProperties.getReviewEmail());
-        if (!toEmail.equals(appProperties.getReviewEmail())) {
-            verifyDomain(toEmail, schoolName);
+    public void sendCodeToEmail(String email, String schoolName) {
+        userService.checkDuplicatedEmail(email);
+        log.info("email: {}, appIosEmail: {}, appAndEmail: {} ", email, appProperties.getIosReviewEmail(), appProperties.getAndReviewEmail());
+        if (!email.equals(appProperties.getIosReviewEmail()) && !email.equals(appProperties.getAndReviewEmail())) {
+            verifyDomain(email, schoolName);
         }
-        String authCode = toEmail.equals(appProperties.getReviewEmail())
+        String authCode = (email.equals(appProperties.getIosReviewEmail()) || email.equals(appProperties.getAndReviewEmail()))
                 ? appProperties.getEmailCode()
                 : mailService.createCode();
 
-        authCodeCacheService.saveAuthCode(toEmail, authCode);
+        authCodeCacheService.saveAuthCode(email, authCode);
 
-        mailService.sendEmail(toEmail, EMAIL_TITLE, authCode);
+        mailService.sendEmail(email, EMAIL_TITLE, authCode);
     }
 
     public void verifiedCode(String email, String schoolName, String authCode) {
         userService.checkDuplicatedEmail(email);
-        if (!email.equals(appProperties.getReviewEmail())) {
+        if (!email.equals(appProperties.getIosReviewEmail()) && !email.equals(appProperties.getAndReviewEmail())) {
             verifyDomain(email, schoolName);
         }
 
@@ -59,7 +59,7 @@ public class MailFacade {
         String schoolDomain = schoolService.findSchoolDomainByName(schoolName);
         String[] emailDomain = email.substring(email.indexOf("@") + 1).split("\\.");
 
-        if(!email.equals(appProperties.getReviewEmail())) {
+        if (!email.equals(appProperties.getIosReviewEmail()) && !email.equals(appProperties.getAndReviewEmail())) {
             if (!Arrays.asList(emailDomain).contains(schoolDomain)) {
                 log.info("schoolDomain: {}, emailDomainParts: {}", schoolDomain, Arrays.toString(emailDomain));
                 throw new GongBaekException(ResponseError.INVALID_EMAIL_DOMAIN);

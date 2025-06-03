@@ -28,9 +28,8 @@ public class MailFacade {
     public void sendCodeToEmail(String email, String schoolName) {
         userService.checkDuplicatedEmail(email);
         log.info("email: {}, appIosEmail: {}, appAndEmail: {} ", email, appProperties.getIosReviewEmail(), appProperties.getAndReviewEmail());
-        if (!email.equals(appProperties.getIosReviewEmail()) && !email.equals(appProperties.getAndReviewEmail())) {
-            verifyDomain(email, schoolName);
-        }
+        verifyDomain(email, schoolName);
+
         String authCode = (email.equals(appProperties.getIosReviewEmail()) || email.equals(appProperties.getAndReviewEmail()))
                 ? appProperties.getEmailCode()
                 : mailService.createCode();
@@ -56,10 +55,10 @@ public class MailFacade {
     }
 
     private void verifyDomain(String email, String schoolName) {
-        String schoolDomain = schoolService.findSchoolDomainByName(schoolName);
-        String[] emailDomain = email.substring(email.indexOf("@") + 1).split("\\.");
-
         if (!email.equals(appProperties.getIosReviewEmail()) && !email.equals(appProperties.getAndReviewEmail())) {
+            String schoolDomain = schoolService.findSchoolDomainByName(schoolName);
+            String[] emailDomain = email.substring(email.indexOf("@") + 1).split("\\.");
+
             if (!Arrays.asList(emailDomain).contains(schoolDomain)) {
                 log.info("schoolDomain: {}, emailDomainParts: {}", schoolDomain, Arrays.toString(emailDomain));
                 throw new GongBaekException(ResponseError.INVALID_EMAIL_DOMAIN);

@@ -1,6 +1,7 @@
 package com.ggang.be.domain.user.application;
 
 import com.ggang.be.api.common.ResponseError;
+import com.ggang.be.api.email.service.AppProperties;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.constant.Platform;
@@ -22,6 +23,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final AppProperties appProperties;
 
     @Override
     public UserEntity getUserById(Long userId) {
@@ -99,11 +101,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void checkDuplicatedEmail(String email) {
+        if(isAdminMail(email))
+            return;
         Optional<UserEntity> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
             log.debug("MemberServiceImpl.checkDuplicatedEmail exception occur email: {}", email);
             throw new GongBaekException(ResponseError.USERNAME_ALREADY_EXISTS);
         }
+    }
+
+    private boolean isAdminMail(String email) {
+        return email.equals(appProperties.getAndReviewEmail()) || email.equals(appProperties.getIosReviewEmail());
     }
 
     @Override

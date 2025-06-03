@@ -8,12 +8,17 @@ import com.ggang.be.api.email.service.MailService;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.school.service.SchoolService;
 import com.ggang.be.api.user.service.UserService;
+
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,13 +33,13 @@ class MailFacadeTest {
     private EmailProperties emailProperties;
 
     @Mock
-    private AppProperties appProperties;
-
-    @Mock
     private UserService userService;
 
     @Mock
     private MailService mailService;
+
+    @Mock
+    private AppProperties appProperties;
 
     @Mock
     private SchoolService schoolService;
@@ -144,5 +149,28 @@ class MailFacadeTest {
         assertThatThrownBy(() -> mailFacade.verifiedCode(email, schoolName, authCode))
                 .isInstanceOf(GongBaekException.class)
                 .hasMessageContaining(ResponseError.INVALID_EMAIL_DOMAIN.getMessage());
+    }
+
+    @Test
+    void 관리자_이메일은_중복_등록을_허용한다(){
+
+        //given
+        String emails = "admin@school.com";
+        String appIosMail = "admin@school.com";
+        String appAndroidMail = "admin@school.com";
+        String authCode = "123456";
+
+        when(appProperties.getIosReviewEmail()).thenReturn(appIosMail);
+        when(appProperties.getAndReviewEmail()).thenReturn(appAndroidMail);
+        when(appProperties.getEmailCode()).thenReturn(authCode);
+
+        doNothing().when(userService).checkDuplicatedEmail(emails);
+        doNothing().when(authCodeCacheService).saveAuthCode(emails, authCode);
+        doNothing().when(mailService).sendEmail(emails, "공백 학교 이메일 인증 안내", authCode);
+
+
+        //when & then
+        Assertions.assertThatCode(() -> mailFacade.sendCodeToEmail(emails, authCode)).doesNotThrowAnyException();
+
     }
 }

@@ -1,5 +1,8 @@
 package com.ggang.be.api.comment.facade;
 
+import java.util.List;
+import java.util.Objects;
+
 import com.ggang.be.api.comment.dto.*;
 import com.ggang.be.api.comment.registry.CommentStrategy;
 import com.ggang.be.api.comment.registry.CommentStrategyRegistry;
@@ -7,13 +10,13 @@ import com.ggang.be.api.comment.service.CommentService;
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.user.service.UserService;
+import com.ggang.be.domain.block.application.BlockServiceImpl;
 import com.ggang.be.domain.comment.CommentEntity;
+import com.ggang.be.domain.group.vo.GroupCommentVo;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.global.annotation.Facade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Objects;
 
 @Facade
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class CommentFacade {
     private final CommentStrategyRegistry commentStrategyRegistry;
     private final UserService userService;
     private final CommentService commentService;
+    private final BlockServiceImpl blockService;
 
     @Transactional
     public WriteCommentResponse writeComment(final long userId, WriteCommentRequest dto) {
@@ -41,7 +45,17 @@ public class CommentFacade {
 
         UserEntity findUserEntity = userService.getUserById(userId);
 
-        return commentStrategy.readComment(findUserEntity, isPublic, dto);
+        List<String> userBlocks = blockService.findUserBlocks(findUserEntity.getId());
+
+        ReadCommentResponse readCommentResponse = commentStrategy.readComment(findUserEntity, isPublic, dto);
+
+        List<GroupCommentVo> filterCommentVos = readCommentResponse.readCommentGroup()
+            .comments()
+            .stream()
+            .filter(c -> !userBlocks.contains(c.nickname()))
+            .toList();
+
+        return readCommentResponse.withFilteredComments(filterCommentVos);
     }
 
     @Transactional
@@ -57,4 +71,5 @@ public class CommentFacade {
         if (!Objects.equals(commentEntity.getUserEntity().getId(), currentUser.getId()))
             throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
     }
+
 }

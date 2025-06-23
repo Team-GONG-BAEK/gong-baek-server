@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
+import com.ggang.be.domain.block.application.BlockServiceImpl;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.comment.CommentFixture;
 import com.ggang.be.domain.group.GroupCommentVoFixture;
@@ -26,6 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class EveryGroupServiceImplTest {
@@ -35,6 +37,9 @@ class EveryGroupServiceImplTest {
 
     @Mock
     private EveryGroupRepository everyGroupRepository;
+
+    @Mock
+    private BlockServiceImpl blockService;
 
     @InjectMocks
     private EveryGroupServiceImpl everyGroupServiceImpl;
@@ -71,10 +76,12 @@ class EveryGroupServiceImplTest {
 
 
         when(everyGroupRepository.findById(1L)).thenReturn(Optional.of(build));
-        when(groupCommentVoMaker.makeByEveryGroup(eq(userEntity), eq(commentEntities), any())).thenReturn(List.of(
+        when(groupCommentVoMaker.makeByEveryGroup(any(UserEntity.class), any(List.class), any())).thenReturn(List.of(
             GroupCommentVoFixture.createGroupCommentEveryVo(1L, LocalDateTime.now()),
             GroupCommentVoFixture.createGroupCommentEveryVo(1L, LocalDateTime.now())
         ));
+        ReflectionTestUtils.setField(userEntity, "id", 1L);
+        when(blockService.findUserBlocks(userEntity.getId())).thenReturn(List.of());
 
         // when
         ReadCommentGroup readCommentGroup = everyGroupServiceImpl.readCommentInGroup(userEntity,
@@ -101,10 +108,12 @@ class EveryGroupServiceImplTest {
         UserEntity userEntity = UserEntityFixture.create();
 
         when(everyGroupRepository.findById(1L)).thenReturn(Optional.of(build));
-        when(groupCommentVoMaker.makeByEveryGroup(eq(userEntity), eq(commentEntities), eq(build))).thenReturn(List.of(
+        when(groupCommentVoMaker.makeByEveryGroup(any(UserEntity.class), any(List.class), any(EveryGroupEntity.class))).thenReturn(List.of(
             GroupCommentVoFixture.createGroupCommentEveryVo(1L,  LocalDateTime.now()),
             GroupCommentVoFixture.createGroupCommentEveryVo(1L,  LocalDateTime.now())
         ));
+        ReflectionTestUtils.setField(userEntity, "id", 1L);
+        when(blockService.findUserBlocks(userEntity.getId())).thenReturn(List.of());
 
         // when
         ReadCommentGroup readCommentGroup = everyGroupServiceImpl.readCommentInGroup(userEntity,

@@ -1,5 +1,8 @@
 package com.ggang.be.domain.comment;
 
+import com.ggang.be.domain.user.UserEntity;
+import com.ggang.be.domain.user.fixture.UserEntityFixture;
+
 public class CommentFixture {
 
 
@@ -7,7 +10,7 @@ public class CommentFixture {
         return CommentEntity.builder().
             body("test").
             isPublic(true)
-            .userEntity(null)
+            .userEntity(UserEntityFixture.create())
             .build();
     }
 
@@ -15,7 +18,7 @@ public class CommentFixture {
         return CommentEntity.builder().
             body("test").
             isPublic(isPublic)
-            .userEntity(null)
+            .userEntity(UserEntityFixture.create())
             .build();
     }
 

@@ -1,5 +1,7 @@
 package com.ggang.be.domain.report.application;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,28 @@ public class ReportServiceImpl implements ReportService {
 		return reportRepository.save(buildReport(groupId, userId, reportedId, ReportType.WEEKLY_GROUP));
 
 	}
+
+	@Override
+	public List<ReportEntity> findReports(long userId) {
+		return reportRepository.findByReportUserId(userId);
+	}
+
+	@Override
+	@Transactional
+	public void deleteReportByComment(long commentId) {
+		reportRepository.deleteByTargetIdAndTargetType(commentId, ReportType.COMMENT);
+	}
+
+	@Override
+	@Transactional
+	public void deleteReportByGroup(long groupId, GroupType groupType) {
+		if(groupType == GroupType.ONCE) {
+			reportRepository.deleteByTargetIdAndTargetType(groupId, ReportType.ONCE_GROUP);
+			return;
+		}
+		reportRepository.deleteByTargetIdAndTargetType(groupId, ReportType.WEEKLY_GROUP);
+	}
+
 
 	private ReportEntity buildReport(long targetId, long userId, long reportedId, ReportType groupType) {
 		return ReportEntity.builder()

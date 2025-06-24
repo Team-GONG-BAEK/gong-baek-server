@@ -135,11 +135,8 @@ public class EveryGroupServiceImpl implements EveryGroupService {
         EveryGroupEntity everyGroupEntity = everyGroupRepository.findById(groupId)
             .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_NOT_FOUND));
 
-        List<String> blockNickNames = blockService.findUserBlocks(userEntity.getId());
-
         List<CommentEntity> commentEntities = everyGroupEntity
             .getComments().stream()
-            .filter(c -> blockNickNames.contains(c.getUserEntity().getNickname()))
             .filter(c -> c.isPublic() == isPublic).toList();
 
         int commentCount = commentEntities.size();

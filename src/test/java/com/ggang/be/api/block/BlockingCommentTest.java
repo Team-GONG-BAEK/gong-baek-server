@@ -21,12 +21,14 @@ import com.ggang.be.api.comment.dto.ReadCommentResponse;
 import com.ggang.be.api.comment.facade.CommentFacade;
 import com.ggang.be.api.comment.registry.CommentStrategy;
 import com.ggang.be.api.comment.registry.CommentStrategyRegistry;
+import com.ggang.be.api.report.service.ReportService;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.block.application.BlockServiceImpl;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.constant.Status;
 import com.ggang.be.domain.group.vo.GroupCommentVo;
 import com.ggang.be.domain.group.vo.ReadCommentGroup;
+import com.ggang.be.domain.report.ReportEntity;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.fixture.UserEntityFixture;
 
@@ -43,6 +45,9 @@ class BlockingCommentTest {
     private BlockServiceImpl blockService;
 
     @Mock
+    private ReportService reportService;
+
+    @Mock
     private CommentStrategy commentStrategy;
 
     @InjectMocks
@@ -53,6 +58,7 @@ class BlockingCommentTest {
     private List<String> blockedUsers;
     private List<GroupCommentVo> commentVos;
     private ReadCommentResponse originalResponse;
+    private List<ReportEntity> testReports;
 
     @BeforeEach
     void setUp() {
@@ -61,6 +67,7 @@ class BlockingCommentTest {
         ReflectionTestUtils.setField(testUser, "id", 1L); // ID 설정
         readCommentRequest = new ReadCommentRequest(1L, GroupType.ONCE);
         blockedUsers = List.of("blockedUser1", "blockedUser2");
+        testReports = List.of(); // 빈 리포트 리스트로 초기화
 
         // 댓글 데이터 생성 (차단된 사용자와 일반 사용자 포함)
         commentVos = createTestCommentData();
@@ -99,7 +106,7 @@ class BlockingCommentTest {
     @DisplayName("차단 목록이 비어있으면 모든 댓글이 반환되어야 한다")
     void shouldReturnAllCommentsWhenNoBlockedUsers() {
         // Given
-        when(blockService.findUserBlocks(testUser.getId()))
+        when(blockService.findByReports(testReports))
             .thenReturn(List.of()); // 빈 차단 목록
 
         // When
@@ -142,7 +149,9 @@ class BlockingCommentTest {
             .thenReturn(commentStrategy);
         when(userService.getUserById(testUser.getId()))
             .thenReturn(testUser);
-        when(blockService.findUserBlocks(testUser.getId()))
+        when(reportService.findReports(testUser.getId()))
+            .thenReturn(testReports);
+        when(blockService.findByReports(testReports))
             .thenReturn(blockedUsers);
         when(commentStrategy.readComment(testUser, true, readCommentRequest))
             .thenReturn(originalResponse);

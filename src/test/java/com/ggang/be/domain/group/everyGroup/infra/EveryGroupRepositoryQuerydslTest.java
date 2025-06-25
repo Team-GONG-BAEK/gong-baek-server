@@ -10,11 +10,13 @@ import com.ggang.be.global.config.QuerydslConfigTest;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,6 +28,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(QuerydslConfigTest.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @EntityScan(basePackages = "com.ggang.be.domain")
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class EveryGroupRepositoryQuerydslTest {
 
     @Autowired
@@ -91,7 +95,7 @@ class EveryGroupRepositoryQuerydslTest {
                 .gongbaekTimeSlotEntity(slotMonday)
                 .title("스터디 월요일")
                 .comments(new ArrayList<>())
-                .dueDate(LocalDate.of(2024, 1, 1))
+                .dueDate(LocalDate.of(2024, 1, 4))
                 .coverImg(1)
                 .location("Seoul")
                 .maxPeopleCount(10)

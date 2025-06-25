@@ -11,11 +11,13 @@ import com.ggang.be.global.config.QuerydslConfigTest;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(QuerydslConfigTest.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @EntityScan(basePackages = "com.ggang.be.domain")
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class OnceGroupRepositoryQuerydslTest {
 
     @Autowired
@@ -60,61 +64,61 @@ class OnceGroupRepositoryQuerydslTest {
                 .build();
         em.persist(userEntity);
 
-        GongbaekTimeSlotEntity slotFriday = GongbaekTimeSlotFixture.createWithWeekDay(WeekDay.FRI);
-        GongbaekTimeSlotEntity slotFriday2 = GongbaekTimeSlotFixture.createWithWeekDay(WeekDay.FRI);
-        GongbaekTimeSlotEntity slotMonday = GongbaekTimeSlotFixture.createWithWeekDay(WeekDay.THU);
-        em.persist(slotFriday);
-        em.persist(slotFriday2);
-        em.persist(slotMonday);
+        GongbaekTimeSlotEntity slotTuesday = GongbaekTimeSlotFixture.createWithWeekDay(WeekDay.TUE);
+        GongbaekTimeSlotEntity slotTuesday2 = GongbaekTimeSlotFixture.createWithWeekDay(WeekDay.TUE);
+        GongbaekTimeSlotEntity slotWednesday = GongbaekTimeSlotFixture.createWithWeekDay(WeekDay.WED);
+        em.persist(slotTuesday);
+        em.persist(slotTuesday2);
+        em.persist(slotWednesday);
 
         // STUDY + FRIDAY (조회 대상)
         OnceGroupEntity group1 = OnceGroupEntity.builder()
                 .userEntity(userEntity)
-                .category(Category.STUDY)
+                .category(Category.NETWORKING)
                 .status(Status.RECRUITING)
-                .groupDate(LocalDate.of(2025, 12, 26))
-                .gongbaekTimeSlotEntity(slotFriday)
-                .title("스터디 금요일")
+                .groupDate(LocalDate.of(2025, 6, 24))
+                .gongbaekTimeSlotEntity(slotTuesday)
+                .title("스터디 화요일")
                 .comments(new ArrayList<>())
                 .coverImg(1)
                 .location("Busan")
                 .maxPeopleCount(10)
                 .currentPeopleCount(3)
-                .introduction("금요일 스터디")
+                .introduction("화요일 스터디")
                 .build();
         em.persist(group1);
 
         // STUDY + MONDAY
         OnceGroupEntity group2 = OnceGroupEntity.builder()
                 .userEntity(userEntity)
-                .category(Category.STUDY)
+                .category(Category.PLAYING)
                 .status(Status.RECRUITING)
-                .groupDate(LocalDate.of(2025, 12, 25))
-                .gongbaekTimeSlotEntity(slotMonday)
-                .title("스터디 월요일")
+                .groupDate(LocalDate.of(2025, 6, 25))
+                .gongbaekTimeSlotEntity(slotWednesday)
+                .title("스터디 수요일")
                 .comments(new ArrayList<>())
                 .coverImg(1)
                 .location("Seoul")
                 .maxPeopleCount(10)
                 .currentPeopleCount(2)
-                .introduction("월요일 스터디")
+                .introduction("수요일 스터디")
                 .build();
         em.persist(group2);
 
         // DINING + FRIDAY
         OnceGroupEntity group3 = OnceGroupEntity.builder()
                 .userEntity(userEntity)
-                .category(Category.DINING)
+                .category(Category.PLAYING)
                 .status(Status.RECRUITING)
-                .groupDate(LocalDate.of(2025, 12, 26))
-                .gongbaekTimeSlotEntity(slotFriday2)
-                .title("식사 모임")
+                .groupDate(LocalDate.of(2025, 6, 24))
+                .gongbaekTimeSlotEntity(slotTuesday2)
+                .title("화요일")
                 .comments(new ArrayList<>())
                 .coverImg(1)
                 .location("Daegu")
                 .maxPeopleCount(8)
                 .currentPeopleCount(5)
-                .introduction("밥 먹자")
+                .introduction("화요일")
                 .build();
         em.persist(group3);
 
@@ -122,9 +126,9 @@ class OnceGroupRepositoryQuerydslTest {
         em.clear();
 
         // when
-        List<OnceGroupEntity> result1 = onceGroupRepository.findGroupsByCategoryAndDay(Category.STUDY, WeekDay.FRI);
-        List<OnceGroupEntity> result2 = onceGroupRepository.findGroupsByCategoryAndDay(Category.STUDY, null);
-        List<OnceGroupEntity> result3 = onceGroupRepository.findGroupsByCategoryAndDay(null, WeekDay.FRI);
+        List<OnceGroupEntity> result1 = onceGroupRepository.findGroupsByCategoryAndDay(Category.NETWORKING, WeekDay.TUE);
+        List<OnceGroupEntity> result2 = onceGroupRepository.findGroupsByCategoryAndDay(Category.PLAYING, null);
+        List<OnceGroupEntity> result3 = onceGroupRepository.findGroupsByCategoryAndDay(null, WeekDay.TUE);
         List<OnceGroupEntity> result4 = onceGroupRepository.findGroupsByCategoryAndDay(null, null);
 
         // then
@@ -132,8 +136,8 @@ class OnceGroupRepositoryQuerydslTest {
         assertThat(result2).hasSize(2);
         assertThat(result3).hasSize(2);
         assertThat(result4).hasSize(3);
-        assertThat(result1.getFirst().getCategory()).isEqualTo(Category.STUDY);
-        assertThat(result1.getFirst().getGongbaekTimeSlotEntity().getWeekDay()).isEqualTo(WeekDay.FRI);
-        assertThat(result4.get(1).getGongbaekTimeSlotEntity().getWeekDay()).isEqualTo(WeekDay.THU);
+        assertThat(result1.getFirst().getCategory()).isEqualTo(Category.NETWORKING);
+        assertThat(result1.getFirst().getGongbaekTimeSlotEntity().getWeekDay()).isEqualTo(WeekDay.TUE);
+        assertThat(result4.get(1).getGongbaekTimeSlotEntity().getWeekDay()).isEqualTo(WeekDay.WED);
     }
 }

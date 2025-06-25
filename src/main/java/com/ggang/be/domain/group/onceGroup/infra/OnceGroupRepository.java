@@ -31,6 +31,4 @@ public interface OnceGroupRepository extends JpaRepository<OnceGroupEntity, Long
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select o from once_group o join fetch o.gongbaekTimeSlotEntity where o.status!=:status")
     List<OnceGroupEntity> findAllByNotStatus(Status status);
-
-    List<OnceGroupEntity> findAllByCategory(Category category);
 }

@@ -11,6 +11,7 @@ import com.ggang.be.api.group.facade.GroupFacade;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.FillGroupType;
 import com.ggang.be.domain.constant.GroupType;
+import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.global.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ public class GroupController {
             @RequestHeader("Authorization") final String accessToken,
             @RequestParam("groupId") long groupId,
             @RequestParam("groupType") GroupType groupType
-    ){
+    ) {
         jwtService.isValidAccessToken(accessToken);
 
         GroupUserInfoResponseDto groupUserInfoResponseDto = GroupUserInfoResponseDto.of(
@@ -98,11 +99,12 @@ public class GroupController {
     @GetMapping("/fill/groups")
     public ResponseEntity<ApiResponse<List<ActiveGroupsResponse>>> getFillGroups(
             @RequestHeader("Authorization") final String accessToken,
-            @RequestParam(value = "category", required = false) Category category
+            @RequestParam(value = "category", required = false) Category category,
+            @RequestParam(value = "weekDay", required = false) WeekDay weekDay
     ) {
         Long userId = jwtService.parseTokenAndGetUserId(accessToken);
 
-        return ResponseBuilder.ok(groupFacade.getFillGroups(userId, category));
+        return ResponseBuilder.ok(groupFacade.getFillGroups(userId, category, weekDay));
     }
 
     @GetMapping("/group/latest")
@@ -118,7 +120,7 @@ public class GroupController {
     @GetMapping("/group/my/participation")
     public ResponseEntity<ApiResponse<NearestGroupResponse>> getNearestGroup(
             @RequestHeader("Authorization") final String accessToken
-    ){
+    ) {
         Long userId = jwtService.parseTokenAndGetUserId(accessToken);
 
         return ResponseBuilder.ok(groupFacade.getNearestGroupInfo(userId));
@@ -139,7 +141,7 @@ public class GroupController {
     public ResponseEntity<ApiResponse<Void>> cancelMyApplication(
             @RequestHeader("Authorization") String accessToken,
             @RequestBody final GroupRequest requestDto
-    ){
+    ) {
         Long userId = jwtService.parseTokenAndGetUserId(accessToken);
         groupFacade.cancelMyApplication(userId, requestDto);
 

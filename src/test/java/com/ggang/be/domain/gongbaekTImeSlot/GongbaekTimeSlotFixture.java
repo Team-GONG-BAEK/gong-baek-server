@@ -13,4 +13,11 @@ public class GongbaekTimeSlotFixture {
             .build();
     }
 
+    public static GongbaekTimeSlotEntity createWithWeekDay(WeekDay day) {
+        return GongbaekTimeSlotEntity.builder()
+                .weekDay(day)
+                .startTime(13)
+                .endTime(14)
+                .build();
+    }
 }

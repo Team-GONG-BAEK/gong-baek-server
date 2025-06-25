@@ -83,8 +83,7 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     @Override
     public ReadEveryGroup getActiveEveryGroups(UserEntity currentUser, Category category, WeekDay weekDay) {
         List<EveryGroupEntity> everyGroupEntities;
-        if (category == null && weekDay == null) everyGroupEntities = everyGroupRepository.findAll();
-        else everyGroupEntities = everyGroupRepository.findGroupsByCategoryAndDay(category, weekDay);
+        everyGroupEntities = everyGroupRepository.findGroupsByCategoryAndDay(category, weekDay);
 
         return ReadEveryGroup.of(
                 groupVoMaker.makeEveryGroup(getRecruitingGroups(everyGroupEntities)));

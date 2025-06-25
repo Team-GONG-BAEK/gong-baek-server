@@ -79,8 +79,7 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     @Override
     public ReadOnceGroup getActiveOnceGroups(UserEntity currentUser, Category category, WeekDay weekDay) {
         List<OnceGroupEntity> onceGroupEntities;
-        if(category == null) onceGroupEntities = onceGroupRepository.findAll();
-        else onceGroupEntities = onceGroupRepository.findGroupsByCategoryAndDay(category, weekDay);
+        onceGroupEntities = onceGroupRepository.findGroupsByCategoryAndDay(category, weekDay);
 
         return ReadOnceGroup.of(groupVoMaker.makeOnceGroup(getRecruitingGroups(onceGroupEntities)));
     }

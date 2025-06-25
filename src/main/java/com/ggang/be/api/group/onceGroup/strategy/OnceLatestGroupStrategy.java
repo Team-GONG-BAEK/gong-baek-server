@@ -26,7 +26,7 @@ public class OnceLatestGroupStrategy implements LatestGroupStrategy {
 
     @Override
     public List<GroupVo> getLatestGroups(UserEntity userEntity) {
-        List<OnceGroupVo> onceGroupResponses = onceGroupService.getActiveOnceGroups(userEntity, null).groups();
+        List<OnceGroupVo> onceGroupResponses = onceGroupService.getActiveOnceGroups(userEntity, null, null).groups();
         return onceGroupResponses.stream()
                 .map(GroupVo::fromOnceGroup)
                 .filter(groupVo -> isSameSchoolOnceGroup(userEntity, groupVo))

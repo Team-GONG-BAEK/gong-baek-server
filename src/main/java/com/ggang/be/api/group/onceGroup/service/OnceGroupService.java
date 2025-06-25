@@ -2,6 +2,7 @@ package com.ggang.be.api.group.onceGroup.service;
 
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.constant.Category;
+import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.group.onceGroup.dto.OnceGroupDto;
@@ -24,7 +25,7 @@ public interface OnceGroupService {
     ReadCommentGroup readCommentInGroup(UserEntity userEntity, boolean isPublic, final long groupId);
 
     OnceGroupEntity registerOnceGroup(RegisterGroupServiceRequest serviceRequest,
-                           GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
+                                      GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
 
     void deleteOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);
 
@@ -32,7 +33,7 @@ public interface OnceGroupService {
 
     void modifyGroupStatus(UserEntity currentUser);
 
-    ReadOnceGroup getActiveOnceGroups(UserEntity currentUser, Category category);
+    ReadOnceGroup getActiveOnceGroups(UserEntity currentUser, Category category, WeekDay weekDay);
 
     void validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);
 

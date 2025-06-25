@@ -7,6 +7,7 @@ import com.ggang.be.api.group.onceGroup.service.OnceGroupService;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
+import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.group.GroupCommentVoMaker;
 import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
@@ -76,10 +77,10 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     }
 
     @Override
-    public ReadOnceGroup getActiveOnceGroups(UserEntity currentUser, Category category) {
+    public ReadOnceGroup getActiveOnceGroups(UserEntity currentUser, Category category, WeekDay weekDay) {
         List<OnceGroupEntity> onceGroupEntities;
         if(category == null) onceGroupEntities = onceGroupRepository.findAll();
-        else onceGroupEntities = onceGroupRepository.findAllByCategory(category);
+        else onceGroupEntities = onceGroupRepository.findGroupsByCategoryAndDay(category, weekDay);
 
         return ReadOnceGroup.of(groupVoMaker.makeOnceGroup(getRecruitingGroups(onceGroupEntities)));
     }

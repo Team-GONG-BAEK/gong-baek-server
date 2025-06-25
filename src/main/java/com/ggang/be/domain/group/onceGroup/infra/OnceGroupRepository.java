@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface OnceGroupRepository extends JpaRepository<OnceGroupEntity, Long> {
+public interface OnceGroupRepository extends JpaRepository<OnceGroupEntity, Long>, OnceGroupRepositoryCustom {
     List<OnceGroupEntity> findByUserEntity_Id(Long userEntityUserId);
 
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END " +

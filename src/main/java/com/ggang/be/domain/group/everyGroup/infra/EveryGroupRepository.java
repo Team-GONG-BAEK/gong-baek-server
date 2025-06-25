@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface EveryGroupRepository extends JpaRepository<EveryGroupEntity, Long> {
+public interface EveryGroupRepository extends JpaRepository<EveryGroupEntity, Long>, EveryGroupRepositoryCustom {
     List<EveryGroupEntity> findByUserEntity_Id(Long userEntityUserId);
 
     @Query("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END " +
@@ -31,6 +31,4 @@ public interface EveryGroupRepository extends JpaRepository<EveryGroupEntity, Lo
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select o from every_group o join fetch o.gongbaekTimeSlotEntity where o.status!=:status")
     List<EveryGroupEntity> findAllByNotStatus(Status status);
-
-    List<EveryGroupEntity> findAllByCategory(Category category);
 }

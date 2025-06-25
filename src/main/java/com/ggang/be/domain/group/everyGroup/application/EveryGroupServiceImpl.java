@@ -7,6 +7,7 @@ import com.ggang.be.api.group.everyGroup.service.EveryGroupService;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.Status;
+import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.group.GroupCommentVoMaker;
 import com.ggang.be.domain.group.GroupVoMaker;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
@@ -50,17 +51,17 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     @Override
     public long getEveryGroupRegisterUserId(final long groupId) {
         EveryGroupEntity entity = findIdOrThrow(groupId);
-        if(entity.getUserEntity() == null) throw new GongBaekException(ResponseError.USER_NOT_FOUND);
+        if (entity.getUserEntity() == null) throw new GongBaekException(ResponseError.USER_NOT_FOUND);
         return entity.getUserEntity().getId();
     }
 
     @Override
     public ReadEveryGroup getMyRegisteredGroups(UserEntity currentUser, boolean status) {
         List<EveryGroupEntity> everyGroupEntities = everyGroupRepository.findByUserEntity_Id(
-            currentUser.getId());
+                currentUser.getId());
 
         return ReadEveryGroup.of(
-            groupVoMaker.makeEveryGroup(getGroupsByStatus(everyGroupEntities, status)));
+                groupVoMaker.makeEveryGroup(getGroupsByStatus(everyGroupEntities, status)));
     }
 
     @Override
@@ -80,38 +81,38 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     }
 
     @Override
-    public ReadEveryGroup getActiveEveryGroups(UserEntity currentUser, Category category) {
+    public ReadEveryGroup getActiveEveryGroups(UserEntity currentUser, Category category, WeekDay weekDay) {
         List<EveryGroupEntity> everyGroupEntities;
-        if(category == null) everyGroupEntities = everyGroupRepository.findAll();
-        else everyGroupEntities = everyGroupRepository.findAllByCategory(category);
+        if (category == null && weekDay == null) everyGroupEntities = everyGroupRepository.findAll();
+        else everyGroupEntities = everyGroupRepository.findGroupsByCategoryAndDay(category, weekDay);
 
         return ReadEveryGroup.of(
-            groupVoMaker.makeEveryGroup(getRecruitingGroups(everyGroupEntities)));
+                groupVoMaker.makeEveryGroup(getRecruitingGroups(everyGroupEntities)));
     }
 
     private List<EveryGroupEntity> getRecruitingGroups(List<EveryGroupEntity> everyGroupEntities) {
         return everyGroupEntities.stream()
-            .filter(group -> group.getStatus().isRecruiting())
-            .collect(Collectors.toList());
+                .filter(group -> group.getStatus().isRecruiting())
+                .collect(Collectors.toList());
     }
 
     private List<EveryGroupEntity> getGroupsByStatus(List<EveryGroupEntity> everyGroupEntities,
-        boolean status) {
+                                                     boolean status) {
         if (status) {
             return everyGroupEntities.stream()
-                .filter(group -> group.getStatus().isActive())
-                .collect(Collectors.toList());
+                    .filter(group -> group.getStatus().isActive())
+                    .collect(Collectors.toList());
         } else {
             return everyGroupEntities.stream()
-                .filter(group -> group.getStatus().isClosed())
-                .collect(Collectors.toList());
+                    .filter(group -> group.getStatus().isClosed())
+                    .collect(Collectors.toList());
         }
     }
 
     @Override
     public EveryGroupEntity findEveryGroupEntityByGroupId(long groupId) {
         return everyGroupRepository.findById(groupId).orElseThrow(
-            () -> new GongBaekException(ResponseError.GROUP_NOT_FOUND)
+                () -> new GongBaekException(ResponseError.GROUP_NOT_FOUND)
         );
     }
 
@@ -119,43 +120,43 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     @Transactional
     public void writeCommentInGroup(CommentEntity commentEntity, final long groupId) {
         everyGroupRepository.findById(groupId)
-            .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_NOT_FOUND))
-            .addComment(commentEntity);
+                .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_NOT_FOUND))
+                .addComment(commentEntity);
         log.info("everyGroupEntity add Comment success CommentId was  : {}", commentEntity.getId());
     }
 
     @Override
     public ReadCommentGroup readCommentInGroup(UserEntity userEntity, boolean isPublic,
-        long groupId) {
+                                               long groupId) {
 
         EveryGroupEntity everyGroupEntity = everyGroupRepository.findById(groupId)
-            .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_NOT_FOUND));
+                .orElseThrow(() -> new GongBaekException(ResponseError.GROUP_NOT_FOUND));
 
         List<CommentEntity> commentEntities = everyGroupEntity
-            .getComments().stream().filter(c -> c.isPublic() == isPublic).toList();
+                .getComments().stream().filter(c -> c.isPublic() == isPublic).toList();
 
         int commentCount = commentEntities.size();
 
         List<GroupCommentVo> everyGroupCommentVos = groupCommentVoMaker.makeByEveryGroup(
-            userEntity, commentEntities, everyGroupEntity);
+                userEntity, commentEntities, everyGroupEntity);
 
         ReadEveryGroupCommentCommonVo readEveryGroupCommentCommonVo = ReadEveryGroupCommentCommonVo.of(
-            commentCount,
-            groupId,
-            everyGroupEntity.getStatus());
+                commentCount,
+                groupId,
+                everyGroupEntity.getStatus());
 
         return ReadCommentGroup.fromEveryGroup(readEveryGroupCommentCommonVo,
-            everyGroupCommentVos);
+                everyGroupCommentVos);
     }
 
 
     @Override
     @Transactional
     public EveryGroupEntity registerEveryGroup(RegisterGroupServiceRequest serviceRequest,
-        GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
+                                               GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
 
         EveryGroupEntity buildEntity = buildEveryGroupEntity(
-            serviceRequest, gongbaekTimeSlotEntity);
+                serviceRequest, gongbaekTimeSlotEntity);
 
         return everyGroupRepository.save(buildEntity);
     }
@@ -177,7 +178,7 @@ public class EveryGroupServiceImpl implements EveryGroupService {
 
     @Override
     public boolean validateCancelEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
-        if(everyGroupEntity.isHost(currentUser))
+        if (everyGroupEntity.isHost(currentUser))
             throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
         return everyGroupEntity.isApply(currentUser);
     }
@@ -186,7 +187,7 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void updateStatus() {
         List<EveryGroupEntity> everyGroupEntities = everyGroupRepository.findAllByNotStatus(
-            Status.CLOSED);
+                Status.CLOSED);
         everyGroupEntities.forEach(groupStatusUpdater::updateEveryGroup);
     }
 
@@ -196,28 +197,28 @@ public class EveryGroupServiceImpl implements EveryGroupService {
     }
 
     private EveryGroupEntity buildEveryGroupEntity(RegisterGroupServiceRequest serviceRequest,
-        GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
+                                                   GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
 
         LocalDate nowDate = LocalDate.now();
         int month = nowDate.getMonth().getValue();
 
         return EveryGroupEntity.builder()
-            .category(serviceRequest.category())
-            .dueDate(dueDateExtractor(month, nowDate))
-            .coverImg(serviceRequest.coverImg())
-            .location(serviceRequest.location())
-            .status(Status.RECRUITING)
-            .maxPeopleCount(serviceRequest.maxPeopleCount())
-            .gongbaekTimeSlotEntity(gongbaekTimeSlotEntity)
-            .title(serviceRequest.groupTitle())
-            .introduction(serviceRequest.introduction())
-            .userEntity(serviceRequest.userEntity())
-            .build();
+                .category(serviceRequest.category())
+                .dueDate(dueDateExtractor(month, nowDate))
+                .coverImg(serviceRequest.coverImg())
+                .location(serviceRequest.location())
+                .status(Status.RECRUITING)
+                .maxPeopleCount(serviceRequest.maxPeopleCount())
+                .gongbaekTimeSlotEntity(gongbaekTimeSlotEntity)
+                .title(serviceRequest.groupTitle())
+                .introduction(serviceRequest.introduction())
+                .userEntity(serviceRequest.userEntity())
+                .build();
     }
 
     private LocalDate dueDateExtractor(int month, LocalDate nowDate) {
-        if(month < 7)
-            return  LocalDate.of(nowDate.getYear(), Month.JUNE, 30);
+        if (month < 7)
+            return LocalDate.of(nowDate.getYear(), Month.JUNE, 30);
         return LocalDate.of(nowDate.getYear(), Month.DECEMBER, 31);
     }
 
@@ -241,7 +242,7 @@ public class EveryGroupServiceImpl implements EveryGroupService {
 
     private EveryGroupEntity findIdOrThrow(final long groupId) {
         return everyGroupRepository.findById(groupId).orElseThrow(
-            () -> new GongBaekException(ResponseError.GROUP_NOT_FOUND)
+                () -> new GongBaekException(ResponseError.GROUP_NOT_FOUND)
         );
     }
 

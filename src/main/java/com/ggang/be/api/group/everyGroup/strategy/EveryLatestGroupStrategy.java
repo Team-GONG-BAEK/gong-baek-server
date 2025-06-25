@@ -26,7 +26,7 @@ public class EveryLatestGroupStrategy implements LatestGroupStrategy {
 
     @Override
     public List<GroupVo> getLatestGroups(UserEntity userEntity) {
-        List<EveryGroupVo> everyGroupResponses = everyGroupService.getActiveEveryGroups(userEntity, null).groups();
+        List<EveryGroupVo> everyGroupResponses = everyGroupService.getActiveEveryGroups(userEntity, null, null).groups();
 
         return everyGroupResponses.stream()
                 .map(GroupVo::fromEveryGroup)

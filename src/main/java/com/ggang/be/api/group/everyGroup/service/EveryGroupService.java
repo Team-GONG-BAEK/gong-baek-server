@@ -2,6 +2,7 @@ package com.ggang.be.api.group.everyGroup.service;
 
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.constant.Category;
+import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.group.dto.RegisterGroupServiceRequest;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.EveryGroupDto;
@@ -32,7 +33,7 @@ public interface EveryGroupService {
 
     void modifyGroupStatus(UserEntity currentUser);
 
-    ReadEveryGroup getActiveEveryGroups(UserEntity currentUser, Category category);
+    ReadEveryGroup getActiveEveryGroups(UserEntity currentUser, Category category, WeekDay weekDay);
 
     void validateApplyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
 

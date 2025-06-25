@@ -11,6 +11,7 @@ import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.FillGroupType;
 import com.ggang.be.domain.constant.GroupType;
+import com.ggang.be.domain.constant.WeekDay;
 import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.domain.group.vo.NearestGroup;
 import com.ggang.be.domain.user.UserEntity;
@@ -61,7 +62,7 @@ public class GroupFacade {
         NearestGroup nearestOnceGroup = prepare.nearestOnceGroup();
 
         NearestGroupResponseStrategy strategy = nearestGroupResponseStrategyRegistry.getStrategy(
-            nearestEveryGroup, nearestOnceGroup);
+                nearestEveryGroup, nearestOnceGroup);
 
         return strategy.getNearestGroupResponse(nearestEveryGroup, nearestOnceGroup);
 
@@ -72,7 +73,7 @@ public class GroupFacade {
                 = groupUserInfoStrategyRegistry.getGroupUserInfo(groupType);
 
         return UserInfo.of(
-            userService.getUserById(groupUserInfoStrategy.getGroupUserInfo(groupId)));
+                userService.getUserById(groupUserInfoStrategy.getGroupUserInfo(groupId)));
     }
 
     @Transactional
@@ -91,7 +92,7 @@ public class GroupFacade {
         UserEntity findUserEntity = userService.getUserById(userId);
 
         ApplyGroupStrategy applyGroupStrategy = applyGroupStrategyRegistry.getApplyGroupStrategy(
-            requestDto.groupType()
+                requestDto.groupType()
         );
 
         applyGroupStrategy.applyGroup(findUserEntity, requestDto);
@@ -102,7 +103,7 @@ public class GroupFacade {
         UserEntity findUserEntity = userService.getUserById(userId);
 
         CancelGroupStrategy cancelGroupStrategy = cancelGroupStrategyRegistry.getCancelGroupStrategy(
-            requestDto.groupType()
+                requestDto.groupType()
         );
 
         cancelGroupStrategy.cancelGroup(findUserEntity, requestDto);
@@ -131,34 +132,34 @@ public class GroupFacade {
                 .collect(Collectors.toList());
     }
 
-    public List<ActiveGroupsResponse> getFillGroups(long userId, Category category) {
+    public List<ActiveGroupsResponse> getFillGroups(long userId, Category category, WeekDay weekDay) {
         UserEntity currentUser = userService.getUserById(userId);
         CombinedGroupVos preparedGroupVo = activeCombinedGroupVoPreparer.prepareGroupVos(
-            currentUser, category);
+                currentUser, category, weekDay);
 
         List<GroupVo> groupVos = GroupVoAggregator.aggregateAndSort(
-            preparedGroupVo.everyGroupVos(),
-            preparedGroupVo.onceGroupVos()
+                preparedGroupVo.everyGroupVos(),
+                preparedGroupVo.onceGroupVos()
         );
 
         return groupVos.stream()
-            .filter(groupVo -> lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(currentUser,
-                groupVo))
-            .map(ActiveGroupsResponse::fromGroupVo)
-            .collect(Collectors.toList());
+                .filter(groupVo -> lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(currentUser,
+                        groupVo))
+                .map(ActiveGroupsResponse::fromGroupVo)
+                .collect(Collectors.toList());
     }
 
     public List<LatestResponse> getLatestGroups(long userId, GroupType groupType) {
         UserEntity currentUser = userService.getUserById(userId);
 
         LatestGroupStrategy latestGroupStrategy = latestGroupStrategyRegistry.getGroupStrategy(
-            groupType);
+                groupType);
 
         return latestGroupStrategy.getLatestGroups(currentUser).stream()
-            .filter(groupVo -> lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(currentUser, groupVo))
-            .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
-            .limit(5).map(LatestResponse::fromGroupVo)
-            .collect(Collectors.toList());
+                .filter(groupVo -> lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(currentUser, groupVo))
+                .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
+                .limit(5).map(LatestResponse::fromGroupVo)
+                .collect(Collectors.toList());
     }
 
 
@@ -168,7 +169,7 @@ public class GroupFacade {
         log.info("find strategy");
 
         ReadFillMemberStrategy strategy = readFillMemberStrategyRegistry.getStrategy(
-            dto.groupType());
+                dto.groupType());
 
         log.info("finish strategy");
 

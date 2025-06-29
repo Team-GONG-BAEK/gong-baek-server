@@ -1,15 +1,12 @@
 package com.ggang.be.api.facade;
 
-import com.ggang.be.api.common.ResponseError;
-import com.ggang.be.api.exception.GongBaekException;
+import com.ggang.be.api.comment.service.CommentService;
+import com.ggang.be.api.common.ResponseSuccess;
 import com.ggang.be.api.group.dto.GroupCreatorVo;
 import com.ggang.be.api.group.facade.GroupFacade;
-import com.ggang.be.api.report.dto.ReportCommentResponse;
-import com.ggang.be.api.report.dto.ReportGroupResponse;
 import com.ggang.be.api.report.service.ReportService;
 import com.ggang.be.domain.block.application.BlockServiceImpl;
 import com.ggang.be.domain.comment.CommentEntity;
-import com.ggang.be.domain.comment.infra.CommentRepository;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.report.ReportEntity;
 import com.ggang.be.domain.user.UserEntity;
@@ -21,15 +18,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReportFacade {
 
-	private final CommentRepository commentRepository;
 	private final ReportService reportService;
 	private final BlockServiceImpl blockService;
 	private final GroupFacade groupFacade;
+	private final CommentService commentService;
 
-	public ReportCommentResponse reportComment(long userId, long commentId) {
+	public ResponseSuccess reportComment(long userId, long commentId) {
 
-		CommentEntity commentEntity = commentRepository.findById(commentId)
-			.orElseThrow(() -> new GongBaekException(ResponseError.NOT_FOUND));
+		CommentEntity commentEntity = commentService.findById(commentId);
 
 		UserEntity userEntity = commentEntity.getUserEntity();
 		long reportedId = userEntity.getId();
@@ -38,17 +34,17 @@ public class ReportFacade {
 
 		blockService.blockUser(reportEntity, userEntity);
 
-		return ReportCommentResponse.create();
+		return ResponseSuccess.CREATED;
 	}
 
 
-	public ReportGroupResponse reportGroup(long userId, long groupId, GroupType groupType){
+	public ResponseSuccess reportGroup(long userId, long groupId, GroupType groupType){
 
 		GroupCreatorVo groupCreator = groupFacade.findGroupCreator(groupType, groupId);
 
 		reportService.reportGroup(groupId, userId, groupCreator.creatorId(), groupType);
 
-		return ReportGroupResponse.create();
+		return ResponseSuccess.CREATED;
 	}
 
 }

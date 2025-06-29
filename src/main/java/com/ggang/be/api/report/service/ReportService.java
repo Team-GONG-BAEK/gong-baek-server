@@ -7,7 +7,7 @@ import com.ggang.be.domain.report.ReportEntity;
 
 public interface ReportService {
 	ReportEntity reportComment(long commentId, long reportId, long reportedId);
-	ReportEntity reportGroup(long groupId, long reportId, long reportedId, GroupType groupType);
+	void reportGroup(long groupId, long reportId, long reportedId, GroupType groupType);
 
 	List<ReportEntity> findReports(long userId);
 

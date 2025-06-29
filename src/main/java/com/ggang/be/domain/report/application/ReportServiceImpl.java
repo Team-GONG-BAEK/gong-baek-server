@@ -30,13 +30,12 @@ public class ReportServiceImpl implements ReportService {
 
 	@Override
 	@Transactional
-	public ReportEntity reportGroup(long groupId, long userId, long reportedId, GroupType groupType) {
+	public void reportGroup(long groupId, long userId, long reportedId, GroupType groupType) {
 		if(groupType == GroupType.ONCE)
-			return reportRepository
+			reportRepository
 				.save(buildReport(groupId, userId, reportedId, ReportType.ONCE_GROUP));
 
-		return reportRepository.save(buildReport(groupId, userId, reportedId, ReportType.WEEKLY_GROUP));
-
+		reportRepository.save(buildReport(groupId, userId, reportedId, ReportType.WEEKLY_GROUP));
 	}
 
 	@Override

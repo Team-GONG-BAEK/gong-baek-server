@@ -7,12 +7,15 @@ import com.ggang.be.api.group.GroupVoAggregator;
 import com.ggang.be.api.group.dto.*;
 import com.ggang.be.api.group.registry.*;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
+import com.ggang.be.api.report.service.ReportService;
 import com.ggang.be.api.user.service.UserService;
+import com.ggang.be.domain.block.application.BlockServiceImpl;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.FillGroupType;
 import com.ggang.be.domain.constant.GroupType;
 import com.ggang.be.domain.group.dto.GroupVo;
 import com.ggang.be.domain.group.vo.NearestGroup;
+import com.ggang.be.domain.report.ReportEntity;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.dto.UserInfo;
 import com.ggang.be.global.annotation.Facade;
@@ -44,6 +47,18 @@ public class GroupFacade {
     private final MyGroupStrategyRegistry myGroupStrategyRegistry;
     private final NearestGroupResponseStrategyRegistry nearestGroupResponseStrategyRegistry;
     private final CombinedNearestGroupVoPreparer combinedNearestGroupVoPreparer;
+    private final FindGroupCreatorStrategyRegistry findGroupCreatorStrategyRegistry;
+    private final BlockServiceImpl blockService;
+    private final ReportService reportService;
+
+    public GroupCreatorVo findGroupCreator(GroupType groupType, Long groupId){
+        FindGroupCreatorStrategy groupCreatorStrategy = findGroupCreatorStrategyRegistry.findGroupCreatorStrategy(
+            groupType);
+
+        return groupCreatorStrategy.findCreator(groupId);
+    }
+
+
 
     public GroupResponse getGroupInfo(GroupType groupType, Long groupId, long userId) {
         UserEntity currentUser = userService.getUserById(userId);
@@ -117,6 +132,7 @@ public class GroupFacade {
         );
 
         deleteGroupStrategy.deleteGroup(findUserEntity, requestDto);
+        reportService.deleteReportByGroup(requestDto.groupId(), requestDto.groupType());
     }
 
     public List<MyGroupResponse> getMyGroups(long userId, FillGroupType category, boolean status) {
@@ -133,8 +149,12 @@ public class GroupFacade {
 
     public List<ActiveGroupsResponse> getFillGroups(long userId, Category category) {
         UserEntity currentUser = userService.getUserById(userId);
+
+        List<ReportEntity> reports = reportService.findReports(userId);
+        List<String> userBlocks = blockService.findByReports(reports);
+
         CombinedGroupVos preparedGroupVo = activeCombinedGroupVoPreparer.prepareGroupVos(
-            currentUser, category);
+            currentUser, category, userBlocks);
 
         List<GroupVo> groupVos = GroupVoAggregator.aggregateAndSort(
             preparedGroupVo.everyGroupVos(),

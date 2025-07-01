@@ -2,10 +2,12 @@ package com.ggang.be.domain.group.everyGroup.application;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import com.ggang.be.api.common.ResponseError;
 import com.ggang.be.api.exception.GongBaekException;
+import com.ggang.be.domain.block.application.BlockServiceImpl;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.comment.CommentFixture;
 import com.ggang.be.domain.group.GroupCommentVoFixture;
@@ -26,6 +28,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class EveryGroupServiceImplTest {
@@ -35,6 +38,9 @@ class EveryGroupServiceImplTest {
 
     @Mock
     private EveryGroupRepository everyGroupRepository;
+
+    @Mock
+    private BlockServiceImpl blockService;
 
     @InjectMocks
     private EveryGroupServiceImpl everyGroupServiceImpl;
@@ -69,20 +75,20 @@ class EveryGroupServiceImplTest {
             .filter(CommentEntity::isPublic).toList(); // 필터링된 공개 댓글
         UserEntity userEntity = UserEntityFixture.create();
 
-
         when(everyGroupRepository.findById(1L)).thenReturn(Optional.of(build));
-        when(groupCommentVoMaker.makeByEveryGroup(eq(userEntity), eq(commentEntities), any())).thenReturn(List.of(
-            GroupCommentVoFixture.createGroupCommentEveryVo(1L, LocalDateTime.now()),
-            GroupCommentVoFixture.createGroupCommentEveryVo(1L, LocalDateTime.now())
-        ));
+        when(groupCommentVoMaker.makeByEveryGroup(any(UserEntity.class), any(List.class), any(EveryGroupEntity.class)))
+            .thenReturn(List.of(
+                GroupCommentVoFixture.createGroupCommentEveryVo(1L, LocalDateTime.now()),
+                GroupCommentVoFixture.createGroupCommentEveryVo(1L, LocalDateTime.now())
+            ));
 
         // when
         ReadCommentGroup readCommentGroup = everyGroupServiceImpl.readCommentInGroup(userEntity,
             true, 1L);
 
         // then
-        Assertions.assertThat(readCommentGroup.comments()).hasSize(2); // 2개의 공개 댓글
         Assertions.assertThat(commentEntities).hasSize(2); // 중간 결과 검증
+        Assertions.assertThat(readCommentGroup.comments()).hasSize(2); // 2개의 공개 댓글
     }
 
     @Test
@@ -101,18 +107,19 @@ class EveryGroupServiceImplTest {
         UserEntity userEntity = UserEntityFixture.create();
 
         when(everyGroupRepository.findById(1L)).thenReturn(Optional.of(build));
-        when(groupCommentVoMaker.makeByEveryGroup(eq(userEntity), eq(commentEntities), eq(build))).thenReturn(List.of(
-            GroupCommentVoFixture.createGroupCommentEveryVo(1L,  LocalDateTime.now()),
-            GroupCommentVoFixture.createGroupCommentEveryVo(1L,  LocalDateTime.now())
-        ));
+        when(groupCommentVoMaker.makeByEveryGroup(any(UserEntity.class), any(List.class), any(EveryGroupEntity.class)))
+            .thenReturn(List.of(
+                GroupCommentVoFixture.createGroupCommentEveryVo(1L, LocalDateTime.now()),
+                GroupCommentVoFixture.createGroupCommentEveryVo(1L, LocalDateTime.now())
+            ));
 
         // when
         ReadCommentGroup readCommentGroup = everyGroupServiceImpl.readCommentInGroup(userEntity,
             false, 1L);
 
         // then
-        Assertions.assertThat(readCommentGroup.comments()).hasSize(2); // 2개의 비공개 댓글
         Assertions.assertThat(commentEntities).hasSize(2); // 필터링된 비공개 댓글 확인
+        Assertions.assertThat(readCommentGroup.comments()).hasSize(2); // 2개의 비공개 댓글
 
     }
 

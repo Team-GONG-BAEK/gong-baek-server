@@ -1,5 +1,6 @@
 package com.ggang.be.api.report.controller;
 
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ggang.be.api.common.ApiResponse;
 import com.ggang.be.api.common.ResponseBuilder;
+
 import com.ggang.be.api.common.ResponseSuccess;
 import com.ggang.be.api.facade.ReportFacade;
 import com.ggang.be.domain.constant.GroupType;
@@ -33,7 +35,6 @@ public class ReportController {
 		Long userId = jwtService.parseTokenAndGetUserId(token);
 		reportFacade.reportComment(userId, commentId);
 		return ResponseBuilder.created(ResponseSuccess.CREATED);
-
 	}
 
 

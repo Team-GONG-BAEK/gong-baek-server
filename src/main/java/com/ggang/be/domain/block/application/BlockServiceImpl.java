@@ -1,7 +1,5 @@
 package com.ggang.be.domain.block.application;
 
-import com.ggang.be.api.common.ResponseError;
-import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.domain.block.BlockEntity;
 import com.ggang.be.domain.block.infra.BlockRepository;
 import com.ggang.be.domain.report.ReportEntity;
@@ -11,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,8 +39,9 @@ public class BlockServiceImpl {
 
     public List<String> findByReports(List<ReportEntity> reports) {
         return reports.stream()
-                .map(reportEntity -> blockRepository.findByReport(reportEntity).orElseThrow(() -> new GongBaekException(
-                        ResponseError.NOT_FOUND)))
+                .map(blockRepository::findByReport)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .map(blockEntity -> blockEntity.getUser().getNickname())
                 .toList();
     }

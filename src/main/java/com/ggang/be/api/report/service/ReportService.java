@@ -13,6 +13,8 @@ public interface ReportService {
 
     List<ReportEntity> findReports(long userId);
 
+    List<Long> findReportedUserIds(long reportUserId);
+
     void deleteReportByComment(long commentId);
 
     void deleteReportByGroup(long groupId, GroupType groupType);

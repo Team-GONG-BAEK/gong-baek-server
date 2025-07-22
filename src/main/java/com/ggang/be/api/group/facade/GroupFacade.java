@@ -147,7 +147,6 @@ public class GroupFacade {
 
     public List<ActiveGroupsResponse> getFillGroups(long userId, Category category) {
         UserEntity currentUser = userService.getUserById(userId);
-
         List<Long> reportedUserIds = reportService.findReportedUserIds(userId);
 
         CombinedGroupVos preparedGroupVo = activeCombinedGroupVoPreparer.prepareGroupVos(
@@ -167,11 +166,13 @@ public class GroupFacade {
 
     public List<LatestResponse> getLatestGroups(long userId, GroupType groupType) {
         UserEntity currentUser = userService.getUserById(userId);
+        List<Long> reportedUserIds = reportService.findReportedUserIds(userId);
 
         LatestGroupStrategy latestGroupStrategy = latestGroupStrategyRegistry.getGroupStrategy(
                 groupType);
 
         return latestGroupStrategy.getLatestGroups(currentUser).stream()
+                .filter(groupVo -> !reportedUserIds.contains(groupVo.userId()))
                 .filter(groupVo -> lectureTimeSlotService.isActiveGroupsInLectureTimeSlot(currentUser, groupVo))
                 .sorted((group1, group2) -> group2.createdAt().compareTo(group1.createdAt()))
                 .limit(5).map(LatestResponse::fromGroupVo)

@@ -10,8 +10,8 @@ import com.ggang.be.domain.user.dto.SaveUserSignUp;
 import java.util.List;
 
 public record SignUpRequest(Platform platform,
-        String email,
-        Integer profileImg,
+                            String email,
+                            Integer profileImg,
                             String nickname,
                             Mbti mbti,
                             String schoolName,
@@ -20,7 +20,7 @@ public record SignUpRequest(Platform platform,
                             String introduction,
                             Gender sex,
                             List<TimeTableVo> timeTable
-                            ) {
+) {
 
     public static SaveUserSignUp toSaveUserSignUp(SignUpRequest request, String platformUserId, SchoolEntity school) {
         return new SaveUserSignUp(

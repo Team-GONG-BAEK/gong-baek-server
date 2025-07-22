@@ -1,21 +1,5 @@
 package com.ggang.be.api.block;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
-
 import com.ggang.be.api.comment.dto.ReadCommentRequest;
 import com.ggang.be.api.comment.dto.ReadCommentResponse;
 import com.ggang.be.api.comment.facade.CommentFacade;
@@ -31,6 +15,21 @@ import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.report.ReportEntity;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.user.fixture.UserEntityFixture;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BlockingCommentTest {
@@ -55,105 +54,111 @@ class BlockingCommentTest {
 
     private UserEntity testUser;
     private ReadCommentRequest readCommentRequest;
-    private List<String> blockedUsers;
+    private List<Long> blockedUserIds;
     private List<GroupCommentVo> commentVos;
     private ReadCommentResponse originalResponse;
     private List<ReportEntity> testReports;
 
     @BeforeEach
     void setUp() {
-        // 테스트 기본 데이터 설정
         testUser = UserEntityFixture.createByNickname("testUser");
-        ReflectionTestUtils.setField(testUser, "id", 1L); // ID 설정
+        ReflectionTestUtils.setField(testUser, "id", 1L);
         readCommentRequest = new ReadCommentRequest(1L, GroupType.ONCE);
-        blockedUsers = List.of("blockedUser1", "blockedUser2");
-        testReports = List.of(); // 빈 리포트 리스트로 초기화
+        blockedUserIds = List.of(4L, 5L);
+        testReports = List.of();
 
-        // 댓글 데이터 생성 (차단된 사용자와 일반 사용자 포함)
         commentVos = createTestCommentData();
-        
-        // 원본 응답 생성
+
         ReadCommentGroup commentGroup = new ReadCommentGroup(
-            commentVos.size(), 
-            1L, 
-            GroupType.ONCE, 
-            Status.RECRUITING, 
-            commentVos
+                commentVos.size(),
+                1L,
+                GroupType.ONCE,
+                Status.RECRUITING,
+                commentVos
         );
         originalResponse = ReadCommentResponse.of(commentGroup);
 
-        // 공통 Mock 설정
         setupCommonMocks();
     }
 
     @Test
     @DisplayName("차단된 사용자의 댓글이 필터링되어야 한다")
     void shouldFilterBlockedUserComments() {
+        // 차단 목록 설정
+        when(reportService.findReportedUserIds(testUser.getId()))
+                .thenReturn(blockedUserIds);
+
         // When
         ReadCommentResponse result = commentFacade.readComment(
-            testUser.getId(), true, readCommentRequest);
+                testUser.getId(), true, readCommentRequest);
 
         // Then
         List<GroupCommentVo> filteredComments = result.readCommentGroup().comments();
         assertThat(filteredComments).hasSize(3);
         assertThat(filteredComments)
-            .extracting(GroupCommentVo::nickname)
-            .containsOnly("testUser", "normalUser1", "normalUser2")
-            .doesNotContain("blockedUser1", "blockedUser2");
+                .extracting(GroupCommentVo::userId)
+                .containsOnly(1L, 2L, 3L)
+                .doesNotContain(4L, 5L);
     }
 
     @Test
     @DisplayName("차단 목록이 비어있으면 모든 댓글이 반환되어야 한다")
     void shouldReturnAllCommentsWhenNoBlockedUsers() {
-        // Given
-        when(blockService.findByReports(testReports))
-            .thenReturn(List.of()); // 빈 차단 목록
+        // 차단 목록을 빈 리스트로 설정
+        when(reportService.findReportedUserIds(testUser.getId()))
+                .thenReturn(List.of());
 
         // When
         ReadCommentResponse result = commentFacade.readComment(
-            testUser.getId(), true, readCommentRequest);
+                testUser.getId(), true, readCommentRequest);
 
         // Then
         List<GroupCommentVo> allComments = result.readCommentGroup().comments();
         assertThat(allComments).hasSize(5);
         assertThat(allComments)
-            .extracting(GroupCommentVo::nickname)
-            .containsExactly("testUser", "normalUser1", "normalUser2", "blockedUser1", "blockedUser2");
-    }
-
-    private List<GroupCommentVo> createTestCommentData() {
-        LocalDateTime now = LocalDateTime.now();
-        
-        return List.of(
-            createCommentVo(1L, "testUser", now),
-            createCommentVo(2L, "normalUser1", now),
-            createCommentVo(3L, "normalUser2", now),
-            createCommentVo(4L, "blockedUser1", now), // 차단된 사용자
-            createCommentVo(5L, "blockedUser2", now)  // 차단된 사용자
-        );
-    }
-
-    private GroupCommentVo createCommentVo(Long commentId, String nickname, LocalDateTime createdAt) {
-        return new GroupCommentVo(
-            commentId,
-            false,
-            false,
-            nickname,
-            "Test comment body",
-            createdAt.toString()
-        );
+                .extracting(GroupCommentVo::nickname)
+                .containsExactly("testUser", "normalUser1", "normalUser2", "blockedUser1", "blockedUser2");
     }
 
     private void setupCommonMocks() {
         when(commentStrategyRegistry.getCommentGroupStrategy(any(GroupType.class)))
-            .thenReturn(commentStrategy);
+                .thenReturn(commentStrategy);
         when(userService.getUserById(testUser.getId()))
-            .thenReturn(testUser);
-        when(reportService.findReports(testUser.getId()))
-            .thenReturn(testReports);
-        when(blockService.findByReports(testReports))
-            .thenReturn(blockedUsers);
+                .thenReturn(testUser);
         when(commentStrategy.readComment(testUser, true, readCommentRequest))
-            .thenReturn(originalResponse);
+                .thenReturn(originalResponse);
+    }
+
+    private List<GroupCommentVo> createTestCommentData() {
+        LocalDateTime now = LocalDateTime.now();
+
+        return List.of(
+                createCommentVo(1L, "testUser", now),
+                createCommentVo(2L, "normalUser1", now),
+                createCommentVo(3L, "normalUser2", now),
+                createCommentVo(4L, "blockedUser1", now),
+                createCommentVo(5L, "blockedUser2", now)
+        );
+    }
+
+    private GroupCommentVo createCommentVo(Long commentId, String nickname, LocalDateTime createdAt) {
+        Long dummyUserId = switch (nickname) {
+            case "testUser" -> 1L;
+            case "normalUser1" -> 2L;
+            case "normalUser2" -> 3L;
+            case "blockedUser1" -> 4L;
+            case "blockedUser2" -> 5L;
+            default -> 999L;
+        };
+
+        return new GroupCommentVo(
+                commentId,
+                false,
+                false,
+                nickname,
+                "Test comment body",
+                createdAt.toString(),
+                dummyUserId
+        );
     }
 }

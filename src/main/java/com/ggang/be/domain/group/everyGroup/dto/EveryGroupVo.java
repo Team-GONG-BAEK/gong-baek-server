@@ -10,11 +10,13 @@ import java.time.LocalDateTime;
 
 public record EveryGroupVo(long groupId, Status status, Category category, int coverImg, int profileImg,
                            String nickname, GroupType groupType,
-                           String groupTitle, WeekDay weekDay, double startTime, double endTime, String location, LocalDateTime createdAt) {
+                           String groupTitle, WeekDay weekDay, double startTime, double endTime, String location,
+                           LocalDateTime createdAt, Long creatorId) {
 
     public static EveryGroupVo of(EveryGroupEntity everyGroupEntity) {
         int profileImg = (everyGroupEntity.getUserEntity()) != null ? everyGroupEntity.getUserEntity().getProfileImg() : 0;
         String nickname = (everyGroupEntity.getUserEntity()) != null ? everyGroupEntity.getUserEntity().getNickname() : null;
+        Long creatorId = everyGroupEntity.getUserEntity() != null ? everyGroupEntity.getUserEntity().getId() : null;
 
         return new EveryGroupVo(
                 everyGroupEntity.getId(),
@@ -29,7 +31,8 @@ public record EveryGroupVo(long groupId, Status status, Category category, int c
                 everyGroupEntity.getGongbaekTimeSlotEntity().getStartTime(),
                 everyGroupEntity.getGongbaekTimeSlotEntity().getEndTime(),
                 everyGroupEntity.getLocation(),
-                everyGroupEntity.getCreatedAt()
+                everyGroupEntity.getCreatedAt(),
+                creatorId
         );
     }
 }

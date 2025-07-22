@@ -43,20 +43,20 @@ class UserServiceImplTest {
         Assertions.assertThat(result).isTrue();
     }
 
-     @Test
-     @DisplayName("닉네임 중복 체크 테스트 - 실패")
-     void duplicateCheckNicknameFail() {
+    @Test
+    @DisplayName("닉네임 중복 체크 테스트 - 실패")
+    void duplicateCheckNicknameFail() {
 
-         //given
-         String nickname = "김효준";
-         when(userRepository.existsUserEntitiesByNickname(nickname)).thenReturn(true);
+        //given
+        String nickname = "김효준";
+        when(userRepository.existsUserEntitiesByNickname(nickname)).thenReturn(true);
 
-         //when && then
+        //when && then
 
-         Assertions.assertThatThrownBy(() -> userServiceImpl.duplicateCheckNickname(nickname))
-             .isInstanceOf(GongBaekException.class)
-             .hasMessageContaining("이미 존재하는 닉네임입니다.");
-     }
+        Assertions.assertThatThrownBy(() -> userServiceImpl.duplicateCheckNickname(nickname))
+                .isInstanceOf(GongBaekException.class)
+                .hasMessageContaining("이미 존재하는 닉네임입니다.");
+    }
 
 
     @Test
@@ -69,27 +69,27 @@ class UserServiceImplTest {
         SaveUserSignUp request = new SaveUserSignUp(
                 Platform.KAKAO,
                 "dasff",
-            1,
-            "guswlsdl04@gmail.com",
-            "nickname",
-            Mbti.INFJ,
-            "computer science",
-            2024,
-            "hello",
-            Gender.MAN,
-            school
+                1,
+                "guswlsdl04@gmail.com",
+                "nickname",
+                Mbti.INFJ,
+                "computer science",
+                2024,
+                "hello",
+                Gender.MAN,
+                school
         );
 
         UserEntity expectedUserEntity = UserEntity.builder()
-            .nickname("nickname")
-            .school(school)
-            .gender(Gender.MAN)
-            .introduction("introduction")
-            .mbti(Mbti.INFJ)
-            .profileImg(1)
-            .enterYear(2020)
-            .schoolMajorName("Computer Science")
-            .build();
+                .nickname("nickname")
+                .school(school)
+                .gender(Gender.MAN)
+                .introduction("introduction")
+                .mbti(Mbti.INFJ)
+                .profileImg(1)
+                .enterYear(2020)
+                .schoolMajorName("Computer Science")
+                .build();
 
         when(userRepository.save(ArgumentMatchers.any(UserEntity.class))).thenReturn(expectedUserEntity);
 

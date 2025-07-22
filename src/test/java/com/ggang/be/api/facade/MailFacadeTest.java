@@ -8,7 +8,6 @@ import com.ggang.be.api.email.service.MailService;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.api.school.service.SchoolService;
 import com.ggang.be.api.user.service.UserService;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.TestPropertySource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -152,7 +148,7 @@ class MailFacadeTest {
     }
 
     @Test
-    void 관리자_이메일은_중복_등록을_허용한다(){
+    void 관리자_이메일은_중복_등록을_허용한다() {
 
         //given
         String emails = "admin@school.com";

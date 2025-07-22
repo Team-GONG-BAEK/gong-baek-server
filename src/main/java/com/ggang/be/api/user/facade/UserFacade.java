@@ -9,6 +9,7 @@ import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.block.application.BlockServiceImpl;
+import com.ggang.be.domain.report.application.ReportServiceImpl;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.global.annotation.Facade;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class UserFacade {
     private final UserOnceGroupService userOnceGroupService;
     private final UserEveryGroupService userEveryGroupService;
     private final BlockServiceImpl blockService;
+    private final ReportServiceImpl reportService;
 
     @Transactional
     public void deleteUser(Long userId) {
@@ -54,8 +56,15 @@ public class UserFacade {
         log.info("== Removing blocks associated with user");
         deleteBlocksByUser(user);
 
+        log.info("== Deleting Reports associated with user");
+        deleteReportsByUser(userId);
+
         log.info("== Deleting user from repository");
         userService.deleteUser(userId);
+    }
+
+    private void deleteReportsByUser(Long userId) {
+        reportService.deleteAllReportsByUser(userId);
     }
 
     private void deleteBlocksByUser(UserEntity user) {

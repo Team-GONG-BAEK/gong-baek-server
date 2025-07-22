@@ -10,9 +10,23 @@ import com.ggang.be.domain.group.onceGroup.dto.OnceGroupVo;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public record GroupVo(long groupId, Status status, Category category, int coverImg, int profileImg, String nickname,
-                      GroupType groupType,
-                      String groupTitle, WeekDay weekDay, LocalDate weekDate, double startTime, double endTime, String location, LocalDateTime createdAt) {
+public record GroupVo(
+        long groupId,
+        Status status,
+        Category category,
+        int coverImg,
+        int profileImg,
+        String nickname,
+        GroupType groupType,
+        String groupTitle,
+        WeekDay weekDay,
+        LocalDate weekDate,
+        double startTime,
+        double endTime,
+        String location,
+        LocalDateTime createdAt,
+        long userId
+) {
 
     public static GroupVo fromEveryGroup(EveryGroupVo everyGroupVo) {
         return new GroupVo(
@@ -29,7 +43,8 @@ public record GroupVo(long groupId, Status status, Category category, int coverI
                 everyGroupVo.startTime(),
                 everyGroupVo.endTime(),
                 everyGroupVo.location(),
-                everyGroupVo.createdAt()
+                everyGroupVo.createdAt(),
+                everyGroupVo.creatorId()
         );
     }
 
@@ -48,7 +63,8 @@ public record GroupVo(long groupId, Status status, Category category, int coverI
                 onceGroupVo.startTime(),
                 onceGroupVo.endTime(),
                 onceGroupVo.location(),
-                onceGroupVo.createdAt()
+                onceGroupVo.createdAt(),
+                onceGroupVo.creatorId()
         );
     }
 }

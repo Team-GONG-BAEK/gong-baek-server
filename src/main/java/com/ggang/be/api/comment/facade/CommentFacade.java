@@ -1,8 +1,5 @@
 package com.ggang.be.api.comment.facade;
 
-import java.util.List;
-import java.util.Objects;
-
 import com.ggang.be.api.comment.dto.*;
 import com.ggang.be.api.comment.registry.CommentStrategy;
 import com.ggang.be.api.comment.registry.CommentStrategyRegistry;
@@ -14,13 +11,14 @@ import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.block.application.BlockServiceImpl;
 import com.ggang.be.domain.comment.CommentEntity;
 import com.ggang.be.domain.group.vo.GroupCommentVo;
-import com.ggang.be.domain.report.ReportEntity;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.global.annotation.Facade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Facade
@@ -50,18 +48,15 @@ public class CommentFacade {
         CommentStrategy commentStrategy = commentStrategyRegistry.getCommentGroupStrategy(dto.groupType());
 
         UserEntity findUserEntity = userService.getUserById(userId);
-        List<ReportEntity> reports = reportService.findReports(userId);
-
-        List<String> blockedNicknameByMe = blockService.findByReports(reports);
+        List<Long> reportedUserIds = reportService.findReportedUserIds(userId);
 
         ReadCommentResponse readCommentResponse = commentStrategy.readComment(findUserEntity, isPublic, dto);
 
-
         List<GroupCommentVo> filterCommentVos = readCommentResponse.readCommentGroup()
-            .comments()
-            .stream()
-            .filter(c -> !blockedNicknameByMe.contains(c.nickname()))
-            .toList();
+                .comments()
+                .stream()
+                .filter(c -> !reportedUserIds.contains(c.userId()))
+                .toList();
 
         return readCommentResponse.withFilteredComments(filterCommentVos);
     }

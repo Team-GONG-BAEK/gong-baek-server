@@ -12,10 +12,11 @@ import java.time.LocalDateTime;
 public record OnceGroupVo(long groupId, Status status, Category category, int coverImg, int profileImg, String nickname,
                           GroupType groupType,
                           String groupTitle, LocalDate dateTime, double startTime, double endTime, String location,
-                          LocalDateTime createdAt, GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
+                          LocalDateTime createdAt, GongbaekTimeSlotEntity gongbaekTimeSlotEntity, Long creatorId) {
     public static OnceGroupVo of(OnceGroupEntity onceGroupEntity) {
         int profileImg = (onceGroupEntity.getUserEntity()) != null ? onceGroupEntity.getUserEntity().getProfileImg() : 0;
         String nickname = (onceGroupEntity.getUserEntity()) != null ? onceGroupEntity.getUserEntity().getNickname() : null;
+        Long creatorId = onceGroupEntity.getUserEntity() != null ? onceGroupEntity.getUserEntity().getId() : null;
 
         return new OnceGroupVo(
                 onceGroupEntity.getId(),
@@ -31,7 +32,8 @@ public record OnceGroupVo(long groupId, Status status, Category category, int co
                 onceGroupEntity.getGongbaekTimeSlotEntity().getEndTime(),
                 onceGroupEntity.getLocation(),
                 onceGroupEntity.getCreatedAt(),
-                onceGroupEntity.getGongbaekTimeSlotEntity()
+                onceGroupEntity.getGongbaekTimeSlotEntity(),
+                creatorId
         );
     }
 }

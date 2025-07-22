@@ -17,4 +17,6 @@ public interface BlockRepository extends JpaRepository<BlockEntity, Long> {
 	List<UserEntity> findUserId(@Param("userId") Long userId);
 
 	Optional<BlockEntity> findByReport(ReportEntity report);
+
+	void deleteAllByUser(UserEntity user);
 }

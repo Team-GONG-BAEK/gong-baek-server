@@ -28,8 +28,8 @@ class SameSchoolValidatorTest {
 
         //when && then
         Assertions.assertThatThrownBy(() -> sameSchoolValidator.isUserReadMySchoolEveryGroup(fixtureUser, testEveryGroup))
-            .isInstanceOf(GongBaekException.class)
-            .hasMessageContaining("같은 학교의 모임만 조회 가능합니다.");
+                .isInstanceOf(GongBaekException.class)
+                .hasMessageContaining("같은 학교의 모임만 조회 가능합니다.");
     }
 
     @Test
@@ -43,8 +43,8 @@ class SameSchoolValidatorTest {
 
         //when && then
         Assertions.assertThatThrownBy(() -> sameSchoolValidator.isUserReadMySchoolOnceGroup(fixtureUser, testOnceGroup))
-            .isInstanceOf(GongBaekException.class)
-            .hasMessageContaining("같은 학교의 모임만 조회 가능합니다.");
+                .isInstanceOf(GongBaekException.class)
+                .hasMessageContaining("같은 학교의 모임만 조회 가능합니다.");
     }
 
     @Test
@@ -58,7 +58,7 @@ class SameSchoolValidatorTest {
 
         //when && then
         Assertions.assertThatCode(() -> sameSchoolValidator.isUserReadMySchoolEveryGroup(fixtureUser, testEveryGroup))
-            .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
     }
 
 
@@ -73,6 +73,6 @@ class SameSchoolValidatorTest {
 
         //when && then
         Assertions.assertThatCode(() -> sameSchoolValidator.isUserReadMySchoolOnceGroup(fixtureUser, testOnceGroup))
-            .doesNotThrowAnyException();
+                .doesNotThrowAnyException();
     }
 }

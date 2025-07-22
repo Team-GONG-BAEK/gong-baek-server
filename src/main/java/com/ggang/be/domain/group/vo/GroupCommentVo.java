@@ -8,8 +8,13 @@ import com.ggang.be.domain.user.UserEntity;
 import java.time.format.DateTimeFormatter;
 
 public record GroupCommentVo(
-        long commentId, boolean isWriter,
-        boolean isGroupHost, String nickname, String body, String createdAt
+        long commentId,
+        boolean isWriter,
+        boolean isGroupHost,
+        String nickname,
+        String body,
+        String createdAt,
+        Long userId
 ) {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm");
 
@@ -40,8 +45,10 @@ public record GroupCommentVo(
         boolean isMine = false;
         boolean isHost = false;
         String nickname = null;
+        Long commentUserId = null;
 
         if (commentUser != null) {
+            commentUserId = commentUser.getId();
             isMine = commentUser.getId().equals(nowUserEntity.getId());
             isHost = creatorId != null && commentUser.getId().equals(creatorId);
             nickname = commentUser.getNickname();
@@ -53,7 +60,8 @@ public record GroupCommentVo(
                 isHost,
                 nickname,
                 commentEntity.getBody(),
-                formatter.format(commentEntity.getCreatedAt())
+                formatter.format(commentEntity.getCreatedAt()),
+                commentUserId
         );
     }
 }

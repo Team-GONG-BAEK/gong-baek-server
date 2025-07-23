@@ -23,16 +23,16 @@ public class ReportFacade {
     private final GroupFacade groupFacade;
     private final CommentService commentService;
 
-    public ResponseSuccess reportComment(long userId, long commentId) {
-
+    public ResponseSuccess reportComment(long reporterId, long commentId) {
         CommentEntity commentEntity = commentService.findById(commentId);
+        UserEntity reportedUser = commentEntity.getUserEntity();
 
-        UserEntity userEntity = commentEntity.getUserEntity();
-        long reportedId = userEntity.getId();
+        ReportEntity reportEntity = reportService.reportComment(
+                commentId, reporterId, reportedUser.getId());
 
-        ReportEntity reportEntity = reportService.reportComment(commentId, userId, reportedId);
+        blockService.blockUser(reportEntity, reportedUser);
 
-        blockService.blockUser(reportEntity, userEntity);
+        groupFacade.cancelApplicationToReportedUserGroups(reporterId, reportedUser.getId());
 
         return ResponseSuccess.CREATED;
     }

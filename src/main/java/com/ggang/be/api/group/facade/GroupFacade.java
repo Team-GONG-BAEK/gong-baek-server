@@ -9,7 +9,6 @@ import com.ggang.be.api.group.registry.*;
 import com.ggang.be.api.lectureTimeSlot.service.LectureTimeSlotService;
 import com.ggang.be.api.report.service.ReportService;
 import com.ggang.be.api.user.service.UserService;
-import com.ggang.be.domain.block.application.BlockServiceImpl;
 import com.ggang.be.domain.constant.Category;
 import com.ggang.be.domain.constant.FillGroupType;
 import com.ggang.be.domain.constant.GroupType;
@@ -47,7 +46,7 @@ public class GroupFacade {
     private final NearestGroupResponseStrategyRegistry nearestGroupResponseStrategyRegistry;
     private final CombinedNearestGroupVoPreparer combinedNearestGroupVoPreparer;
     private final FindGroupCreatorStrategyRegistry findGroupCreatorStrategyRegistry;
-    private final BlockServiceImpl blockService;
+    private final FindGroupsByUserStrategyRegistry findGroupsByUserStrategyRegistry;
     private final ReportService reportService;
 
     public GroupCreatorVo findGroupCreator(GroupType groupType, Long groupId) {
@@ -119,6 +118,20 @@ public class GroupFacade {
         );
 
         cancelGroupStrategy.cancelGroup(findUserEntity, requestDto);
+    }
+
+    @Transactional
+    public void cancelApplicationToReportedUserGroups(Long reporterId, Long reportedUserId) {
+        UserEntity reporter = userService.getUserById(reporterId);
+
+        List<GroupRequest> allGroupRequests = findGroupsByUserStrategyRegistry.getAllGroupRequests(reportedUserId);
+
+        for (GroupRequest request : allGroupRequests) {
+            CancelGroupStrategy strategy = cancelGroupStrategyRegistry.getCancelGroupStrategy(request.groupType());
+            if (strategy.hasApplied(reporter, request)) {
+                strategy.cancelGroup(reporter, request);
+            }
+        }
     }
 
     @Transactional

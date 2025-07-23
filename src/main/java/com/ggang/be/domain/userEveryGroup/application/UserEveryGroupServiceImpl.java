@@ -66,6 +66,11 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
     }
 
     @Override
+    public boolean hasApplied(UserEntity user, EveryGroupEntity everyGroupEntity) {
+        return userEveryGroupRepository.findByUserEntityAndEveryGroupEntity(user, everyGroupEntity).isPresent();
+    }
+
+    @Override
     public void isUserInGroup(UserEntity findUserEntity, EveryGroupEntity findEveryGroupEntity) {
         if (userEveryGroupRepository.findByUserEntityAndEveryGroupEntity(findUserEntity, findEveryGroupEntity).isEmpty()) {
             log.error("User is not in group");

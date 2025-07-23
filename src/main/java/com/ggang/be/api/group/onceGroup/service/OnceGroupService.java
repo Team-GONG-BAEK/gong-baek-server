@@ -11,6 +11,8 @@ import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
 
+import java.util.List;
+
 public interface OnceGroupService {
     OnceGroupDto getOnceGroupDetail(final long groupId, UserEntity user);
 
@@ -25,7 +27,7 @@ public interface OnceGroupService {
     ReadCommentGroup readCommentInGroup(UserEntity userEntity, boolean isPublic, final long groupId);
 
     OnceGroupEntity registerOnceGroup(RegisterGroupServiceRequest serviceRequest,
-                           GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
+                                      GongbaekTimeSlotEntity gongbaekTimeSlotEntity);
 
     void deleteOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity);
 
@@ -42,4 +44,6 @@ public interface OnceGroupService {
     void updateStatus();
 
     boolean isSameSchoolOnceGroup(UserEntity currentUser, OnceGroupVo groupVo);
+
+    List<OnceGroupEntity> findByUserId(Long userId);
 }

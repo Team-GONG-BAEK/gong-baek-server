@@ -1,9 +1,9 @@
 package com.ggang.be.api.userEveryGroup.service;
 
-import com.ggang.be.domain.group.vo.NearestGroup;
 import com.ggang.be.domain.group.dto.ReadEveryGroupMember;
 import com.ggang.be.domain.group.everyGroup.EveryGroupEntity;
 import com.ggang.be.domain.group.everyGroup.dto.ReadEveryGroup;
+import com.ggang.be.domain.group.vo.NearestGroup;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userEveryGroup.dto.FillMember;
 
@@ -16,7 +16,7 @@ public interface UserEveryGroupService {
 
     NearestGroup getMyNearestGroup(UserEntity currentUser);
 
-    void isValidCommentAccess(UserEntity userEntity,final long groupId);
+    void isValidCommentAccess(UserEntity userEntity, final long groupId);
 
     void applyEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity);
 
@@ -25,4 +25,6 @@ public interface UserEveryGroupService {
     void isUserInGroup(UserEntity findUserEntity, EveryGroupEntity findEveryGroupEntity);
 
     void deleteUserEveryGroup(UserEntity user);
+
+    boolean hasApplied(UserEntity user, EveryGroupEntity everyGroupEntity);
 }

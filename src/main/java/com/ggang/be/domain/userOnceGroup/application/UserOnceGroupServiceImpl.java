@@ -54,6 +54,11 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
     }
 
     @Override
+    public boolean hasApplied(UserEntity user, OnceGroupEntity onceGroupEntity) {
+        return userOnceGroupRepository.findByUserEntityAndOnceGroupEntity(user, onceGroupEntity).isPresent();
+    }
+
+    @Override
     public NearestGroup getMyNearestGroup(UserEntity currentUser) {
         List<UserOnceGroupEntity> userOnceGroupEntities = getMyOnceGroup(currentUser);
 
@@ -141,7 +146,7 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
         UserEntity userEntity = ue.getUserEntity();
         UserEntity hostEntity = onceGroupEntity.getUserEntity();
         boolean isHost = false;
-        if(hostEntity != null){
+        if (hostEntity != null) {
             isHost = onceGroupEntity.getUserEntity().getNickname()
                     .equals(userEntity.getNickname());
         }

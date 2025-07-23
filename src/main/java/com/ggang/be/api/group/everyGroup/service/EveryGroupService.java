@@ -11,6 +11,8 @@ import com.ggang.be.domain.group.vo.ReadCommentGroup;
 import com.ggang.be.domain.timslot.gongbaekTimeSlot.GongbaekTimeSlotEntity;
 import com.ggang.be.domain.user.UserEntity;
 
+import java.util.List;
+
 public interface EveryGroupService {
     EveryGroupDto getEveryGroupDetail(final long groupId, UserEntity userEntity);
 
@@ -42,4 +44,6 @@ public interface EveryGroupService {
     void updateStatus();
 
     boolean isSameSchoolEveryGroup(UserEntity currentUser, EveryGroupVo groupVo);
+
+    List<EveryGroupEntity> findByUserId(Long userId);
 }

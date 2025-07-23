@@ -33,4 +33,10 @@ public class CancelEveryGroupStrategy implements CancelGroupStrategy {
             userEveryGroupService.cancelEveryGroup(userEntity, everyGroupEntity);
         else throw new GongBaekException(ResponseError.GROUP_CANCEL_NOT_FOUND);
     }
+
+    @Override
+    public boolean hasApplied(UserEntity userEntity, GroupRequest request) {
+        EveryGroupEntity group = everyGroupService.findEveryGroupEntityByGroupId(request.groupId());
+        return userEveryGroupService.hasApplied(userEntity, group);
+    }
 }

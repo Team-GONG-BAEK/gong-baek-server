@@ -8,4 +8,6 @@ public interface CancelGroupStrategy {
     boolean support(GroupType groupType);
 
     void cancelGroup(UserEntity userEntity, GroupRequest request);
+
+    boolean hasApplied(UserEntity userEntity, GroupRequest request);
 }

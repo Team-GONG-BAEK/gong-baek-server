@@ -33,4 +33,10 @@ public class CancelOnceGroupStrategy implements CancelGroupStrategy {
             userOnceGroupService.cancelOnceGroup(userEntity, onceGroupEntity);
         else throw new GongBaekException(ResponseError.GROUP_CANCEL_NOT_FOUND);
     }
+
+    @Override
+    public boolean hasApplied(UserEntity userEntity, GroupRequest request) {
+        OnceGroupEntity group = onceGroupService.findOnceGroupEntityByGroupId(request.groupId());
+        return userOnceGroupService.hasApplied(userEntity, group);
+    }
 }

@@ -1,9 +1,9 @@
 package com.ggang.be.api.userOnceGroup.service;
 
-import com.ggang.be.domain.group.vo.NearestGroup;
 import com.ggang.be.domain.group.dto.ReadOnceGroupMember;
 import com.ggang.be.domain.group.onceGroup.OnceGroupEntity;
 import com.ggang.be.domain.group.onceGroup.dto.ReadOnceGroup;
+import com.ggang.be.domain.group.vo.NearestGroup;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.domain.userEveryGroup.dto.FillMember;
 
@@ -25,4 +25,6 @@ public interface UserOnceGroupService {
     void isUserInGroup(UserEntity findUserEntity, OnceGroupEntity findOnceGroupEntity);
 
     void deleteUserOnceGroup(UserEntity user);
+
+    boolean hasApplied(UserEntity user, OnceGroupEntity onceGroupEntity);
 }

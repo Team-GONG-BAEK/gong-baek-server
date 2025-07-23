@@ -205,6 +205,10 @@ public class EveryGroupServiceImpl implements EveryGroupService {
         return userSchool.equals(groupCreatorSchool);
     }
 
+    @Override
+    public List<EveryGroupEntity> findByUserId(Long userId) {
+        return everyGroupRepository.findByUserEntity_Id(userId);
+    }
 
     private void validateDeleteEveryGroup(UserEntity currentUser, EveryGroupEntity everyGroupEntity) {
         if (!everyGroupEntity.isHost(currentUser))

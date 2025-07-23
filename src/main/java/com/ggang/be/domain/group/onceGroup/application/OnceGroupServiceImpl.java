@@ -49,7 +49,7 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     @Override
     public long getOnceGroupRegisterUserId(final long groupId) {
         OnceGroupEntity entity = findIdOrThrow(groupId);
-        if(entity.getUserEntity() == null) throw new GongBaekException(ResponseError.USER_NOT_FOUND);
+        if (entity.getUserEntity() == null) throw new GongBaekException(ResponseError.USER_NOT_FOUND);
         return entity.getUserEntity().getId();
     }
 
@@ -79,7 +79,7 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     @Override
     public ReadOnceGroup getActiveOnceGroups(UserEntity currentUser, Category category) {
         List<OnceGroupEntity> onceGroupEntities;
-        if(category == null) onceGroupEntities = onceGroupRepository.findAll();
+        if (category == null) onceGroupEntities = onceGroupRepository.findAll();
         else onceGroupEntities = onceGroupRepository.findAllByCategory(category);
 
         return ReadOnceGroup.of(groupVoMaker.makeOnceGroup(getRecruitingGroups(onceGroupEntities)));
@@ -91,7 +91,7 @@ public class OnceGroupServiceImpl implements OnceGroupService {
                 .collect(Collectors.toList());
     }
 
-    private List<OnceGroupEntity> getGroupsByStatus(List<OnceGroupEntity> onceGroupEntities, boolean status){
+    private List<OnceGroupEntity> getGroupsByStatus(List<OnceGroupEntity> onceGroupEntities, boolean status) {
         if (status) {
             return onceGroupEntities.stream()
                     .filter(group -> group.getStatus().isActive())
@@ -132,7 +132,7 @@ public class OnceGroupServiceImpl implements OnceGroupService {
         List<GroupCommentVo> onceGroupCommentVos = groupCommentVoMaker.makeByOnceGroup(userEntity,
                 commentEntities, onceGroupEntity);
         ReadOnceGroupCommentCommonVo vo = ReadOnceGroupCommentCommonVo.of(
-            commentCount, groupId, onceGroupEntity.getStatus());
+                commentCount, groupId, onceGroupEntity.getStatus());
 
         return ReadCommentGroup.fromOnceGroup(vo, onceGroupCommentVos);
     }
@@ -140,10 +140,10 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     @Override
     @Transactional
     public OnceGroupEntity registerOnceGroup(RegisterGroupServiceRequest serviceRequest,
-        GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
+                                             GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
 
         OnceGroupEntity buildEntity = buildOnceGroupEntity(
-            serviceRequest, gongbaekTimeSlotEntity);
+                serviceRequest, gongbaekTimeSlotEntity);
 
         return onceGroupRepository.save(buildEntity);
     }
@@ -157,7 +157,7 @@ public class OnceGroupServiceImpl implements OnceGroupService {
 
     @Override
     @Transactional
-    public void validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity){
+    public void validateApplyOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity) {
         validateAlreadyApplied(currentUser, onceGroupEntity);
         validateHostAccess(currentUser, onceGroupEntity);
         validateGroupFull(onceGroupEntity);
@@ -165,8 +165,8 @@ public class OnceGroupServiceImpl implements OnceGroupService {
 
     @Override
     @Transactional
-    public boolean validateCancelOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity){
-        if(onceGroupEntity.isHost(currentUser))
+    public boolean validateCancelOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity) {
+        if (onceGroupEntity.isHost(currentUser))
             throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
 
         return onceGroupEntity.isApply(currentUser);
@@ -177,17 +177,22 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     public void updateStatus() {
         List<OnceGroupEntity> onceGroupEntities = onceGroupRepository.findAllByNotStatus(Status.CLOSED);
         onceGroupEntities
-            .forEach(groupStatusUpdater::updateOnceGroup);
+                .forEach(groupStatusUpdater::updateOnceGroup);
     }
 
     @Override
     public boolean isSameSchoolOnceGroup(UserEntity currentUser, OnceGroupVo groupVo) {
         String userSchool = currentUser.getSchool().getSchoolName();
         OnceGroupEntity onceGroupEntity = findOnceGroupEntityByGroupId(
-            groupVo.groupId());
+                groupVo.groupId());
         String groupCreatorSchool = onceGroupEntity.getUserEntity().getSchool().getSchoolName();
 
         return userSchool.equals(groupCreatorSchool);
+    }
+
+    @Override
+    public List<OnceGroupEntity> findByUserId(Long userId) {
+        return onceGroupRepository.findByUserEntity_Id(userId);
     }
 
     private void validateDeleteOnceGroup(UserEntity currentUser, OnceGroupEntity onceGroupEntity) {
@@ -196,42 +201,42 @@ public class OnceGroupServiceImpl implements OnceGroupService {
     }
 
     private OnceGroupEntity buildOnceGroupEntity(RegisterGroupServiceRequest serviceRequest,
-        GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
+                                                 GongbaekTimeSlotEntity gongbaekTimeSlotEntity) {
         return OnceGroupEntity.builder()
-            .groupDate(serviceRequest.weekDate())
-            .category(serviceRequest.category())
-            .coverImg(serviceRequest.coverImg())
-            .location(serviceRequest.location())
-            .status(Status.RECRUITING)
-            .maxPeopleCount(serviceRequest.maxPeopleCount())
-            .title(serviceRequest.groupTitle())
-            .gongbaekTimeSlotEntity(gongbaekTimeSlotEntity)
-            .introduction(serviceRequest.introduction())
-            .userEntity(serviceRequest.userEntity())
-            .build();
+                .groupDate(serviceRequest.weekDate())
+                .category(serviceRequest.category())
+                .coverImg(serviceRequest.coverImg())
+                .location(serviceRequest.location())
+                .status(Status.RECRUITING)
+                .maxPeopleCount(serviceRequest.maxPeopleCount())
+                .title(serviceRequest.groupTitle())
+                .gongbaekTimeSlotEntity(gongbaekTimeSlotEntity)
+                .introduction(serviceRequest.introduction())
+                .userEntity(serviceRequest.userEntity())
+                .build();
     }
 
     private void validateAlreadyApplied(UserEntity currentUser, OnceGroupEntity onceGroupEntity) {
-        if(onceGroupEntity.isApply(currentUser)) {
+        if (onceGroupEntity.isApply(currentUser)) {
             throw new GongBaekException(ResponseError.APPLY_ALREADY_EXIST);
         }
     }
 
     private void validateHostAccess(UserEntity currentUser, OnceGroupEntity onceGroupEntity) {
-        if(onceGroupEntity.isHost(currentUser)) {
+        if (onceGroupEntity.isHost(currentUser)) {
             throw new GongBaekException(ResponseError.UNAUTHORIZED_ACCESS);
         }
     }
 
     private void validateGroupFull(OnceGroupEntity onceGroupEntity) {
-        if(onceGroupEntity.getCurrentPeopleCount() == onceGroupEntity.getMaxPeopleCount()) {
+        if (onceGroupEntity.getCurrentPeopleCount() == onceGroupEntity.getMaxPeopleCount()) {
             throw new GongBaekException(ResponseError.GROUP_ALREADY_FULL);
         }
     }
 
     private OnceGroupEntity findIdOrThrow(final long groupId) {
         return onceGroupRepository.findById(groupId).orElseThrow(
-            () -> new GongBaekException(ResponseError.GROUP_NOT_FOUND)
+                () -> new GongBaekException(ResponseError.GROUP_NOT_FOUND)
         );
     }
 }

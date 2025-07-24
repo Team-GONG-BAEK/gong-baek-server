@@ -17,9 +17,14 @@ public class EmailSendFailEntity extends BaseTimeEntity {
     private String title;
     private String errorMessage;
 
-    public EmailSendFailEntity(String toEmail, String title, String errorMessage) {
+    @Builder
+    private EmailSendFailEntity(String toEmail, String title, String errorMessage) {
         this.toEmail = toEmail;
         this.title = title;
         this.errorMessage = errorMessage;
+    }
+
+    public static EmailSendFailEntity of(String toEmail, String title, String errorMessage) {
+        return new EmailSendFailEntity(toEmail, title, errorMessage);
     }
 }

@@ -21,4 +21,12 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByPlatformAndPlatformId(Platform platform, String platformId);
 
     Optional<UserEntity> findByEmail(String email);
+    
+    // 이메일 중복 검사를 위한 효율적인 쿼리 - EXISTS 사용으로 성능 최적화
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM user u WHERE u.email = :email")
+    boolean existsByEmail(String email);
+    
+    // 더 효율적인 네이티브 EXISTS 쿼리 (옵션)
+    @Query(value = "SELECT EXISTS(SELECT 1 FROM user WHERE email = :email)", nativeQuery = true)
+    boolean existsByEmailNative(String email);
 }

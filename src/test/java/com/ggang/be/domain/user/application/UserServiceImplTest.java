@@ -1,5 +1,6 @@
 package com.ggang.be.domain.user.application;
 
+import com.ggang.be.api.email.service.AppProperties;
 import com.ggang.be.api.exception.GongBaekException;
 import com.ggang.be.domain.constant.Gender;
 import com.ggang.be.domain.constant.Mbti;
@@ -16,14 +17,23 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private AppProperties appProperties;
+    
+    @Mock
+    private EmailValidationMetrics emailValidationMetrics;
 
     @InjectMocks
     private UserServiceImpl userServiceImpl;
@@ -98,6 +108,49 @@ class UserServiceImplTest {
 
         // Then
         Assertions.assertThat(result).isEqualTo(expectedUserEntity);
+    }
+
+    @Test
+    @DisplayName("이메일 중복 체크 테스트 - 중복되지 않은 이메일")
+    void checkDuplicatedEmail_shouldPassWhenEmailNotExists() {
+        // Given
+        String email = "test@example.com";
+        when(appProperties.getAndReviewEmail()).thenReturn("review@test.com");
+        when(appProperties.getIosReviewEmail()).thenReturn("ios@test.com");
+        when(userRepository.existsByEmail(email)).thenReturn(false);
+
+        // When & Then
+        Assertions.assertThatCode(() -> userServiceImpl.checkDuplicatedEmail(email))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("이메일 중복 체크 테스트 - 중복된 이메일")
+    void checkDuplicatedEmail_shouldThrowExceptionWhenEmailExists() {
+        // Given
+        String email = "duplicate@example.com";
+        when(appProperties.getAndReviewEmail()).thenReturn("review@test.com");
+        when(appProperties.getIosReviewEmail()).thenReturn("ios@test.com");
+        when(userRepository.existsByEmail(email)).thenReturn(true);
+
+        // When & Then
+        Assertions.assertThatThrownBy(() -> userServiceImpl.checkDuplicatedEmail(email))
+                .isInstanceOf(GongBaekException.class)
+                .hasMessageContaining("이미 존재하는 유저입니다.");
+    }
+
+    @Test
+    @DisplayName("이메일 중복 체크 테스트 - 관리자 이메일은 중복 허용")
+    void checkDuplicatedEmail_shouldAllowAdminEmails() {
+        // Given
+        String adminEmail = "admin@test.com";
+        when(appProperties.getAndReviewEmail()).thenReturn(adminEmail);
+        when(appProperties.getIosReviewEmail()).thenReturn("ios@test.com");
+        // 관리자 이메일은 DB 조회 없이 리턴되므로 userRepository mock 불필요
+
+        // When & Then
+        Assertions.assertThatCode(() -> userServiceImpl.checkDuplicatedEmail(adminEmail))
+                .doesNotThrowAnyException();
     }
 
 }

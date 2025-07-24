@@ -12,10 +12,14 @@ import com.ggang.be.domain.user.dto.UserSchoolDto;
 import com.ggang.be.domain.user.infra.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
+import com.ggang.be.domain.user.application.EmailValidationMetrics;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +28,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final AppProperties appProperties;
+    private final EmailValidationMetrics emailValidationMetrics;
 
     @Override
     public UserEntity getUserById(Long userId) {
@@ -100,13 +105,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "emailDuplicateCheck", key = "#email", unless = "#result == false")
     public void checkDuplicatedEmail(String email) {
-        if(isAdminMail(email))
-            return;
-        Optional<UserEntity> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isPresent()) {
-            log.debug("MemberServiceImpl.checkDuplicatedEmail exception occur email: {}", email);
-            throw new GongBaekException(ResponseError.USERNAME_ALREADY_EXISTS);
+        LocalDateTime startTime = LocalDateTime.now();
+        boolean cacheHit = false; // 실제로는 캐시 매니저에서 확인해야 함
+        boolean isDuplicate = false;
+        
+        try {
+            if(isAdminMail(email))
+                return;
+                
+            if (userRepository.existsByEmail(email)) {
+                isDuplicate = true;
+                log.debug("UserServiceImpl.checkDuplicatedEmail exception occur email: {}", email);
+                throw new GongBaekException(ResponseError.USERNAME_ALREADY_EXISTS);
+            }
+        } finally {
+            long duration = ChronoUnit.MILLIS.between(startTime, LocalDateTime.now());
+            emailValidationMetrics.recordValidation(duration, cacheHit, isDuplicate);
         }
     }
 

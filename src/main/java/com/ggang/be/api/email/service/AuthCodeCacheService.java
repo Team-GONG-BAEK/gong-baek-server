@@ -18,6 +18,7 @@ import java.time.Duration;
 public class AuthCodeCacheService {
 
     private Cache<String, String> authCodeCache;
+    private Cache<String, Boolean> emailVerifiedCache;
     private final EmailProperties emailProperties;
 
     @PostConstruct
@@ -26,6 +27,14 @@ public class AuthCodeCacheService {
         log.info("AuthCodeCache time: {}ms", expirationMillis);
 
         this.authCodeCache = Caffeine.newBuilder()
+                .expireAfterWrite(Duration.ofMillis(expirationMillis))
+                .maximumSize(10000)
+                .scheduler(Scheduler.systemScheduler())
+                .recordStats()
+                .build();
+                
+        // 이메일 검증 상태 캐시 (인증 코드와 동일한 TTL)
+        this.emailVerifiedCache = Caffeine.newBuilder()
                 .expireAfterWrite(Duration.ofMillis(expirationMillis))
                 .maximumSize(10000)
                 .scheduler(Scheduler.systemScheduler())
@@ -48,5 +57,22 @@ public class AuthCodeCacheService {
 
     public void removeCode(String email) {
         authCodeCache.invalidate(email);
+    }
+    
+    // 이메일 검증 상태 관리 메서드들
+    public void saveEmailVerifiedStatus(String email, boolean isVerified) {
+        emailVerifiedCache.put(email, isVerified);
+        log.debug("Email verification status saved: {} -> {}", email, isVerified);
+    }
+    
+    public Boolean isEmailVerified(String email) {
+        Boolean verified = emailVerifiedCache.getIfPresent(email);
+        log.debug("Email verification status checked: {} -> {}", email, verified);
+        return verified;
+    }
+    
+    public void removeEmailVerifiedStatus(String email) {
+        emailVerifiedCache.invalidate(email);
+        log.debug("Email verification status removed: {}", email);
     }
 }

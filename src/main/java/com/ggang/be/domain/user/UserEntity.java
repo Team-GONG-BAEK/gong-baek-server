@@ -22,8 +22,8 @@ import java.util.List;
 @Entity(name = "user")
 @DynamicUpdate
 @Table(indexes = {
-    @Index(name = "user_nickname_index", columnList = "nickname"),
-    @Index(name = "user_email_index", columnList = "email")
+    @Index(name = "user_nickname_index", columnList = "nickname")
+    // email 인덱스 제거 - 쿼리 최적화로 대체
 })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity extends BaseTimeEntity {

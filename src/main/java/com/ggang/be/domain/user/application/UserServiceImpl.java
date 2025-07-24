@@ -115,12 +115,14 @@ public class UserServiceImpl implements UserService {
             if(isAdminMail(email))
                 return;
                 
-            if (userRepository.existsByEmail(email)) {
+            // 최적화된 쿼리 사용 - EXISTS + LIMIT 1로 첫 번째 매치에서 즉시 반환
+            if (userRepository.existsByEmailFast(email)) {
                 isDuplicate = true;
                 log.debug("UserServiceImpl.checkDuplicatedEmail exception occur email: {}", email);
                 throw new GongBaekException(ResponseError.USERNAME_ALREADY_EXISTS);
             }
         } finally {
+            // 성능 메트릭 기록
             long duration = ChronoUnit.MILLIS.between(startTime, LocalDateTime.now());
             emailValidationMetrics.recordValidation(duration, cacheHit, isDuplicate);
         }

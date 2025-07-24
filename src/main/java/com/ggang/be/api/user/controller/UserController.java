@@ -38,16 +38,16 @@ public class UserController {
 
     @PostMapping("/user/validate/introduction")
     public ResponseEntity<ApiResponse<Void>> validateIntroduction(@RequestBody final ValidIntroductionRequest dto) {
-        if(LengthValidator.rangeLengthCheck(dto.introduction(), INTRODUCTION_MIN_LENGTH, INTRODUCTION_MAX_LENGTH))
+        if (LengthValidator.rangeLengthCheck(dto.introduction(), INTRODUCTION_MIN_LENGTH, INTRODUCTION_MAX_LENGTH))
             return ResponseBuilder.ok(null);
         throw new GongBaekException(ResponseError.INVALID_INPUT_LENGTH);
     }
 
     @PostMapping("/user/validate/nickname")
     public ResponseEntity<ApiResponse<Void>> validateNickname(@RequestParam final String nickname) {
-            NicknameValidator.validate(nickname);
-            signupFacade.duplicateCheckNickname(nickname);
-            return ResponseBuilder.ok(null);
+        NicknameValidator.validate(nickname);
+        signupFacade.duplicateCheckNickname(nickname);
+        return ResponseBuilder.ok(null);
     }
 
     @PostMapping("/user/signup")
@@ -104,7 +104,7 @@ public class UserController {
 
     @PatchMapping("/reissue/token")
     public ResponseEntity<ApiResponse<TokenVo>> reIssueToken(
-        @RequestHeader("Authorization") String refreshToken) {
+            @RequestHeader("Authorization") String refreshToken) {
         return ResponseBuilder.ok(jwtService.reIssueToken(refreshToken));
     }
 

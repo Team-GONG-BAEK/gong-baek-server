@@ -80,7 +80,7 @@ public class UserController {
 
         return ResponseBuilder.ok(null);
     }
-  
+
     @GetMapping("/user/home/profile")
     public ResponseEntity<ApiResponse<UserSchoolResponseDto>> getGroupInfo(
             @RequestHeader("Authorization") String accessToken
@@ -140,9 +140,11 @@ public class UserController {
     public ResponseEntity<ApiResponse<Void>> sendMessage(
             @RequestParam("email") String email,
             @RequestParam("schoolName") String schoolName
-            ) {
+    ) {
+        long start = System.currentTimeMillis();
         mailFacade.sendCodeToEmail(email, schoolName);
-
+        long end = System.currentTimeMillis();
+        log.info("send email code: {}ms", (end - start));
         return ResponseBuilder.created(null);
     }
 

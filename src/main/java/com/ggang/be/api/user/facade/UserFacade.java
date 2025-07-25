@@ -65,6 +65,7 @@ public class UserFacade {
 
     private void deleteReportsByUser(Long userId) {
         reportService.deleteAllReportsByUser(userId);
+        reportService.deleteAllReportsByReportedUser(userId);
     }
 
     private void deleteBlocksByUser(UserEntity user) {

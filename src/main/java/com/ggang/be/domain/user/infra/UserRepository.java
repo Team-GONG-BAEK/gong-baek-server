@@ -21,4 +21,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByPlatformAndPlatformId(Platform platform, String platformId);
 
     Optional<UserEntity> findByEmail(String email);
+
+    boolean existsByEmail(String email);
 }

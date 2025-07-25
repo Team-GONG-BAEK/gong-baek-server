@@ -21,4 +21,7 @@ public interface ReportService {
 
     @Transactional
     void deleteAllReportsByUser(Long userId);
+
+    @Transactional
+    void deleteAllReportsByReportedUser(Long userId);
 }

@@ -39,9 +39,10 @@ public class ReportFacade {
 
 
     public ResponseSuccess reportGroup(long userId, long groupId, GroupType groupType) {
-
         GroupCreatorVo groupCreator = groupFacade.findGroupCreator(groupType, groupId);
-        groupFacade.cancelMyApplication(userId, new GroupRequest(groupId, groupType));
+        GroupRequest request = GroupRequest.of(groupId, groupType);
+
+        groupFacade.cancelMyApplication(userId, request);
         reportService.reportGroup(groupId, userId, groupCreator.creatorId(), groupType);
 
         return ResponseSuccess.CREATED;

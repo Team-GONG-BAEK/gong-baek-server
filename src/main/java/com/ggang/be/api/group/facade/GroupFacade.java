@@ -117,7 +117,9 @@ public class GroupFacade {
                 requestDto.groupType()
         );
 
-        cancelGroupStrategy.cancelGroup(findUserEntity, requestDto);
+        if (cancelGroupStrategy.hasApplied(findUserEntity, requestDto)) {
+            cancelGroupStrategy.cancelGroup(findUserEntity, requestDto);
+        }
     }
 
     @Transactional

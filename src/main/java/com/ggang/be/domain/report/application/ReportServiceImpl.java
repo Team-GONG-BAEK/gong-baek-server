@@ -18,7 +18,6 @@ public class ReportServiceImpl implements ReportService {
 
     private final ReportRepository reportRepository;
 
-
     @Override
     @Transactional
     public ReportEntity reportComment(long commentId, long userId, long reportedId) {
@@ -69,6 +68,12 @@ public class ReportServiceImpl implements ReportService {
     @Transactional
     public void deleteAllReportsByUser(Long userId) {
         reportRepository.deleteAllByReportUserId(userId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllReportsByReportedUser(Long userId) {
+        reportRepository.deleteAllByReportedUserId(userId);
     }
 
     private ReportEntity buildReport(long targetId, long userId, long reportedId, ReportType groupType) {

@@ -70,6 +70,7 @@ public class UserFacade {
 
     private void deleteBlocksByUser(UserEntity user) {
         blockService.deleteBlocksByUser(user);
+        blockService.deleteBlocksByBlockedUserId(user.getId());
     }
 
     private void removeCommentAuthor(long userId) {

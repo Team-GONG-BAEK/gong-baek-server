@@ -50,4 +50,9 @@ public class BlockServiceImpl {
     public void deleteBlocksByUser(UserEntity user) {
         blockRepository.deleteAllByUser(user);
     }
+
+    @Transactional
+    public void deleteBlocksByBlockedUserId(Long userId) {
+        blockRepository.deleteAllByBlockedUserId(userId);
+    }
 }

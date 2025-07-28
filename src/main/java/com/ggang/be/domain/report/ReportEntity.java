@@ -22,9 +22,9 @@ public class ReportEntity extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private ReportType targetType;
 
-    private Long reportUserId; // 신고자
+    private Long reportUserId;
 
-    private Long reportedUserId; // 신고 당한 사람
+    private Long reportedUserId;
 
     @Builder
     public ReportEntity(Long targetId, ReportType targetType, Long reportUserId, Long reportedUserId) {

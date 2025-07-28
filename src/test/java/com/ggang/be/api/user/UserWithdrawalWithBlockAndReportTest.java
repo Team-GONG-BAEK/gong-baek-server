@@ -75,7 +75,7 @@ class UserWithdrawalWithBlockAndReportTest {
         userFacade.deleteUser(reportedUserId);
 
         // then
-        verify(blockService).deleteBlocksByUser(reportedUser);
+        verify(blockService).deleteBlocksByBlockedUser(reportedUser);
         verify(reportService).deleteAllReportsByUser(reportedUserId);
         verify(userService).deleteUser(reportedUserId);
     }
@@ -94,7 +94,7 @@ class UserWithdrawalWithBlockAndReportTest {
         userFacade.deleteUser(reportingUserId);
 
         // then
-        verify(blockService).deleteBlocksByUser(reportingUser);
+        verify(blockService).deleteBlocksByBlockedUser(reportingUser);
         verify(reportService).deleteAllReportsByUser(reportingUserId);
         verify(userService).deleteUser(reportingUserId);
     }

@@ -1,27 +1,28 @@
 package com.ggang.be.domain.block.infra;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.ggang.be.domain.block.BlockEntity;
+import com.ggang.be.domain.report.ReportEntity;
+import com.ggang.be.domain.user.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.ggang.be.domain.block.BlockEntity;
-import com.ggang.be.domain.report.ReportEntity;
-import com.ggang.be.domain.user.UserEntity;
+import java.util.List;
+import java.util.Optional;
 
 public interface BlockRepository extends JpaRepository<BlockEntity, Long> {
 
-	@Query("select b.user from block b where b.id = :userId")
-	List<UserEntity> findUserId(@Param("userId") Long userId);
+    @Query("select b.user from block b where b.id = :userId")
+    List<UserEntity> findUserId(@Param("userId") Long userId);
 
-	Optional<BlockEntity> findByReport(ReportEntity report);
+    Optional<BlockEntity> findByReport(ReportEntity report);
 
-	void deleteAllByUser(UserEntity user);
+    @Modifying
+    @Query("delete from block b where b.user = :user")
+    void deleteAllByUser(@Param("user") UserEntity user);
 
-	@Modifying
-	@Query("DELETE FROM block b WHERE b.report.reportedUserId = :userId")
-	void deleteAllByBlockedUserId(Long userId);
+    @Modifying
+    @Query("delete from block b where b.report.reportUserId = :userId")
+    void deleteAllByBlockUserId(@Param("userId") Long userId);
 }

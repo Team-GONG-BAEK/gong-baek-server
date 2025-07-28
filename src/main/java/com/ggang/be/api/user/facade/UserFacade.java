@@ -53,24 +53,24 @@ public class UserFacade {
         log.info("== Removing gongbaek time slot user");
         removeGongbaekTimeSlotUser(userId);
 
-        log.info("== Removing blocks associated with user");
+        log.info("== Removing blocks by user");
         deleteBlocksByUser(user);
 
-        log.info("== Deleting Reports associated with user");
+        log.info("== Removing reports by user");
         deleteReportsByUser(userId);
 
         log.info("== Deleting user from repository");
         userService.deleteUser(userId);
     }
 
+    private void deleteBlocksByUser(UserEntity user) {
+        blockService.deleteBlocksByBlockedUser(user);
+        blockService.deleteAllByBlockUserId(user.getId());
+    }
+
     private void deleteReportsByUser(Long userId) {
         reportService.deleteAllReportsByUser(userId);
         reportService.deleteAllReportsByReportedUser(userId);
-    }
-
-    private void deleteBlocksByUser(UserEntity user) {
-        blockService.deleteBlocksByUser(user);
-        blockService.deleteBlocksByBlockedUserId(user.getId());
     }
 
     private void removeCommentAuthor(long userId) {

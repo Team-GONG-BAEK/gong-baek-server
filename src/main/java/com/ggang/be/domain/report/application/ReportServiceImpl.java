@@ -40,13 +40,13 @@ public class ReportServiceImpl implements ReportService {
         return reportRepository.findByReportUserId(userId);
     }
 
-	@Override
-	public List<Long> findReportedUserIds(long reportUserId) {
-		return reportRepository.findByReportUserId(reportUserId).stream()
-				.map(ReportEntity::getReportedUserId)
-				.distinct()
-				.toList();
-	}
+    @Override
+    public List<Long> findReportedUserIds(long reportUserId) {
+        return reportRepository.findByReportUserId(reportUserId).stream()
+                .map(ReportEntity::getReportedUserId)
+                .distinct()
+                .toList();
+    }
 
     @Override
     @Transactional

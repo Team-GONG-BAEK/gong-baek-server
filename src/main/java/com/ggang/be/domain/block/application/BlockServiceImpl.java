@@ -55,4 +55,9 @@ public class BlockServiceImpl {
     public void deleteBlocksByBlockedUserId(Long userId) {
         blockRepository.deleteAllByBlockedUserId(userId);
     }
+
+    @Transactional
+    public void deleteBlocksByReport(ReportEntity report) {
+        blockRepository.deleteByReport(report);
+    }
 }

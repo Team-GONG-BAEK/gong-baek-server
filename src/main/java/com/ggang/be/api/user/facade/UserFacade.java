@@ -9,12 +9,15 @@ import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.block.application.BlockServiceImpl;
+import com.ggang.be.domain.report.ReportEntity;
 import com.ggang.be.domain.report.application.ReportServiceImpl;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.global.annotation.Facade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Facade
 @RequiredArgsConstructor
@@ -64,6 +67,12 @@ public class UserFacade {
     }
 
     private void deleteReportsByUser(Long userId) {
+        List<ReportEntity> reportsByUser = reportService.findReports(userId);
+
+        for (ReportEntity report : reportsByUser) {
+            blockService.deleteBlocksByReport(report);
+        }
+
         reportService.deleteAllReportsByUser(userId);
         reportService.deleteAllReportsByReportedUser(userId);
     }

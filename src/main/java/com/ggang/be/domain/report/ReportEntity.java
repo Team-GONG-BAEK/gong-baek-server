@@ -17,7 +17,6 @@ public class ReportEntity extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private Long targetId;
 
     @Enumerated(EnumType.STRING)
@@ -27,7 +26,6 @@ public class ReportEntity extends BaseTimeEntity {
 
     private Long reportedUserId; // 신고 당한 사람
 
-
     @Builder
     public ReportEntity(Long targetId, ReportType targetType, Long reportUserId, Long reportedUserId) {
         this.targetId = targetId;
@@ -35,6 +33,5 @@ public class ReportEntity extends BaseTimeEntity {
         this.reportUserId = reportUserId;
         this.reportedUserId = reportedUserId;
     }
-
 
 }

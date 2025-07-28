@@ -20,16 +20,16 @@ public class ReportEntity extends BaseTimeEntity {
     private Long targetId;
 
     @Enumerated(EnumType.STRING)
-    private ReportType targetType;
+    private ReportType reportType;
 
-    private Long reportUserId; // 신고자
+    private Long reportUserId;
 
-    private Long reportedUserId; // 신고 당한 사람
+    private Long reportedUserId;
 
     @Builder
-    public ReportEntity(Long targetId, ReportType targetType, Long reportUserId, Long reportedUserId) {
+    public ReportEntity(Long targetId, ReportType reportType, Long reportUserId, Long reportedUserId) {
         this.targetId = targetId;
-        this.targetType = targetType;
+        this.reportType = reportType;
         this.reportUserId = reportUserId;
         this.reportedUserId = reportedUserId;
     }

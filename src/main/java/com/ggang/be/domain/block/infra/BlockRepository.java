@@ -23,10 +23,6 @@ public interface BlockRepository extends JpaRepository<BlockEntity, Long> {
     void deleteAllByUser(@Param("user") UserEntity user);
 
     @Modifying
-    @Query("delete from block b where b.report.reportedUserId = :userId")
-    void deleteAllByBlockedUserId(@Param("userId") Long userId);
-
-    @Modifying
-    @Query("delete from block b where b.report = :report")
-    void deleteByReport(@Param("report") ReportEntity report);
+    @Query("delete from block b where b.report.reportUserId = :userId")
+    void deleteAllByBlockUserId(@Param("userId") Long userId);
 }

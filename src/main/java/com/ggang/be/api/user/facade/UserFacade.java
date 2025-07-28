@@ -9,15 +9,12 @@ import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.api.userEveryGroup.service.UserEveryGroupService;
 import com.ggang.be.api.userOnceGroup.service.UserOnceGroupService;
 import com.ggang.be.domain.block.application.BlockServiceImpl;
-import com.ggang.be.domain.report.ReportEntity;
 import com.ggang.be.domain.report.application.ReportServiceImpl;
 import com.ggang.be.domain.user.UserEntity;
 import com.ggang.be.global.annotation.Facade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Facade
 @RequiredArgsConstructor
@@ -56,30 +53,24 @@ public class UserFacade {
         log.info("== Removing gongbaek time slot user");
         removeGongbaekTimeSlotUser(userId);
 
-        log.info("== Removing blocks associated with user");
+        log.info("== Removing blocks by user");
         deleteBlocksByUser(user);
 
-        log.info("== Deleting Reports associated with user");
+        log.info("== Removing reports by user");
         deleteReportsByUser(userId);
 
         log.info("== Deleting user from repository");
         userService.deleteUser(userId);
     }
 
-    private void deleteReportsByUser(Long userId) {
-        List<ReportEntity> reportsByUser = reportService.findReports(userId);
-
-        for (ReportEntity report : reportsByUser) {
-            blockService.deleteBlocksByReport(report);
-        }
-
-        reportService.deleteAllReportsByUser(userId);
-        reportService.deleteAllReportsByReportedUser(userId);
+    private void deleteBlocksByUser(UserEntity user) {
+        blockService.deleteBlocksByBlockedUser(user);
+        blockService.deleteAllByBlockUserId(user.getId());
     }
 
-    private void deleteBlocksByUser(UserEntity user) {
-        blockService.deleteBlocksByUser(user);
-        blockService.deleteBlocksByBlockedUserId(user.getId());
+    private void deleteReportsByUser(Long userId) {
+        reportService.deleteAllReportsByUser(userId);
+        reportService.deleteAllReportsByReportedUser(userId);
     }
 
     private void removeCommentAuthor(long userId) {

@@ -11,8 +11,6 @@ public interface ReportService {
 
     void reportGroup(long groupId, long reportId, long reportedId, GroupType groupType);
 
-    List<ReportEntity> findReports(long userId);
-
     List<Long> findReportedUserIds(long reportUserId);
 
     void deleteReportByComment(long commentId);

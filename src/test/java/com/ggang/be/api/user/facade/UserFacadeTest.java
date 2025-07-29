@@ -1,6 +1,5 @@
-package com.ggang.be.api.facade;
+package com.ggang.be.api.user.facade;
 
-import com.ggang.be.api.user.facade.UserFacade;
 import com.ggang.be.api.user.service.UserService;
 import com.ggang.be.domain.block.BlockEntity;
 import com.ggang.be.domain.block.infra.BlockRepository;

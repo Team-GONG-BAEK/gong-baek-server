@@ -113,14 +113,16 @@ public class UserEveryGroupServiceImpl implements UserEveryGroupService {
 
     @Override
     public void deleteUserEveryGroup(UserEntity user) {
-        List<UserEveryGroupEntity> userEveryGroups = user.getUserEveryGroupEntities();
+        List<UserEveryGroupEntity> userEveryGroups = userEveryGroupRepository.findAllByUserEntity(user);
 
-        for (UserEveryGroupEntity userEveryGroup : userEveryGroups) {
-            EveryGroupEntity everyGroup = userEveryGroup.getEveryGroupEntity();
-            everyGroup.decreaseCurrentPeopleCount();
+        if (userEveryGroups != null && !userEveryGroups.isEmpty()) {
+            for (UserEveryGroupEntity userEveryGroup : userEveryGroups) {
+                EveryGroupEntity everyGroup = userEveryGroup.getEveryGroupEntity();
+                everyGroup.decreaseCurrentPeopleCount();
+            }
+
+            userEveryGroupRepository.deleteAll(userEveryGroups);
         }
-
-        userEveryGroupRepository.deleteAll(userEveryGroups);
     }
 
     private EveryGroupEntity getNearestGroup(List<EveryGroupEntity> groups) {

@@ -36,11 +36,6 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public List<ReportEntity> findReports(long userId) {
-        return reportRepository.findByReportUserId(userId);
-    }
-
-    @Override
     public List<Long> findReportedUserIds(long reportUserId) {
         return reportRepository.findByReportUserId(reportUserId).stream()
                 .map(ReportEntity::getReportedUserId)
@@ -67,12 +62,16 @@ public class ReportServiceImpl implements ReportService {
     @Override
     @Transactional
     public void deleteAllReportsByUser(Long userId) {
+        System.out.println("Deleting reports by user: " + userId);
+        List<ReportEntity> reports = reportRepository.findByReportUserId(userId);
+        System.out.println("Found " + reports.size() + " reports to delete");
         reportRepository.deleteAllByReportUserId(userId);
     }
 
     @Override
     @Transactional
     public void deleteAllReportsByReportedUser(Long userId) {
+        System.out.println("Deleting reports by reported user: " + userId);
         reportRepository.deleteAllByReportedUserId(userId);
     }
 

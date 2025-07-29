@@ -113,14 +113,16 @@ public class UserOnceGroupServiceImpl implements UserOnceGroupService {
 
     @Override
     public void deleteUserOnceGroup(UserEntity user) {
-        List<UserOnceGroupEntity> userOnceGroups = user.getUserOnceGroupEntites();
+        List<UserOnceGroupEntity> userOnceGroups = userOnceGroupRepository.findAllByUserEntity(user);
 
-        for (UserOnceGroupEntity userOnceGroup : userOnceGroups) {
-            OnceGroupEntity onceGroup = userOnceGroup.getOnceGroupEntity();
-            onceGroup.decreaseCurrentPeopleCount();
+        if (userOnceGroups != null && !userOnceGroups.isEmpty()) {
+            for (UserOnceGroupEntity userOnceGroup : userOnceGroups) {
+                OnceGroupEntity onceGroup = userOnceGroup.getOnceGroupEntity();
+                onceGroup.decreaseCurrentPeopleCount();
+            }
+
+            userOnceGroupRepository.deleteAll(userOnceGroups);
         }
-
-        userOnceGroupRepository.deleteAll(userOnceGroups);
     }
 
     private OnceGroupEntity getNearestGroup(List<OnceGroupEntity> groups) {

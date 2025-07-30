@@ -26,6 +26,15 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
+    public List<String> searchSchoolContainingKeywordBoth(String searchKeyword) {
+        return schoolRepository.findContainingSearchKeywordBoth(searchKeyword)
+            .stream()
+            .map(SchoolEntity::getSchoolName)
+            .distinct()
+            .toList();
+    }
+
+    @Override
     public School findSchoolByName(String schoolName) {
         return schoolRepository.findBySchoolName(schoolName)
             .map(School::fromEntity)

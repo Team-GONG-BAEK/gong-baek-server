@@ -8,6 +8,8 @@ import java.util.List;
 public interface SchoolService {
     List<String> searchSchoolContainingKeyword(String searchKeyword);
 
+    List<String> searchSchoolContainingKeywordBoth(String searchKeyword);
+
     School findSchoolByName(String schoolName);
 
     SchoolEntity findSchoolEntityByName(String schoolName);

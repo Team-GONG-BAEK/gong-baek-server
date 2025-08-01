@@ -20,22 +20,31 @@ public class SchoolServiceImpl implements SchoolService {
     @Override
     public List<String> searchSchoolContainingKeyword(String searchKeyword) {
         return schoolRepository.findContainingSearchKeyword(searchKeyword)
-            .stream()
-            .map(SchoolEntity::getSchoolName)
-            .toList();
+                .stream()
+                .map(SchoolEntity::getSchoolName)
+                .toList();
+    }
+
+    @Override
+    public List<String> searchSchoolContainingKeywordBoth(String searchKeyword) {
+        return schoolRepository.findContainingSearchKeywordBoth(searchKeyword)
+                .stream()
+                .map(SchoolEntity::getSchoolName)
+                .distinct()
+                .toList();
     }
 
     @Override
     public School findSchoolByName(String schoolName) {
         return schoolRepository.findBySchoolName(schoolName)
-            .map(School::fromEntity)
-            .orElseThrow(() -> new GongBaekException(ResponseError.NOT_FOUND));
+                .map(School::fromEntity)
+                .orElseThrow(() -> new GongBaekException(ResponseError.NOT_FOUND));
     }
 
     @Override
     public SchoolEntity findSchoolEntityByName(String schoolName) {
         return schoolRepository.findBySchoolName(schoolName)
-            .orElseThrow(() -> new GongBaekException(ResponseError.NOT_FOUND));
+                .orElseThrow(() -> new GongBaekException(ResponseError.NOT_FOUND));
     }
 
     @Override

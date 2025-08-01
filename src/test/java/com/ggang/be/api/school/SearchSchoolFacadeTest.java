@@ -25,7 +25,7 @@ class SearchSchoolFacadeTest {
         // Given
         String keyword = "서울";
         List<String> mockResult = Arrays.asList("서울대학교", "서울시립대학교");
-        when(schoolService.searchSchoolContainingKeyword(keyword)).thenReturn(mockResult);
+        when(schoolService.searchSchoolContainingKeywordBoth(keyword)).thenReturn(mockResult);
 
         // When
         SchoolSearchResponse response = searchSchoolFacade.searchSchool(keyword);
@@ -39,7 +39,7 @@ class SearchSchoolFacadeTest {
     void searchSchoolNoResult() {
         // Given
         String keyword = "없는학교";
-        when(schoolService.searchSchoolContainingKeyword(keyword)).thenReturn(Collections.emptyList());
+        when(schoolService.searchSchoolContainingKeywordBoth(keyword)).thenReturn(Collections.emptyList());
 
         // When
         SchoolSearchResponse response = searchSchoolFacade.searchSchool(keyword);
@@ -52,7 +52,7 @@ class SearchSchoolFacadeTest {
     @Test
     void searchSchoolNullKeyword() {
         // Given
-        when(schoolService.searchSchoolContainingKeyword(null)).thenReturn(Collections.emptyList());
+        when(schoolService.searchSchoolContainingKeywordBoth(null)).thenReturn(Collections.emptyList());
 
         // When
         SchoolSearchResponse response = searchSchoolFacade.searchSchool(null);

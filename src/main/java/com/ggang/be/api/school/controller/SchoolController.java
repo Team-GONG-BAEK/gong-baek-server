@@ -1,7 +1,7 @@
 package com.ggang.be.api.school.controller;
 
 import com.ggang.be.api.common.ApiResponse;
-import com.ggang.be.api.common.ResponseSuccess;
+import com.ggang.be.api.common.ResponseBuilder;
 import com.ggang.be.api.facade.SearchSchoolFacade;
 import com.ggang.be.api.school.dto.SchoolSearchResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +20,10 @@ public class SchoolController {
     private final SearchSchoolFacade searchSchoolFacade;
 
     @GetMapping("/school/search")
-    public ResponseEntity<ApiResponse<SchoolSearchResponse>> searchSchool(@RequestParam(name="schoolName") final String searchKeyword) {
+    public ResponseEntity<ApiResponse<SchoolSearchResponse>> searchSchool(
+            @RequestParam(name = "schoolName") final String searchKeyword
+    ) {
         log.info("schoolName: {}", searchKeyword);
-        return ResponseEntity.ok(ApiResponse.success(ResponseSuccess.OK,
-            searchSchoolFacade.searchSchool(searchKeyword)));
+        return ResponseBuilder.ok(searchSchoolFacade.searchSchool(searchKeyword));
     }
 }

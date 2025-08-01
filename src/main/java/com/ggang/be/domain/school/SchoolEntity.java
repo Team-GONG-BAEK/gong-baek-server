@@ -13,7 +13,10 @@ import java.util.List;
 
 @Entity(name = "school")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(indexes = @Index(name = "school_name_idx", columnList = "schoolName"))
+@Table(indexes = {
+        @Index(name = "school_name_idx", columnList = "schoolName"),
+        @Index(name = "school_name_en_idx", columnList = "schoolNameEn")
+})
 @Getter
 public class SchoolEntity extends BaseTimeEntity {
 
@@ -26,6 +29,9 @@ public class SchoolEntity extends BaseTimeEntity {
     // TODO : unique 제약 조건 달기!
     private String schoolName;
 
+    @Column(name = "school_name_en")
+    private String schoolNameEn;
+
     @Column(nullable = false)
     private String schoolDomain;
 
@@ -36,9 +42,14 @@ public class SchoolEntity extends BaseTimeEntity {
     private List<UserEntity> user;
 
     @Builder
-    private SchoolEntity(String schoolName, String schoolDomain,
-        List<SchoolMajorEntity> schoolMajors) {
+    private SchoolEntity(
+            String schoolName,
+            String schoolNameEn,
+            String schoolDomain,
+            List<SchoolMajorEntity> schoolMajors
+    ) {
         this.schoolName = schoolName;
+        this.schoolNameEn = schoolNameEn;
         this.schoolDomain = schoolDomain;
         this.schoolMajors = schoolMajors;
     }

@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 class SearchSchoolMajorFacadeTest {
@@ -35,7 +35,7 @@ class SearchSchoolMajorFacadeTest {
         List<String> mockMajors = Arrays.asList("컴퓨터공학과", "컴퓨터과학과");
 
         when(schoolService.findSchoolByName(schoolName)).thenReturn(mockSchool);
-        when(schoolMajorService.findSchoolMajorBySchoolAndMajorName(mockSchool.getId(), majorKeyword)).thenReturn(mockMajors);
+        when(schoolMajorService.findSchoolMajorBySchoolAndMajorNameBoth(mockSchool.getId(), majorKeyword)).thenReturn(mockMajors);
 
         // When
         SearchedSchoolMajorResponse response = searchSchoolMajorFacade.searchSchoolMajorBySchoolName(schoolName, majorKeyword);
@@ -44,6 +44,24 @@ class SearchSchoolMajorFacadeTest {
         assertThat(response.schoolMajors()).containsExactly("컴퓨터공학과", "컴퓨터과학과");
     }
 
+    @DisplayName("영어 검색 키워드로 학과를 검색했을 때 결과를 반환한다.")
+    @Test
+    void searchSchoolMajorWithEnglishKeyword() {
+        // Given
+        String schoolName = "서울대학교";
+        String majorKeyword = "Computer";
+        School mockSchool = School.builder().id(1L).schoolName("서울대학교").schoolDomain("서울대학교").build();
+        List<String> mockMajors = Arrays.asList("컴퓨터공학과", "컴퓨터과학과");
+
+        when(schoolService.findSchoolByName(schoolName)).thenReturn(mockSchool);
+        when(schoolMajorService.findSchoolMajorBySchoolAndMajorNameBoth(mockSchool.getId(), majorKeyword)).thenReturn(mockMajors);
+
+        // When
+        SearchedSchoolMajorResponse response = searchSchoolMajorFacade.searchSchoolMajorBySchoolName(schoolName, majorKeyword);
+
+        // Then
+        assertThat(response.schoolMajors()).containsExactly("컴퓨터공학과", "컴퓨터과학과");
+    }
 
     @DisplayName("학교 이름이 잘못되었을 경우 예외가 발생하고 'NOT_FOUND' 응답을 반환한다.")
     @Test

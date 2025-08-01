@@ -17,7 +17,7 @@ public class SearchSchoolMajorFacade {
 
     public SearchedSchoolMajorResponse searchSchoolMajorBySchoolName(String schoolName, String schoolMajorKeyword) {
         School schoolByName = schoolService.findSchoolByName(schoolName);
-        List<String> findSearchedSchoolMajor = schoolMajorService.findSchoolMajorBySchoolAndMajorName(
+        List<String> findSearchedSchoolMajor = schoolMajorService.findSchoolMajorBySchoolAndMajorNameBoth(
             schoolByName.getId(), schoolMajorKeyword);
 
         return SearchedSchoolMajorResponse.of(findSearchedSchoolMajor);

@@ -13,7 +13,7 @@ public class SearchSchoolFacade {
     private final SchoolService schoolService;
 
     public SchoolSearchResponse searchSchool(final String searchKeyword) {
-        List<String> schools = schoolService.searchSchoolContainingKeyword(searchKeyword);
+        List<String> schools = schoolService.searchSchoolContainingKeywordBoth(searchKeyword);
         return SchoolSearchResponse.of(schools);
     }
 }

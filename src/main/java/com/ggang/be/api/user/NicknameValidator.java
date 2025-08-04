@@ -9,12 +9,12 @@ import java.util.regex.Pattern;
 public class NicknameValidator {
     private static final int MIN_LENGTH = 2;
     private static final int MAX_LENGTH = 8;
-    private static final Pattern koreanPattern = Pattern.compile("^[가-힣a-zA-Z]+$");
+    private static final Pattern koreanEnglisthPattern = Pattern.compile("^[가-힣a-zA-Z]+$");
 
     public static void validate(String nickname){
         if(!LengthValidator.rangeLengthCheck(nickname, MIN_LENGTH, MAX_LENGTH))
             throw new GongBaekException(ResponseError.BAD_REQUEST);
-        if(!koreanPattern.matcher(nickname).find())
+        if(!koreanEnglisthPattern.matcher(nickname).find())
             throw new GongBaekException(ResponseError.BAD_REQUEST);
     }
 }

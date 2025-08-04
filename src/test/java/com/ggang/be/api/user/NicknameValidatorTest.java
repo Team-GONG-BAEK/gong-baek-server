@@ -10,9 +10,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 class NicknameValidatorTest {
 
     @ParameterizedTest
-    @ValueSource(strings = {"가나aa", "bb나다", " 가나", "\n가"})
-    @DisplayName("닉네임 검증 테스트 순수 한글 아닌 경우 - 실패케이스")
-    void 닉네임이_순수_한글이_아닌_경우(String name) {
+    @ValueSource(strings = {" 가나", "\n가", "가-나"})
+    @DisplayName("닉네임이_순수_한글과 영어가_아닌_경우 - 실패케이스")
+    void 닉네임이_순수_한글과_영어가_아닌_경우(String name) {
         //when && then
         Assertions.assertThatThrownBy(() -> NicknameValidator.validate(name))
                 .isInstanceOf(GongBaekException.class)
@@ -20,6 +20,14 @@ class NicknameValidatorTest {
                 .hasFieldOrPropertyWithValue("responseError", ResponseError.BAD_REQUEST);
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"가나aa", "bb나다", "가나다", "john"})
+    @DisplayName("닉네임이_한글과_영어로만_이루어진_경우 - 성공케이스")
+    void 닉네임이_한글과_영어로만_이루어진_경우(String name) {
+        //when && then
+        Assertions.assertThatCode(() -> NicknameValidator.validate(name))
+                .doesNotThrowAnyException();
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {"가나다라마바사아자", "가"})
@@ -34,12 +42,10 @@ class NicknameValidatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"가나다라마바사아", "가나"})
-    @DisplayName("닉네임 검증 테스트 길이가 맞지 않는 경우 - 성공케이스")
-    void 닉네임검증_통과의경우(String name) {
+    @DisplayName("닉네임 검증 테스트 길이가 맞는 경우 - 성공케이스")
+    void 닉네임의_길이범위가_맞는_경우_검증(String name) {
         //when && then
         Assertions.assertThatCode(() -> NicknameValidator.validate(name))
                 .doesNotThrowAnyException();
     }
-
-
 }

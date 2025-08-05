@@ -101,10 +101,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void checkDuplicatedEmail(String email) {
-        if(isAdminMail(email))
+        if (isAdminMail(email))
             return;
-        Optional<UserEntity> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isPresent()) {
+        if (userRepository.existsByEmail(email)) {
             log.debug("MemberServiceImpl.checkDuplicatedEmail exception occur email: {}", email);
             throw new GongBaekException(ResponseError.USERNAME_ALREADY_EXISTS);
         }
